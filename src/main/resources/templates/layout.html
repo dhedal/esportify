@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">Esportify</title>
+</head>
+<body>
+
+<!-- Inclusion du header -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<!-- Contenu principal qui change selon la page -->
+<main layout:fragment="content"></main>
+
+<!-- Inclusion du footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
