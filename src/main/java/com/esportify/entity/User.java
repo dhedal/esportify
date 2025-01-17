@@ -1,13 +1,14 @@
 package com.esportify.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 
-import java.io.Serializable;
 import java.util.*;
 
 @Entity
-public class User extends AbstractEntity implements Serializable {
+public class User extends AbstractEntity implements UserDetails {
     @Column(nullable = false, length = 50)
     private String name;
     @Column(unique = true, nullable = false, length = 100)
@@ -67,5 +68,15 @@ public class User extends AbstractEntity implements Serializable {
 
     public int hashCode() {
         return super.hashCode();
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList();
     }
 }
