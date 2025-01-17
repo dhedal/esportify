@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Objects;
+
 @Service
 public class UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
@@ -18,6 +20,12 @@ public class UserService {
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public User save(User user) {
+        LOG.debug("## save(User user)");
+        if(Objects.isNull(user)) throw new IllegalArgumentException("user ne doit pas être null");
+        return this.userRepository.save(user);
     }
 
     public User getByEmail(String email) {
@@ -31,5 +39,13 @@ public class UserService {
         LOG.debug("## getByUuid(String email)");
         if(!StringUtils.hasText(uuid)) return null;
         return this.userRepository.findByUuid(uuid).orElse(null);
+    }
+
+    public boolean isEmailExist(String email) {
+        LOG.debug("## isEmailExist(String email)");
+        if(!StringUtils.hasText(email)) return false;
+        User user = this.userRepository.findByEmail(email).orElse(null);
+        return !Objects.isNull(user);
+
     }
 }
