@@ -1,21 +1,11 @@
 package com.esportify.dto;
 
-public class RegisterResponse extends Response{
-
-    private UserDTO userDTO;
+public class RegisterResponse extends LoginResponse{
 
     private boolean emailSent;
 
     public RegisterResponse() {
         super();
-    }
-
-    public UserDTO getUserDTO() {
-        return userDTO;
-    }
-
-    public void setUserDTO(UserDTO userDTO) {
-        this.userDTO = userDTO;
     }
 
     public boolean isEmailSent() {

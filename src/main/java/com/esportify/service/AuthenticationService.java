@@ -1,8 +1,6 @@
 package com.esportify.service;
 
-import com.esportify.dto.Response;
-import com.esportify.dto.RegisterRequest;
-import com.esportify.dto.RegisterResponse;
+import com.esportify.dto.*;
 import com.esportify.entity.User;
 import com.esportify.mapper.UserMapper;
 import org.slf4j.Logger;
@@ -72,9 +70,54 @@ public class AuthenticationService {
         } catch (Exception e) {
             LOG.error("Erreur lors de la conversion de l'utilisateur en DTO", e);
             response.addMessage("Désolé, une erreur interne est survenue.");
+            response.setOk(false);
+            response.setUserDTO(null);
+        }
+
+        return response;
+    }
+
+    public LoginResponse login(LoginRequest request, LoginResponse response) {
+        LOG.debug("## login(LoginRequest request, LoginResponse response)");
+
+        if(Objects.isNull(request)){
+            throw new IllegalArgumentException("LoginRequest ne doit pas être null");
+        }
+        if(Objects.isNull(response)){
+            throw new IllegalArgumentException("LoginResponse ne doit pas être null");
+        }
+
+        Set<ConstraintViolation<LoginRequest>> violations = this.validator.validate(request);
+        if(!violations.isEmpty()) {
+            for(ConstraintViolation<LoginRequest> violation : violations) {
+                response.addMessage(violation.getMessage());
+            }
+            return response;
+        }
+
+        User user = this.userService.getByEmail(request.getEmail());
+        if(Objects.isNull(user)) {
+            response.addMessage("L'email n'existe pas.");
+            return response;
+        }
+
+        if(!this.passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            response.addMessage("Le mot de passe ne correspond pas.");
+            return response;
+        }
+
+        try {
+            response.setUserDTO(UserMapper.toDTO(user));
+            response.setOk(true);
+        } catch (Exception e) {
+            LOG.error("Erreur lors de la conversion de l'utilisateur en DTO", e);
+            response.addMessage("Désolé, une erreur interne est survenue.");
+            response.setOk(false);
+            response.setUserDTO(null);
         }
 
         return response;
 
     }
+
 }
