@@ -80,16 +80,4 @@ public class User extends AbstractEntity implements UserDetails {
         return Collections.emptyList();
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("User{");
-        sb.append("name='").append(name).append('\'');
-        sb.append(", email='").append(email).append('\'');
-        sb.append(", password='").append(password).append('\'');
-        sb.append(", events=").append(events);
-        sb.append(", admin=").append(admin);
-        sb.append(", ").append(super.toString());
-        sb.append('}');
-        return sb.toString();
-    }
 }

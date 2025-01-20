@@ -12,8 +12,7 @@ public class Event extends AbstractEntity implements Serializable {
     private String description;
     @Column(nullable = false)
     private Integer maxPlayers;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false)
     private EventStatus status;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;

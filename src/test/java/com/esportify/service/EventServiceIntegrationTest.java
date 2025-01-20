@@ -1,9 +1,11 @@
 package com.esportify.service;
 
 
+import com.esportify.dto.EventDTO;
 import com.esportify.dto.EventRequest;
 import com.esportify.dto.Response;
 import com.esportify.entity.User;
+import com.esportify.enumerations.EventStatus;
 import com.esportify.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
 public class EventServiceIntegrationTest {
     private static final Logger LOG = LoggerFactory.getLogger(EventServiceIntegrationTest.class);
 
@@ -153,8 +157,29 @@ public class EventServiceIntegrationTest {
         this.resetEventRequest();
         Response response = this.checkResponse(
                 this.eventService.createEvent(this.request, new Response(), this.organizer), tests);
-
         assertTrue(response.isOk());
+
+        List<EventDTO> list = this.eventService.listByOrganizer(this.organizer);
+        assertNotNull(list);
+        assertFalse(list.isEmpty());
+
+        boolean check = false;
+        for(EventDTO dto: list) {
+            if( Objects.equals(this.request.getDescription(), dto.getDescription()) ||
+                    Objects.equals(this.request.getMaxPlayers(), dto.getMaxPlayers()) ||
+                    Objects.equals(this.request.getStartDateTime(), dto.getStartDateTime()) ||
+                    Objects.equals(this.request.getEndDateTime(), dto.getEndDateTime()) ||
+                    Objects.equals(EventStatus.PENDING, dto.getStatus())
+            ){
+                check = true;
+                break;
+            }
+        }
+
+        assertTrue(check);
+
+
+
     }
 
 

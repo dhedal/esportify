@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @MappedSuperclass
-public class AbstractEntity {
+public abstract class AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -72,14 +72,4 @@ public class AbstractEntity {
         return Objects.hash(this.uuid);
     }
 
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder("AbstractEntity{");
-        sb.append("id=").append(id);
-        sb.append(", uuid='").append(uuid).append('\'');
-        sb.append(", createdAt=").append(createdAt);
-        sb.append(", updatedAt=").append(updatedAt);
-        sb.append('}');
-        return sb.toString();
-    }
 }

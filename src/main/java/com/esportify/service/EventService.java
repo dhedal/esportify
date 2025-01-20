@@ -1,12 +1,10 @@
 package com.esportify.service;
 
-import com.esportify.dto.EventDTO;
-import com.esportify.dto.EventRequest;
-import com.esportify.dto.RegisterRequest;
-import com.esportify.dto.Response;
+import com.esportify.dto.*;
 import com.esportify.entity.Event;
 import com.esportify.entity.User;
 import com.esportify.enumerations.EventStatus;
+import com.esportify.mapper.EventMapper;
 import com.esportify.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,6 +33,18 @@ public class EventService {
             Validator validator) {
         this.eventRepository = eventRepository;
         this.validator = validator;
+    }
+
+    /**
+     *
+     * @param organizer
+     * @return
+     */
+    public List<EventDTO> listByOrganizer(User organizer) {
+        LOG.debug("## list(User user)");
+        if(organizer == null) throw new IllegalArgumentException("L'organisateur de l'événement est obligatoire");
+        List<Event> events = this.eventRepository.findAllByOrganizer(organizer);
+        return EventMapper.toDTOList(events);
     }
 
     /**
@@ -79,5 +91,16 @@ public class EventService {
 
         return response;
     }
+
+    /**
+     *
+     * @param request
+     * @param response
+     */
+    public void changeEventStatus(EventStatusRequest request, Response response) {
+
+    }
+
+
 
 }
