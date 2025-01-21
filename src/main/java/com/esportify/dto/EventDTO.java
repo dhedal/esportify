@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public class EventDTO {
     private String uuid;
+    private String title;
     private String description;
     private int maxPlayers;
     private EventStatus status;
@@ -19,6 +20,14 @@ public class EventDTO {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

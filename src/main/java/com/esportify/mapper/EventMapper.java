@@ -15,6 +15,7 @@ public class EventMapper {
         if(Objects.isNull(event)) return null;
         EventDTO dto = new EventDTO();
         dto.setUuid(event.getUuid());
+        dto.setTitle(event.getTitle());
         dto.setDescription(event.getDescription());
         dto.setMaxPlayers(event.getMaxPlayers());
         dto.setStatus(event.getStatus());

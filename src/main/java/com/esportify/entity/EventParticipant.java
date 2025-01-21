@@ -1,6 +1,6 @@
 package com.esportify.entity;
 
-import com.esportify.enumerations.ParticipationStatus;
+import com.esportify.enumerations.EventParticipantStatus;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -14,10 +14,9 @@ public class EventParticipant extends AbstractEntity implements Serializable {
     private Event event;
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 10)
-    private ParticipationStatus status;
+    private User participant;
+    @Column(nullable = false)
+    private EventParticipantStatus status;
 
     public Event getEvent() {
         return event;
@@ -27,19 +26,19 @@ public class EventParticipant extends AbstractEntity implements Serializable {
         this.event = event;
     }
 
-    public User getUser() {
-        return user;
+    public User getParticipant() {
+        return participant;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setParticipant(User user) {
+        this.participant = user;
     }
 
-    public ParticipationStatus getStatus() {
+    public EventParticipantStatus getStatus() {
         return status;
     }
 
-    public void setStatus(ParticipationStatus status) {
+    public void setStatus(EventParticipantStatus status) {
         this.status = status;
     }
 
@@ -49,12 +48,12 @@ public class EventParticipant extends AbstractEntity implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         EventParticipant that = (EventParticipant) o;
         return Objects.equals(event, that.event) &&
-                Objects.equals(user, that.user) &&
+                Objects.equals(participant, that.participant) &&
                 Objects.equals(getUuid(), that.getUuid());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(event, user, getUuid());
+        return Objects.hash(event, participant, getUuid());
     }
 }

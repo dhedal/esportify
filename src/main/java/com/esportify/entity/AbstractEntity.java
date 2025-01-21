@@ -12,9 +12,9 @@ public abstract class AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    protected Long id;
     @Column(updatable = false, nullable = false, unique = true, length = 36)
-    private String uuid;
+    protected String uuid;
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;

@@ -82,8 +82,58 @@ public class EventServiceIntegrationTest {
     }
 
     @Test
+    public void test_createEvent_UniqueTitle_ShouldFailOnDuplicate() {
+        List<String> tests = new ArrayList<>();
+
+        EventRequest request1 = new EventRequest();
+        request1.setTitle("Tournoi FIFA");
+        request1.setDescription("Compétition FIFA 2024");
+        request1.setMaxPlayers(16);
+        request1.setStartDateTime(LocalDateTime.now().plusDays(4));
+        request1.setEndDateTime(request1.getStartDateTime().plusHours(3));
+
+        Response response1 = this.checkResponse(
+                this.eventService.createEvent(request1, new Response(), this.organizer), tests);
+        assertTrue(response1.isOk());
+        tests.clear();
+
+        EventRequest request2 = new EventRequest();
+        request2.setTitle("Tournoi FIFA");
+        request2.setDescription("Compétition FIFA 2024");
+        request2.setMaxPlayers(60);
+        request2.setStartDateTime(request1.getStartDateTime());
+        request2.setEndDateTime(request2.getStartDateTime().plusHours(3));
+
+        tests.add("Ce titre est déja enregistré par un autre événement pour même date/heure que le votre");
+        Response response2 = this.checkResponse(
+                this.eventService.createEvent(request2, new Response(), this.organizer), tests);
+        assertFalse(response2.isOk());
+        tests.clear();
+
+    }
+
+    @Test
     public void test_createEvent_InvalidRequest() {
         List<String> tests = new ArrayList<>();
+
+        this.resetEventRequest();
+        this.request.setTitle(null);
+        tests.add("Le titre est obligatoire");
+        this.checkResponse(this.eventService.createEvent(this.request, new Response(), this.organizer), tests);
+        tests.clear();
+
+        this.resetEventRequest();
+        this.request.setTitle("");
+        tests.add("Le titre est obligatoire");
+        tests.add("Le titre doit contenir entre 5 et 255 caractères");
+        this.checkResponse(this.eventService.createEvent(this.request, new Response(), this.organizer), tests);
+        tests.clear();
+
+        this.resetEventRequest();
+        this.request.setTitle("tour");
+        tests.add("Le titre doit contenir entre 5 et 255 caractères");
+        this.checkResponse(this.eventService.createEvent(this.request, new Response(), this.organizer), tests);
+        tests.clear();
 
         this.resetEventRequest();
         this.request.setDescription(null);
@@ -148,8 +198,9 @@ public class EventServiceIntegrationTest {
         tests.add("La durée de l'événement doit être au minimum de 30 mininutes");
         this.checkResponse(this.eventService.createEvent(this.request, new Response(), this.organizer), tests);
         tests.clear();
-
     }
+
+
 
     @Test
     public void test_createEvent_success() {
@@ -165,7 +216,8 @@ public class EventServiceIntegrationTest {
 
         boolean check = false;
         for(EventDTO dto: list) {
-            if( Objects.equals(this.request.getDescription(), dto.getDescription()) ||
+            if( Objects.equals(this.request.getTitle(), dto.getTitle()) ||
+                    Objects.equals(this.request.getDescription(), dto.getDescription()) ||
                     Objects.equals(this.request.getMaxPlayers(), dto.getMaxPlayers()) ||
                     Objects.equals(this.request.getStartDateTime(), dto.getStartDateTime()) ||
                     Objects.equals(this.request.getEndDateTime(), dto.getEndDateTime()) ||
@@ -175,11 +227,7 @@ public class EventServiceIntegrationTest {
                 break;
             }
         }
-
         assertTrue(check);
-
-
-
     }
 
 
@@ -200,6 +248,7 @@ public class EventServiceIntegrationTest {
 
     public void resetEventRequest() {
         if(Objects.isNull(this.request)) this.request = new EventRequest();
+        this.request.setTitle("Tournoi tekken 8");
         this.request.setDescription("c'est un test d'intégration pour la méthode createEvent");
         this.request.setMaxPlayers(100);
         this.request.setStartDateTime(LocalDateTime.now().plusDays(4));

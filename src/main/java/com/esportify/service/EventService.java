@@ -6,15 +6,16 @@ import com.esportify.entity.User;
 import com.esportify.enumerations.EventStatus;
 import com.esportify.mapper.EventMapper;
 import com.esportify.repository.EventRepository;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -47,6 +48,12 @@ public class EventService {
         return EventMapper.toDTOList(events);
     }
 
+    public Event getWithParticipantsByUuid(String uuid) {
+        return StringUtils.hasText(uuid) ?
+                this.eventRepository.findWithParticipantsByUuid(uuid) :
+                null;
+    }
+
     /**
      *
      * @param request
@@ -76,31 +83,55 @@ public class EventService {
             return response;
         }
 
+        List<Event> checkList = this.eventRepository.findByTitle(request.getTitle());
+        if(checkList != null && !checkList.isEmpty()) {
+            for(Event event : checkList) {
+                if(Objects.equals(event.getStartDateTime(), request.getStartDateTime())) {
+                    response.addMessage("Ce titre est déja enregistré par un autre événement pour même date/heure que le votre");
+                    response.setOk(false);
+                    return response;
+                }
+            }
+        }
+
         Event event = new Event();
+        event.setTitle(request.getTitle());
         event.setDescription(request.getDescription());
         event.setMaxPlayers(request.getMaxPlayers());
         event.setStartDateTime(request.getStartDateTime());
         event.setEndDateTime(request.getEndDateTime());
         event.setOrganizer(organizer);
         event.setStatus(EventStatus.PENDING);
-        event = this.eventRepository.save(event);
 
-        response.setOk(
-                !(Objects.isNull(event) || Objects.isNull(event.getId()) || Objects.isNull(event.getUuid()))
-        );
+        try {
+            event = this.eventRepository.save(event);
+            response.setOk(
+                    !(Objects.isNull(event) || Objects.isNull(event.getId()) || Objects.isNull(event.getUuid()))
+            );
+        } catch (DataIntegrityViolationException e) {
+            LOG.info("erreur lors de l'enregistrement d'un event", e);
+            response.addMessage("Vos données son invalides, veuillez vérifier");
+            response.setOk(false);
+        }
 
         return response;
     }
 
     /**
      *
-     * @param request
-     * @param response
+     * @param event
+     * @param status
      */
-    public void changeEventStatus(EventStatusRequest request, Response response) {
-
+    public boolean changeEventStatus(Event event, EventStatus status) {
+        LOG.debug("## changeEventStatus(Event event, EventStatus status)");
+        if(event == null || event.isNew() || status == null) return false;
+        event.setStatus(status);
+        this.eventRepository.save(event);
+        return true;
     }
 
 
-
+    public void update(Event event) {
+        if(event != null) this.eventRepository.save(event);
+    }
 }

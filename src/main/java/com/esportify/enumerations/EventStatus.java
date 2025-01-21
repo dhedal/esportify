@@ -10,11 +10,10 @@ import java.util.stream.Stream;
 @JsonDeserialize(using = EventStatusDeserializer.class)
 public enum EventStatus {
     UNDEFINED(0, "indéfini"),
-    PENDING(1, "en attente"),
-    VALIDATED(2, "validé"),
-    REJECTED(3, "rejeté"),
-    SUSPENDED(4, "suspendu"),
-    ;
+    PENDING(1, "En attente"),
+    VALIDATED(2, "Validé"),
+    FULL(3, "Complet"),
+    CANCELLED(4, "Annulé");
 
     private Integer key;
     private String label;

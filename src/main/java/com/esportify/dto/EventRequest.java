@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 @ValidEventDuration(message = "La durée de l'événement doit être au minimum de 30 mininutes")
 public class EventRequest {
 
+    @NotBlank(message = "Le titre est obligatoire")
+    @Size(min = 5, max = 255, message = "Le titre doit contenir entre 5 et 255 caractères")
+    private String title;
     @NotBlank(message = "La description est obligatoire")
     @Size(min = 10, max = 500, message = "La description doit contenir entre 10 et 500 caractères")
     private String description;
@@ -20,6 +23,14 @@ public class EventRequest {
     private LocalDateTime startDateTime;
     @NotNull(message = "La date et l'heure de fin est obligatoire")
     private LocalDateTime endDateTime;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getDescription() {
         return description;
