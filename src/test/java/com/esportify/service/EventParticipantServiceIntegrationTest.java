@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class EventParticipantServiceIntegrationTest {
 
     private User organizer;
     private Event event;
-    private User participant, participant2;
+    private User participant, participant2, participant3;
     private EventParticipantRequest request;
 
     @Autowired
@@ -77,6 +78,12 @@ public class EventParticipantServiceIntegrationTest {
         this.participant2.setEmail("john.doe@example.com");
         this.participant2.setPassword("securePassword**123");
         this.participant2 = userRepository.save(this.participant2);
+
+        this.participant3 = new User();
+        this.participant3.setName("Jin Kasama");
+        this.participant3.setEmail("jinkasam@teken.com");
+        this.participant3.setPassword("securePassword**123");
+        this.participant3 = userRepository.save(this.participant3);
 
         this.event = new Event();
         this.event.setTitle("Tournoi de tekken 8");
@@ -191,6 +198,25 @@ public class EventParticipantServiceIntegrationTest {
     }
 
     @Test
+    public void  test_jointEvent_CannotRegisterTwiceForSameEvent() {
+        this.event.setStatus(EventStatus.VALIDATED);
+        this.event.setMaxPlayers(50);
+        this.event = this.eventRepository.save(this.event);
+
+        List<String> tests = new ArrayList<>();
+        Response response1 = this.eventParticipantService.jointEvent(this.request, new Response(), this.participant3);
+        this.checkResponse(response1, tests);
+        assertTrue(response1.isOk());
+        tests.clear();
+
+        tests.add("Le participant est déjà inscrit à cet événement.");
+        Response response2 = eventParticipantService.jointEvent(this.request, new Response(), this.participant3);
+        this.checkResponse(response2, tests);
+        assertFalse(response2.isOk());
+        tests.clear();
+    }
+
+    @Test
     public void test_jointEvent_success() {
         this.event.setStatus(EventStatus.VALIDATED);
         this.event.setMaxPlayers(50);
@@ -199,10 +225,10 @@ public class EventParticipantServiceIntegrationTest {
         List<String> tests = new ArrayList<>();
         this.request.setUuid(this.event.getUuid());
 
-        Response response1 = this.eventParticipantService.jointEvent(this.request, new Response(), this.participant2);
-        this.checkResponse(response1, tests);
-        assertTrue(response1.isOk());
+        Response response = this.eventParticipantService.jointEvent(this.request, new Response(), this.participant2);
+        this.checkResponse(response, tests);
         tests.clear();
+        assertTrue(response.isOk());
     }
 
     private <T extends Response> T checkResponse(T response, List<String> tests) {

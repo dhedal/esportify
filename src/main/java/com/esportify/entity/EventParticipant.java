@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
+@Table(name = "event_participant", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"event_id", "user_id"})
+})
 public class EventParticipant extends AbstractEntity implements Serializable {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)

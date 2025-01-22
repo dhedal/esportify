@@ -19,6 +19,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -57,7 +58,7 @@ public class EventParticipantService {
             throw new IllegalArgumentException("Response ne doit pas être null");
         }
 
-        if (Objects.isNull(participant) || Objects.isNull(participant.getId())) {
+        if (Objects.isNull(participant) || participant.isNew()) {
             throw new IllegalArgumentException("Le participant de l'événement est obligatoire");
         }
 
@@ -70,7 +71,6 @@ public class EventParticipantService {
         }
 
         Event event = this.eventService.getWithParticipantsByUuid(request.getUuid());
-        System.out.println("*********************************");
         if(event == null) {
             response.addMessage("Cet événement n'existe pas");
             return response;
@@ -93,6 +93,12 @@ public class EventParticipantService {
         }
         else {
             response.addMessage("Cet évenement ne prend pas de participant");
+            return response;
+        }
+
+        EventParticipant existParticipant = this.eventParticipantRepository.findByEventAndParticipant(event, participant);
+        if(existParticipant != null) {
+            response.addMessage("Le participant est déjà inscrit à cet événement.");
             return response;
         }
 
