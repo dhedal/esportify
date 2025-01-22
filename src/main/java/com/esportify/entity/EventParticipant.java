@@ -21,6 +21,9 @@ public class EventParticipant extends AbstractEntity implements Serializable {
     @Column(nullable = false)
     private EventParticipantStatus status;
 
+    @Column(nullable = true)
+    private Integer score;
+
     public Event getEvent() {
         return event;
     }
@@ -43,6 +46,14 @@ public class EventParticipant extends AbstractEntity implements Serializable {
 
     public void setStatus(EventParticipantStatus status) {
         this.status = status;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
     @Override
