@@ -1,14 +1,16 @@
 package com.esportify.service;
 
-import com.esportify.dto.EventParticipantRequest;
+import com.esportify.dto.UUIDRequest;
 import com.esportify.dto.Response;
 import com.esportify.entity.Event;
 import com.esportify.entity.User;
 import com.esportify.enumerations.EventStatus;
+import com.esportify.enumerations.UserStatus;
 import com.esportify.repository.EventParticipantRepository;
 import com.esportify.repository.EventRepository;
 import com.esportify.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
 public class EventParticipantServiceIntegrationTest {
     private static final Logger LOG = LoggerFactory.getLogger(EventParticipantServiceIntegrationTest.class);
 
@@ -43,7 +46,7 @@ public class EventParticipantServiceIntegrationTest {
     private User organizer;
     private Event event;
     private User participant, participant2, participant3;
-    private EventParticipantRequest request;
+    private UUIDRequest request;
 
     @Autowired
     public EventParticipantServiceIntegrationTest(
@@ -58,31 +61,39 @@ public class EventParticipantServiceIntegrationTest {
         this.eventParticipantRepository = eventParticipantRepository;
     }
 
-    @BeforeAll
+    @BeforeEach
     public void initUserAndEvent() {
+        this.eventParticipantRepository.deleteAll();
+        this.eventRepository.deleteAll();
+        this.userRepository.deleteAll();
+
+
         this.organizer = new User();
-        this.organizer.setName("dhedal");
+        this.organizer.setPseudo("dhedal");
         this.organizer.setEmail("dhedal@esportify.com");
         this.organizer.setPassword("StrongPassword!24");
-        this.organizer.setAdmin(true);
+        this.organizer.setStatus(UserStatus.ORGANIZER);
         this.organizer = this.userRepository.save(this.organizer);
 
         this.participant = new User();
-        this.participant.setName("Jane Doe");
+        this.participant.setPseudo("Jane Doe");
         this.participant.setEmail("jane.doe@example.com");
         this.participant.setPassword("securePassword**123");
+        this.participant.setStatus(UserStatus.PLAYER);
         this.participant = userRepository.save(this.participant);
 
         this.participant2 = new User();
-        this.participant2.setName("John Doe");
+        this.participant2.setPseudo("John Doe");
         this.participant2.setEmail("john.doe@example.com");
         this.participant2.setPassword("securePassword**123");
+        this.participant2.setStatus(UserStatus.PLAYER);
         this.participant2 = userRepository.save(this.participant2);
 
         this.participant3 = new User();
-        this.participant3.setName("Jin Kasama");
+        this.participant3.setPseudo("Jin Kasama");
         this.participant3.setEmail("jinkasam@teken.com");
         this.participant3.setPassword("securePassword**123");
+        this.participant3.setStatus(UserStatus.PLAYER);
         this.participant3 = userRepository.save(this.participant3);
 
         this.event = new Event();
@@ -95,7 +106,7 @@ public class EventParticipantServiceIntegrationTest {
         this.event.setOrganizer(this.organizer);
         this.event = this.eventRepository.save(this.event);
 
-        this.request = new EventParticipantRequest();
+        this.request = new UUIDRequest();
         this.request.setUuid(this.event.getUuid());
 
     }
@@ -169,10 +180,11 @@ public class EventParticipantServiceIntegrationTest {
 
 
     @Test
+    @Transactional
     public void test_jointEvent_EventStatus_FULL() {
         this.event.setStatus(EventStatus.VALIDATED);
         this.event.setMaxPlayers(1);
-        this.event = this.eventRepository.save(this.event);
+        this.event = this.eventRepository.saveAndFlush(this.event);
 
         List<String> tests = new ArrayList<>();
         this.request.setUuid(this.event.getUuid());

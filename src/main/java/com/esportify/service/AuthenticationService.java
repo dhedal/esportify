@@ -2,6 +2,7 @@ package com.esportify.service;
 
 import com.esportify.dto.*;
 import com.esportify.entity.User;
+import com.esportify.enumerations.UserStatus;
 import com.esportify.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,9 +60,10 @@ public class AuthenticationService {
         }
 
         User user = new User();
-        user.setName(request.getName());
+        user.setPseudo(request.getPseudo());
         user.setEmail(request.getEmail());
         user.setPassword(this.passwordEncoder.encode(request.getPassword()));
+        user.setStatus(UserStatus.PLAYER);
         user = this.userService.save(user);
 
         try {

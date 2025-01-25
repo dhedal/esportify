@@ -109,7 +109,7 @@ public class EventService {
                     !(Objects.isNull(event) || Objects.isNull(event.getId()) || Objects.isNull(event.getUuid()))
             );
         } catch (DataIntegrityViolationException e) {
-            LOG.info("erreur lors de l'enregistrement d'un event", e);
+            LOG.error("erreur lors de l'enregistrement d'un event", e);
             response.addMessage("Vos données son invalides, veuillez vérifier");
             response.setOk(false);
         }

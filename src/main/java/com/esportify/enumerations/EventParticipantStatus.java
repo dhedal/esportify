@@ -1,13 +1,13 @@
 package com.esportify.enumerations;
 
-import com.esportify.deserializer.EventStatusDeserializer;
+import com.esportify.deserializer.EventParticipantStatusDeserializer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.stream.Stream;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-@JsonDeserialize(using = EventStatusDeserializer.class)
+@JsonDeserialize(using = EventParticipantStatusDeserializer.class)
 public enum EventParticipantStatus {
     UNDEFINED(0, "indéfini"),
     PENDING(1, "en attente"),

@@ -1,11 +1,13 @@
 package com.esportify.dto;
 
+import com.esportify.enumerations.UserStatus;
+
 public class UserDTO {
     private String uuid;
-    private String name;
+    private String pseudo;
     private String email;
     private String password;
-    private Boolean admin;
+    private UserStatus status;
 
     public String getUuid() {
         return uuid;
@@ -15,12 +17,12 @@ public class UserDTO {
         this.uuid = uuid;
     }
 
-    public String getName() {
-        return name;
+    public String getPseudo() {
+        return pseudo;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
     }
 
     public String getEmail() {
@@ -39,11 +41,11 @@ public class UserDTO {
         this.password = password;
     }
 
-    public Boolean isAdim() {
-        return admin;
+    public UserStatus getStatus() {
+        return status;
     }
 
-    public void setAdmin(Boolean admin) {
-        this.admin = admin;
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 }

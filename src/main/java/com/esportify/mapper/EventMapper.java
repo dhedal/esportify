@@ -27,7 +27,6 @@ public class EventMapper {
 
     public static List<EventDTO> toDTOList(List<Event> events) {
         if(Objects.isNull(events) || events.isEmpty()) return Collections.emptyList();
-        List<EventDTO> dtos = new ArrayList<>();
         return events.stream()
                 .map(EventMapper::toDTO)
                 .filter(dto -> dto != null)

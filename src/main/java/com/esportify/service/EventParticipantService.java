@@ -1,6 +1,6 @@
 package com.esportify.service;
 
-import com.esportify.dto.EventParticipantRequest;
+import com.esportify.dto.UUIDRequest;
 import com.esportify.dto.Response;
 import com.esportify.entity.Event;
 import com.esportify.entity.EventParticipant;
@@ -19,7 +19,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -48,7 +47,7 @@ public class EventParticipantService {
      * @return
      */
     @Transactional
-    public Response jointEvent(EventParticipantRequest request, Response response, User participant) {
+    public Response jointEvent(UUIDRequest request, Response response, User participant) {
         LOG.debug("## jointEvent(EventParticipantRequest request, User participant)");
 
         if (Objects.isNull(request)) {
@@ -62,9 +61,9 @@ public class EventParticipantService {
             throw new IllegalArgumentException("Le participant de l'événement est obligatoire");
         }
 
-        Set<ConstraintViolation<EventParticipantRequest>> violations = this.validator.validate(request);
+        Set<ConstraintViolation<UUIDRequest>> violations = this.validator.validate(request);
         if (!violations.isEmpty()) {
-            for (ConstraintViolation<EventParticipantRequest> violation : violations) {
+            for (ConstraintViolation<UUIDRequest> violation : violations) {
                 response.addMessage(violation.getMessage());
             }
             return response;

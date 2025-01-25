@@ -1,6 +1,7 @@
 package com.esportify.service;
 
 import com.esportify.dto.*;
+import com.esportify.enumerations.UserStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -44,7 +45,7 @@ public class AuthenticationServiceIntegrationTest {
     @BeforeEach
     public void setup() {
         this.request = new RegisterRequest();
-        this.request.setName("John Doe");
+        this.request.setPseudo("John Doe");
         this.request.setEmail("john.doe@example.com");
         this.request.setPassword("StrongPass1!");
 
@@ -73,7 +74,7 @@ public class AuthenticationServiceIntegrationTest {
     public void test_register_InvalidRequest() {
         List<String> tests = new ArrayList<>();
 
-        this.request.setName("");
+        this.request.setPseudo("");
         tests.add("Le nom d'utilisateur est obligatoire");
         tests.add("le nom doit avoir entre 3 et 50 charactères");
         this.checkResponse(this.authenticationService.register( this.request, new RegisterResponse()), tests);
@@ -168,9 +169,9 @@ public class AuthenticationServiceIntegrationTest {
         assertNotNull(userDTO);
         assertNotNull(userDTO.getUuid());
         assertTrue(userDTO.getUuid().length() == 36);
-        assertEquals(this.request.getName(), userDTO.getName());
+        assertEquals(this.request.getPseudo(), userDTO.getPseudo());
         assertEquals(this.request.getEmail(), userDTO.getEmail());
-        assertFalse(userDTO.isAdim());
+        assertNotEquals(userDTO.getStatus(), UserStatus.ADMIN);
 
     }
 
@@ -266,7 +267,7 @@ public class AuthenticationServiceIntegrationTest {
     @Test
     public void test_login_emailNotExist() {
         List<String> tests = new ArrayList<>();
-        this.request.setName("dhedgar");
+        this.request.setPseudo("dhedgar");
         this.request.setEmail("dhedgar@test.fr");
         this.request.setPassword("StrongPassword8!");
         tests.add("L'email n'existe pas.");
@@ -278,7 +279,7 @@ public class AuthenticationServiceIntegrationTest {
     @Test
     public void test_login_passwordNotExist() {
         List<String> tests = new ArrayList<>();
-        this.request.setName("dhedgar");
+        this.request.setPseudo("dhedgar");
         this.request.setEmail("password@test.fr");
         this.request.setPassword("StrongPassword8!");
         RegisterResponse registerResponse = this.checkResponse(
@@ -299,7 +300,7 @@ public class AuthenticationServiceIntegrationTest {
 
     @Test
     public void test_login_success() {
-        this.request.setName("dhedal");
+        this.request.setPseudo("dhedal");
         this.request.setEmail("login@success.fr");
         this.request.setPassword("StrongPassword8!");
         List<String> tests = new ArrayList<>();
@@ -312,9 +313,9 @@ public class AuthenticationServiceIntegrationTest {
         assertNotNull(newUserDTO);
         assertNotNull(newUserDTO.getUuid());
         assertTrue(newUserDTO.getUuid().length() == 36);
-        assertEquals(this.request.getName(), newUserDTO.getName());
+        assertEquals(this.request.getPseudo(), newUserDTO.getPseudo());
         assertEquals(this.request.getEmail(), newUserDTO.getEmail());
-        assertFalse(newUserDTO.isAdim());
+        assertNotEquals(newUserDTO.getStatus(), UserStatus.ADMIN);
 
         LoginResponse loginResponse = this.checkResponse(
                 this.authenticationService.login(this.request, new LoginResponse()), tests);
@@ -323,9 +324,9 @@ public class AuthenticationServiceIntegrationTest {
         UserDTO loginUserDTO = registerResponse.getUserDTO();
         assertNotNull(loginUserDTO);
         assertEquals(newUserDTO.getUuid(), loginUserDTO.getUuid());
-        assertEquals(newUserDTO.getName(), loginUserDTO.getName());
+        assertEquals(newUserDTO.getPseudo(), loginUserDTO.getPseudo());
         assertEquals(newUserDTO.getEmail(), loginUserDTO.getEmail());
-        assertEquals(newUserDTO.isAdim(), loginUserDTO.isAdim());
+        assertEquals(newUserDTO.getStatus(), loginUserDTO.getStatus());
 
     }
 

@@ -6,6 +6,7 @@ import com.esportify.dto.EventRequest;
 import com.esportify.dto.Response;
 import com.esportify.entity.User;
 import com.esportify.enumerations.EventStatus;
+import com.esportify.enumerations.UserStatus;
 import com.esportify.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -49,10 +50,10 @@ public class EventServiceIntegrationTest {
     @BeforeAll
     public void createOrganizer() {
         this.organizer = new User();
-        this.organizer.setName("dhedal");
+        this.organizer.setPseudo("dhedal");
         this.organizer.setEmail("dhedal@esportify.com");
         this.organizer.setPassword("StrongPassword!24");
-        this.organizer.setAdmin(true);
+        this.organizer.setStatus(UserStatus.ADMIN);
         this.organizer = this.userRepository.save(this.organizer);
 
     }

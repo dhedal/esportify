@@ -11,9 +11,9 @@ public class UserMapper {
         if(Objects.isNull(user)) throw new IllegalArgumentException("user ne doit pas être null");
         UserDTO dto = new UserDTO();
         dto.setUuid(user.getUuid());
-        dto.setName(user.getName());
+        dto.setPseudo(user.getPseudo());
         dto.setEmail(user.getEmail());
-        dto.setAdmin(user.isAdmin());
+        dto.setStatus(user.getStatus());
         return dto;
     }
 }

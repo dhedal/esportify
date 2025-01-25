@@ -4,7 +4,7 @@ import com.esportify.validation.ValidUUID;
 
 import javax.validation.constraints.NotBlank;
 
-public class EventParticipantRequest {
+public class UUIDRequest {
 
     @NotBlank(message = "L'uuid est obligatoire")
     @ValidUUID(message = "L'uuid doit être valide")

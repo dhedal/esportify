@@ -1,5 +1,6 @@
 package com.esportify.entity;
 
+import com.esportify.enumerations.UserStatus;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,23 +10,23 @@ import java.util.*;
 
 @Entity
 public class User extends AbstractEntity implements UserDetails {
-    @Column(nullable = false, length = 50)
-    private String name;
+    @Column(nullable = false, unique = true, length = 50)
+    private String pseudo;
     @Column(unique = true, nullable = false, length = 100)
     private String email;
     @Column(nullable = false, length = 255)
     private String password;
     @OneToMany(mappedBy = "organizer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Event> events = new ArrayList<>();
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean admin = false;
+    @Column(nullable = false)
+    private UserStatus status;
 
-    public String getName() {
-        return name;
+    public String getPseudo() {
+        return pseudo;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPseudo(String name) {
+        this.pseudo = name;
     }
 
     public String getEmail() {
@@ -44,12 +45,12 @@ public class User extends AbstractEntity implements UserDetails {
         this.password = password;
     }
 
-    public boolean isAdmin() {
-        return admin;
+    public UserStatus getStatus() {
+        return status;
     }
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 
     public List<Event> getEvents() {
