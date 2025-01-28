@@ -1,0 +1,12 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background-color: #333;
+}
+
+footer {
+    background-color: #222;
+    padding: 10px 0;
+}

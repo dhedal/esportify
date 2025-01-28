@@ -3,7 +3,13 @@
 <head></head>
 <body>
 <footer th:fragment="footer">
-    <p>© 2025 Esportify - Tous droits réservés.</p>
+    <div class="container">
+        <p>&copy; 2025 Esportify - Tous droits réservés</p>
+        <p>
+            <a href="#" th:href="@{/mentions-legales}" class="text-white">Mentions légales</a> |
+            <a href="#" th:href="@{/contact}" class="text-white">Contact</a>
+        </p>
+    </div>
 </footer>
 </body>
 </html>

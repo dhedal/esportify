@@ -4,9 +4,9 @@ import com.esportify.dto.*;
 import com.esportify.entity.Event;
 import com.esportify.entity.User;
 import com.esportify.enumerations.EventStatus;
+import com.esportify.enumerations.UserStatus;
 import com.esportify.mapper.EventMapper;
 import com.esportify.repository.EventRepository;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +16,7 @@ import org.springframework.util.StringUtils;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class EventService {
@@ -130,8 +128,14 @@ public class EventService {
         return true;
     }
 
-
-    public void update(Event event) {
-        if(event != null) this.eventRepository.save(event);
+    /**
+     *
+     * @return
+     */
+    public List<EventDTO> getUpcomingAndOngoingEvents() {
+        LOG.debug("## getUpcomingAndOngoingEvents()");
+        List<Event> events = this.eventRepository.findUpcomingAndOngoingEvents(
+                List.of(EventStatus.VALIDATED, EventStatus.ON_GOING, EventStatus.FULL));
+        return EventMapper.toDTOList(events);
     }
 }

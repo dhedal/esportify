@@ -9,11 +9,12 @@ import java.util.stream.Stream;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @JsonDeserialize(using = EventStatusDeserializer.class)
 public enum EventStatus {
-    UNDEFINED(0, "indéfini"),
-    PENDING(1, "En attente"),
-    VALIDATED(2, "Validé"),
-    FULL(3, "Complet"),
-    CANCELLED(4, "Annulé");
+    UNDEFINED(0, "Statut inconnu"),
+    PENDING(1, "En attente de validation"),
+    VALIDATED(2, "Inscriptions ouvertes"),
+    ON_GOING(3, "En cours"),
+    FULL(4, "Complet - Plus d'inscription"),
+    CANCELLED(5, "Annulé");
 
     private Integer key;
     private String label;

@@ -3,11 +3,21 @@
 <head></head>
 <body>
 <header th:fragment="header">
-    <h1>Esportify</h1>
-    <nav>
-        <a href="/">Accueil</a>
-        <a href="/events">Événements</a>
-        <a href="/about">À propos</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Esportify</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/" th:href="@{/}">Accueil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" th:href="@{/events}">Événements</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" th:href="@{/contact}">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" th:href="@{/login}">Connexion</a></li>
+                </ul>
+            </div>
+        </div>
     </nav>
 </header>
 </body>

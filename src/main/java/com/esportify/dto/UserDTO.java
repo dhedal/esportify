@@ -6,7 +6,6 @@ public class UserDTO {
     private String uuid;
     private String pseudo;
     private String email;
-    private String password;
     private UserStatus status;
 
     public String getUuid() {
@@ -31,14 +30,6 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public UserStatus getStatus() {

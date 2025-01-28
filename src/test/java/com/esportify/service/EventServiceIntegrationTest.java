@@ -4,11 +4,14 @@ package com.esportify.service;
 import com.esportify.dto.EventDTO;
 import com.esportify.dto.EventRequest;
 import com.esportify.dto.Response;
+import com.esportify.entity.Event;
 import com.esportify.entity.User;
 import com.esportify.enumerations.EventStatus;
 import com.esportify.enumerations.UserStatus;
+import com.esportify.repository.EventRepository;
 import com.esportify.repository.UserRepository;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,22 +37,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Transactional
+@Rollback
 public class EventServiceIntegrationTest {
     private static final Logger LOG = LoggerFactory.getLogger(EventServiceIntegrationTest.class);
 
     private EventService eventService;
     private UserRepository userRepository;
+    private EventRepository eventRepository;
     private User organizer;
     private EventRequest request;
 
     @Autowired
-    public EventServiceIntegrationTest(EventService eventService, UserRepository userRepository) {
+    public EventServiceIntegrationTest(
+            EventService eventService, UserRepository userRepository, EventRepository eventRepository) {
         this.eventService = eventService;
         this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
     }
 
-    @BeforeAll
+    @BeforeEach
     public void createOrganizer() {
+        this.eventRepository.deleteAll();
+        this.userRepository.deleteAll();
+
         this.organizer = new User();
         this.organizer.setPseudo("dhedal");
         this.organizer.setEmail("dhedal@esportify.com");
@@ -201,8 +212,6 @@ public class EventServiceIntegrationTest {
         tests.clear();
     }
 
-
-
     @Test
     public void test_createEvent_success() {
         List<String> tests = new ArrayList<>();
@@ -232,7 +241,39 @@ public class EventServiceIntegrationTest {
     }
 
 
+    @Test
+    public void test_getUpcomingAndOngoingEvents_ShouldReturnCorrectEvents() {
+        this.eventRepository.saveAll(List.of(
+            createEvent("Tournoi MOBA", "Compétition MOBA", 100, EventStatus.VALIDATED,
+                    LocalDateTime.now().plusDays(3), LocalDateTime.now().plusDays(3).plusHours(3), organizer),
+            createEvent("Finale FPS", "Grande finale FPS", 50, EventStatus.ON_GOING,
+                    LocalDateTime.now().minusHours(1), LocalDateTime.now().plusHours(2), organizer),
+            createEvent("Clash Royal", "Battle des meilleurs", 200, EventStatus.FULL,
+                    LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(2).plusHours(5), organizer)
+        ));
 
+        List<EventDTO> events = this.eventService.getUpcomingAndOngoingEvents();
+        assertNotNull(events);
+        assertEquals(3, events.size(), "Il doit y avoir 3 événements récupérés.");
+
+        for (EventDTO event : events) {
+            assertTrue(List.of(EventStatus.VALIDATED, EventStatus.ON_GOING, EventStatus.FULL).contains(event.getStatus()),
+                    "L'événement doit être VALIDATED, ON_GOING ou FULL.");
+        }
+    }
+
+    private static Event createEvent( String title, String description, int maxPlayer,
+                               EventStatus status, LocalDateTime start, LocalDateTime end, User organizer) {
+        Event event = new Event();
+        event.setTitle(title);
+        event.setDescription(description);
+        event.setMaxPlayers(maxPlayer);
+        event.setStatus(status);
+        event.setStartDateTime(start);
+        event.setEndDateTime(end);
+        event.setOrganizer(organizer);
+        return event;
+    }
 
     private <T extends Response> T checkResponse(T response, List<String> tests) {
         assertNotNull(response);
@@ -247,7 +288,7 @@ public class EventServiceIntegrationTest {
         return response;
     }
 
-    public void resetEventRequest() {
+    private void resetEventRequest() {
         if(Objects.isNull(this.request)) this.request = new EventRequest();
         this.request.setTitle("Tournoi tekken 8");
         this.request.setDescription("c'est un test d'intégration pour la méthode createEvent");
