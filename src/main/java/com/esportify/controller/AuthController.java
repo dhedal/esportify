@@ -14,6 +14,7 @@ public class AuthController {
     @GetMapping("/auth")
     public String authPage(Model model) {
         LOG.debug("## authPage(Model model)");
+        model.addAttribute("page", "auth");
         return "auth";
     }
 
