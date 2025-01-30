@@ -7,6 +7,12 @@ import com.esportify.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,15 +29,18 @@ public class AuthenticationService {
     private Validator validator;
     private BCryptPasswordEncoder passwordEncoder;
     private UserService userService;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     public AuthenticationService(
             UserService userService,
+            AuthenticationManager authenticationManager,
             Validator validator,
             BCryptPasswordEncoder passwordEncoder
 
     ) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
         this.validator = validator;
         this.passwordEncoder = passwordEncoder;
     }
@@ -79,8 +88,8 @@ public class AuthenticationService {
         return response;
     }
 
-    public LoginResponse login(LoginRequest request, LoginResponse response) {
-        LOG.debug("## login(LoginRequest request, LoginResponse response)");
+    public LoginResponse authenticate(LoginRequest request, LoginResponse response) {
+        LOG.debug("## authenticate(LoginRequest request, LoginResponse response)");
 
         if(Objects.isNull(request)){
             throw new IllegalArgumentException("LoginRequest ne doit pas être null");
@@ -97,25 +106,29 @@ public class AuthenticationService {
             return response;
         }
 
-        User user = this.userService.getByEmail(request.getEmail());
-        if(Objects.isNull(user)) {
-            response.addMessage("L'email n'existe pas.");
-            return response;
-        }
-
-        if(!this.passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            response.addMessage("Le mot de passe ne correspond pas.");
-            return response;
-        }
-
         try {
-            response.setUserDTO(UserMapper.toDTO(user));
-            response.setOk(true);
+            Authentication authentication = this.authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof UserDetails userDetails) {
+                User user = userService.getByEmail(userDetails.getUsername());
+
+                response.setUserDTO(UserMapper.toDTO(user));
+                response.setOk(true);
+                return response;
+            } else {
+                LOG.error("L'objet principal retourné n'est pas un UserDetails.");
+                response.addMessage("Erreur interne : type d'utilisateur inconnu.");
+            }
+
+        } catch (BadCredentialsException e) {
+            LOG.error("Authentification échouée : identifiants invalides");
+            response.addMessage("L'email ou le mot de passe est incorrect.");
         } catch (Exception e) {
-            LOG.error("Erreur lors de la conversion de l'utilisateur en DTO", e);
+            LOG.error("Erreur interne lors de l'authentification", e);
             response.addMessage("Désolé, une erreur interne est survenue.");
-            response.setOk(false);
-            response.setUserDTO(null);
         }
 
         return response;

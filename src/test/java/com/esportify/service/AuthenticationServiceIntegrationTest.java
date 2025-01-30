@@ -2,6 +2,7 @@ package com.esportify.service;
 
 import com.esportify.dto.*;
 import com.esportify.enumerations.UserStatus;
+import com.esportify.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -10,9 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,34 +28,39 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Transactional
+@Rollback
 public class AuthenticationServiceIntegrationTest {
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationServiceIntegrationTest.class);
 
     private UserService userService;
     private AuthenticationService authenticationService;
     private final BCryptPasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
     private RegisterRequest request;
 
     @Autowired
     public AuthenticationServiceIntegrationTest(
             UserService userService,
             AuthenticationService authenticationService,
-            BCryptPasswordEncoder passwordEncoder
+            BCryptPasswordEncoder passwordEncoder,
+            UserRepository userRepository
     ) {
         this.userService = userService;
         this.authenticationService = authenticationService;
         this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
     }
 
     @BeforeEach
     public void setup() {
+        this.userRepository.deleteAll();
+
         this.request = new RegisterRequest();
         this.request.setPseudo("John Doe");
         this.request.setEmail("john.doe@example.com");
         this.request.setPassword("StrongPass1!");
-
-
     }
 
 
@@ -178,49 +189,49 @@ public class AuthenticationServiceIntegrationTest {
     /**                              TEST LOGIN                          **/
 
     @Test
-    public void test_login_NullRequest_ShouldThrowIllegalArgumentException() {
+    public void test_authenticate_NullRequest_ShouldThrowIllegalArgumentException() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            this.authenticationService.login(null, new LoginResponse());
+            this.authenticationService.authenticate(null, new LoginResponse());
         });
 
         assertEquals("LoginRequest ne doit pas être null", exception.getMessage());
     }
 
     @Test
-    public void test_login_NullResponse_ShouldThrowIllegalArgumentException() {
+    public void test_authenticate_NullResponse_ShouldThrowIllegalArgumentException() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            this.authenticationService.login(new LoginRequest(), null);
+            this.authenticationService.authenticate(new LoginRequest(), null);
         });
         assertEquals("LoginResponse ne doit pas être null", exception.getMessage());
     }
 
     @Test
-    public void test_login_InvalidRequest() {
+    public void test_authenticate_InvalidRequest() {
         List<String> tests = new ArrayList<>();
 
         this.setup();
         request.setEmail("");
         tests.add("L'email' est obligatoire");
         tests.add("le format d'email est invalide. ex : xxxx@xxx.xxx");
-        this.checkResponse(this.authenticationService.login( this.request, new LoginResponse()), tests);
+        this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setEmail("dqsfqsf.fr");
         tests.add("le format d'email est invalide. ex : xxxx@xxx.xxx");
-        this.checkResponse(this.authenticationService.login( this.request, new LoginResponse()), tests);
+        this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setEmail("dqsfqsf@.fr");
         tests.add("le format d'email est invalide. ex : xxxx@xxx.xxx");
-        this.checkResponse(this.authenticationService.login( this.request, new LoginResponse()), tests);
+        this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setEmail("dqsfqsf@qsff");
         tests.add("le format d'email est invalide. ex : xxxx@xxx.xxx");
-        this.checkResponse(this.authenticationService.login( this.request, new LoginResponse()), tests);
+        this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
@@ -230,54 +241,54 @@ public class AuthenticationServiceIntegrationTest {
         tests.add("Le mot de passe doit contenir à la fois des majuscules et des minuscules.");
         tests.add("Le mot de passe doit contenir au moins un chiffre");
         tests.add("Le mot de passe doit contenir au moins un caractère spécial");
-        this.checkResponse(this.authenticationService.login( this.request, new LoginResponse()), tests);
+        this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setPassword("StrongPassword8");
         tests.add("Le mot de passe doit contenir au moins un caractère spécial");
-        this.checkResponse(this.authenticationService.login( this.request, new LoginResponse()), tests);
+        this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setPassword("Str!8");
         tests.add("Le mot de passe doit avoir au moins 8 caractères.");
-        this.checkResponse(this.authenticationService.login( this.request, new LoginResponse()), tests);
+        this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setPassword("strongpassword8!");
         tests.add("Le mot de passe doit contenir à la fois des majuscules et des minuscules.");
-        this.checkResponse(this.authenticationService.login( this.request, new LoginResponse()), tests);
+        this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setPassword("STRONGPASSWORD8!");
         tests.add("Le mot de passe doit contenir à la fois des majuscules et des minuscules.");
-        this.checkResponse(this.authenticationService.login( this.request, new LoginResponse()), tests);
+        this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setPassword("strongPassword!");
         tests.add("Le mot de passe doit contenir au moins un chiffre");
-        this.checkResponse(this.authenticationService.login( this.request, new LoginResponse()), tests);
+        this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
     }
 
     @Test
-    public void test_login_emailNotExist() {
+    public void test_authenticate_emailNotExist() {
         List<String> tests = new ArrayList<>();
         this.request.setPseudo("dhedgar");
         this.request.setEmail("dhedgar@test.fr");
         this.request.setPassword("StrongPassword8!");
         tests.add("L'email n'existe pas.");
         LoginResponse response = this.checkResponse(
-                this.authenticationService.login(request, new LoginResponse()), tests);
+                this.authenticationService.authenticate(request, new LoginResponse()), tests);
         tests.clear();
     }
 
     @Test
-    public void test_login_passwordNotExist() {
+    public void test_authenticate_passwordNotExist() {
         List<String> tests = new ArrayList<>();
         this.request.setPseudo("dhedgar");
         this.request.setEmail("password@test.fr");
@@ -293,13 +304,13 @@ public class AuthenticationServiceIntegrationTest {
         this.request.setPassword("StrongPassword9!");
         tests.add("Le mot de passe ne correspond pas.");
         LoginResponse loginResponse = this.checkResponse(
-                this.authenticationService.login(this.request, new LoginResponse()), tests);
+                this.authenticationService.authenticate(this.request, new LoginResponse()), tests);
         tests.clear();
 
     }
 
     @Test
-    public void test_login_success() {
+    public void test_authenticate_success() {
         this.request.setPseudo("dhedal");
         this.request.setEmail("login@success.fr");
         this.request.setPassword("StrongPassword8!");
@@ -318,7 +329,7 @@ public class AuthenticationServiceIntegrationTest {
         assertNotEquals(newUserDTO.getStatus(), UserStatus.ADMIN);
 
         LoginResponse loginResponse = this.checkResponse(
-                this.authenticationService.login(this.request, new LoginResponse()), tests);
+                this.authenticationService.authenticate(this.request, new LoginResponse()), tests);
 
         assertTrue(registerResponse.isOk());
         UserDTO loginUserDTO = registerResponse.getUserDTO();
@@ -328,6 +339,30 @@ public class AuthenticationServiceIntegrationTest {
         assertEquals(newUserDTO.getEmail(), loginUserDTO.getEmail());
         assertEquals(newUserDTO.getStatus(), loginUserDTO.getStatus());
 
+    }
+
+    @Test
+    public void test_authenticate_success_withSessionPersistence() {
+        this.request.setPseudo("sessionUser");
+        this.request.setEmail("session@test.com");
+        this.request.setPassword("StrongPassword8!");
+
+        // Inscription de l'utilisateur
+        RegisterResponse registerResponse = this.authenticationService.register(request, new RegisterResponse());
+        assertTrue(registerResponse.isOk());
+
+        // Connexion de l'utilisateur
+        LoginResponse loginResponse = this.authenticationService.authenticate(this.request, new LoginResponse());
+        assertTrue(loginResponse.isOk());
+
+        // Vérifier que l'utilisateur est bien stocké dans SecurityContextHolder
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        assertNotNull(authentication);
+        assertTrue(authentication.isAuthenticated());
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        assertNotNull(userDetails);
+        assertEquals(request.getEmail(), userDetails.getUsername());
     }
 
     /**                              METHOD                         **/

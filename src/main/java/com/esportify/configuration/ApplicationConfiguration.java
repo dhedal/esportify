@@ -21,8 +21,4 @@ public class ApplicationConfiguration {
         return factory.getValidator();
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Connexion</title>
+</head>
+<body>
+<section layout:fragment="content" class="container my-5">
+    <h2 class="text-center">Bienvenue sur Esportify</h2>
+
+    <!-- Onglets Login / Inscription -->
+    <ul class="nav nav-tabs" id="authTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">
+                Connexion
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab">
+                Inscription
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3" id="authTabsContent">
+        <!-- Formulaire de Connexion -->
+        <div class="tab-pane fade show active" id="login" role="tabpanel">
+            <form id="loginForm" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="email-login" class="form-label">Email</label>
+                    <input type="email" id="email-login" name="email" class="form-control" required>
+                    <div class="invalid-feedback">Veuillez entrer une adresse email valide.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password-login" class="form-label">Mot de passe</label>
+                    <input type="password" id="password-login" name="password" class="form-control" required>
+                    <div class="invalid-feedback">Veuillez entrer votre mot de passe.</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+            </form>
+            <div id="loginMessage" class="mt-3 text-center"></div>
+        </div>
+
+        <!-- Formulaire d'Inscription -->
+        <div class="tab-pane fade" id="register" role="tabpanel">
+            <form id="registerForm" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Nom</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                    <div class="invalid-feedback">Veuillez entrer votre nom.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email-register" class="form-label">Email</label>
+                    <input type="email" id="email-register" name="email" class="form-control" required>
+                    <div class="invalid-feedback">Veuillez entrer une adresse email valide.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password-register" class="form-label">Mot de passe</label>
+                    <input type="password" id="password-register" name="password" class="form-control" required>
+                    <div class="invalid-feedback">Veuillez entrer un mot de passe.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                    <div class="invalid-feedback">Veuillez confirmer votre mot de passe.</div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">S'inscrire</button>
+            </form>
+            <div id="registerMessage" class="mt-3 text-center"></div>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
