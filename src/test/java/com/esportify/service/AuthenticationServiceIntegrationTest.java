@@ -170,6 +170,20 @@ public class AuthenticationServiceIntegrationTest {
     }
 
     @Test
+    public void test_register_pseudoNotUnique() {
+        List<String> tests = new ArrayList<>();
+        this.request.setPseudo("MalcomX");
+        RegisterResponse response = this.checkResponse(
+                this.authenticationService.register(request, new RegisterResponse()), tests);
+        assertTrue(response.isOk());
+
+        this.request.setEmail("hedgardavid@studi.com");
+        tests.add("Le pseudo existe déjà.");
+        this.checkResponse(this.authenticationService.register(request, new RegisterResponse()), tests);
+        tests.clear();
+    }
+
+    @Test
     public void test_register_success() {
         List<String> tests = new ArrayList<>();
         RegisterResponse response = this.checkResponse(
@@ -281,7 +295,7 @@ public class AuthenticationServiceIntegrationTest {
         this.request.setPseudo("dhedgar");
         this.request.setEmail("dhedgar@test.fr");
         this.request.setPassword("StrongPassword8!");
-        tests.add("L'email n'existe pas.");
+        tests.add("L'email ou le mot de passe est incorrect.");
         LoginResponse response = this.checkResponse(
                 this.authenticationService.authenticate(request, new LoginResponse()), tests);
         tests.clear();
@@ -302,7 +316,7 @@ public class AuthenticationServiceIntegrationTest {
         assertNotNull(userDTO);
 
         this.request.setPassword("StrongPassword9!");
-        tests.add("Le mot de passe ne correspond pas.");
+        tests.add("L'email ou le mot de passe est incorrect.");
         LoginResponse loginResponse = this.checkResponse(
                 this.authenticationService.authenticate(this.request, new LoginResponse()), tests);
         tests.clear();

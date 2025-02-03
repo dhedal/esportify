@@ -25,55 +25,63 @@
 
     <div class="tab-content mt-3" id="authTabsContent">
         <!-- Formulaire de Connexion -->
-        <div class="tab-pane fade show active" id="login" role="tabpanel">
-            <form id="loginForm" class="needs-validation" novalidate>
+        <div id="login" class="tab-pane fade show active" role="tabpanel">
+            <form id="login-form" class="needs-validation" novalidate>
                 <div class="mb-3">
-                    <label for="email-login" class="form-label">Email</label>
-                    <input type="email" id="email-login" name="email" class="form-control" required>
+                    <label for="login-email" class="form-label">Email</label>
+                    <input id="login-email" type="email" class="form-control" required>
                     <div class="invalid-feedback">Veuillez entrer une adresse email valide.</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="password-login" class="form-label">Mot de passe</label>
-                    <input type="password" id="password-login" name="password" class="form-control" required>
+                    <label for="login-password" class="form-label">Mot de passe</label>
+                    <input id="login-password" type="password" class="form-control" required>
                     <div class="invalid-feedback">Veuillez entrer votre mot de passe.</div>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                <button id="login-submit" type="submit" class="btn btn-primary w-100">Se connecter</button>
             </form>
-            <div id="loginMessage" class="mt-3 text-center"></div>
+<!--            <div id="login-message" class="mt-3 text-center"></div>-->
         </div>
 
         <!-- Formulaire d'Inscription -->
-        <div class="tab-pane fade" id="register" role="tabpanel">
-            <form id="registerForm" class="needs-validation" novalidate>
+        <div id="register" class="tab-pane fade" role="tabpanel">
+            <form id="register-form" class="needs-validation" novalidate>
                 <div class="mb-3">
-                    <label for="name" class="form-label">Nom</label>
-                    <input type="text" id="name" name="name" class="form-control" required>
+                    <label for="register-pseudo" class="form-label">Pseudo</label>
+                    <input id="register-pseudo" type="text" class="form-control" required>
                     <div class="invalid-feedback">Veuillez entrer votre nom.</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="email-register" class="form-label">Email</label>
-                    <input type="email" id="email-register" name="email" class="form-control" required>
+                    <label for="register-email" class="form-label">Email</label>
+                    <input id="register-email" type="email" class="form-control" required>
                     <div class="invalid-feedback">Veuillez entrer une adresse email valide.</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="password-register" class="form-label">Mot de passe</label>
-                    <input type="password" id="password-register" name="password" class="form-control" required>
+                    <label for="register-password" class="form-label">Mot de passe</label>
+                    <input id="register-password" type="password" class="form-control" required>
                     <div class="invalid-feedback">Veuillez entrer un mot de passe.</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                    <label for="register-confirm-password" class="form-label">Confirmer le mot de passe</label>
+                    <input id="register-confirm-password" type="password" class="form-control" required>
                     <div class="invalid-feedback">Veuillez confirmer votre mot de passe.</div>
                 </div>
-
-                <button type="submit" class="btn btn-success w-100">S'inscrire</button>
+                <div>
+                    <span class="fst-italic fs-6">Le mot de passe doit: </span>
+                    <ul class="fst-italic fs-6">
+                        <li ><span id="register-error-char-length">comporter au moins 8 caractères.</span></li>
+                        <li ><span id="register-error-char-lower-upper">contenir au moins une lettre majuscule et minuscule (A-Za-z).</span></li>
+                        <li ><span id="register-error-char-number">contenir au moins un chiffre (0-9).</span></li>
+                        <li ><span id="register-error-char-special">contenir au moins un caractère spécial (par ex. !@#$%&*?:+-).</span></li>
+                    </ul>
+                </div>
+                <button id="register-submit" type="submit" class="btn btn-success w-100">S'inscrire</button>
             </form>
-            <div id="registerMessage" class="mt-3 text-center"></div>
+<!--            <div id="register-message" class="mt-3 text-center"></div>-->
         </div>
     </div>
 </section>

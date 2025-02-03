@@ -34,17 +34,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+//                .headers(headers -> {
+//                    headers.contentTypeOptions(contentType -> contentType.disable()); //Désactive "nosniff
+//                })
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(this.requestMatchersPermitAll()).permitAll()
                         .requestMatchers(this.requestMatchersAuthenticated()).authenticated()
                         .anyRequest().authenticated()
                 );
-//                .formLogin(form -> form
-//                        .loginPage("/login")
-//                        .defaultSuccessUrl("/", true)
-//                        .permitAll()
-//                )
-//                .logout(logout -> logout.permitAll());
 
         return http.build();
     }
@@ -56,6 +53,7 @@ public class SecurityConfig {
                 "/auth",
                 "/api/auth/login",
                 "/api/auth/register",
+                "/css/**",
                 "/js/**"
         };
 

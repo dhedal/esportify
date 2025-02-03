@@ -45,7 +45,13 @@ public class UserService {
         LOG.debug("## isEmailExist(String email)");
         if(!StringUtils.hasText(email)) return false;
         User user = this.userRepository.findByEmail(email).orElse(null);
-        return !Objects.isNull(user);
+        return user != null;
 
+    }
+
+    public boolean isPseudoExist(String pseudo) {
+        LOG.debug("## isPseudoExist(String pseudo)");
+        User user = this.userRepository.findByPseudo(pseudo).orElse(null);
+        return user != null;
     }
 }

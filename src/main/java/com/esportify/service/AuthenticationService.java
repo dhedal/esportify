@@ -68,6 +68,11 @@ public class AuthenticationService {
             return response;
         }
 
+        if(this.userService.isPseudoExist(request.getPseudo())) {
+            response.addMessage("Le pseudo existe déjà.");
+            return response;
+        }
+
         User user = new User();
         user.setPseudo(request.getPseudo());
         user.setEmail(request.getEmail());
