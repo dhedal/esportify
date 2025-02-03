@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @Controller
-public class HomeController {
+public class HomeController extends BaseController{
     private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
 
     private EventService eventService;
@@ -24,6 +24,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
         LOG.debug("## home(Model model)");
+        this.addAuthAttribute(model);
         List<EventDTO> events = this.eventService.getUpcomingAndOngoingEvents();
         model.addAttribute("events", events);
         model.addAttribute("title", "Accueil");

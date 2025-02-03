@@ -1,4 +1,10 @@
+
+
 export class FetchUtils {
+    static USER_KEY = "user";
+    static SERVER_URL = "http://localhost:8080"
+    static API_URL = FetchUtils.SERVER_URL + "/api";
+    static API_AUTH_URL = FetchUtils.API_URL + "/auth";
     static async fetch(url, method = "GET", body = null) {
         const headers = { "Content-Type": "application/json" };
 
@@ -19,5 +25,11 @@ export class FetchUtils {
             console.error("Erreur lors de la requête API :", error);
             return { error: "Une erreur est survenue." };
         }
+    }
+
+    static async logout() {
+        await FetchUtils.fetch("/logout", "GET");
+        localStorage.removeItem(FetchUtils.USER_KEY);
+        window.location.href = "/auth";
     }
 }

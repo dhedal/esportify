@@ -1,14 +1,15 @@
 INSERT INTO User (id, uuid, pseudo, email, password, status, created_at, updated_at) VALUES
-(1, '550e8400-e29b-41d4-a716-446655440001', 'AdminMaster', 'admin@esportify.com', 'A_securePass1', 3, NOW(), NOW()),
-(2, '550e8400-e29b-41d4-a716-446655440002', 'EventBoss', 'organizer1@esportify.com', 'O_megaEvent2', 2, NOW(), NOW()),
-(3, '550e8400-e29b-41d4-a716-446655440003', 'TournamentKing', 'organizer2@esportify.com', 'T_ourneyPower3', 2, NOW(), NOW()),
-(4, '550e8400-e29b-41d4-a716-446655440004', 'SniperPro', 'player1@esportify.com', 'S_killShot4', 1, NOW(), NOW()),
-(5, '550e8400-e29b-41d4-a716-446655440005', 'SpeedRacer', 'player2@esportify.com', 'S_upersonic5', 1, NOW(), NOW()),
-(6, '550e8400-e29b-41d4-a716-446655440006', 'ShadowNinja', 'player3@esportify.com', 'S_ilentMove6', 1, NOW(), NOW()),
-(7, '550e8400-e29b-41d4-a716-446655440007', 'BattleMage', 'player4@esportify.com', 'B_lastSpell7', 1, NOW(), NOW()),
-(8, '550e8400-e29b-41d4-a716-446655440008', 'CyberWarrior', 'player5@esportify.com', 'C_odeStrike8', 1, NOW(), NOW()),
-(9, '550e8400-e29b-41d4-a716-446655440009', 'StealthAgent', 'player6@esportify.com', 'S_neakyOps9', 1, NOW(), NOW()),
-(10, '550e8400-e29b-41d4-a716-446655440010', 'RocketGamer', 'player7@esportify.com', 'R_apidFire10', 1, NOW(), NOW());
+(1, '550e8400-e29b-41d4-a716-446655440001', 'AdminMaster', 'admin@esportify.com', '$2b$12$aUAt0pNFmcHANGiE/ujAuu9X69frtSvcn37/gqM9voFnRerjHBORm', 3, NOW(), NOW()),
+(2, '550e8400-e29b-41d4-a716-446655440002', 'EventBoss', 'organizer1@esportify.com', '$2b$12$aUAt0pNFmcHANGiE/ujAuu9X69frtSvcn37/gqM9voFnRerjHBORm', 2, NOW(), NOW()),
+(3, '550e8400-e29b-41d4-a716-446655440003', 'TournamentKing', 'organizer2@esportify.com', '$2b$12$aUAt0pNFmcHANGiE/ujAuu9X69frtSvcn37/gqM9voFnRerjHBORm', 2, NOW(), NOW()),
+(4, '550e8400-e29b-41d4-a716-446655440004', 'SniperPro', 'player1@esportify.com', '$2b$12$aUAt0pNFmcHANGiE/ujAuu9X69frtSvcn37/gqM9voFnRerjHBORm', 1, NOW(), NOW()),
+(5, '550e8400-e29b-41d4-a716-446655440005', 'SpeedRacer', 'player2@esportify.com', '$2b$12$aUAt0pNFmcHANGiE/ujAuu9X69frtSvcn37/gqM9voFnRerjHBORm', 1, NOW(), NOW()),
+(6, '550e8400-e29b-41d4-a716-446655440006', 'ShadowNinja', 'player3@esportify.com', '$2b$12$aUAt0pNFmcHANGiE/ujAuu9X69frtSvcn37/gqM9voFnRerjHBORm', 1, NOW(), NOW()),
+(7, '550e8400-e29b-41d4-a716-446655440007', 'BattleMage', 'player4@esportify.com', '$2b$12$aUAt0pNFmcHANGiE/ujAuu9X69frtSvcn37/gqM9voFnRerjHBORm', 1, NOW(), NOW()),
+(8, '550e8400-e29b-41d4-a716-446655440008', 'CyberWarrior', 'player5@esportify.com', '$2b$12$aUAt0pNFmcHANGiE/ujAuu9X69frtSvcn37/gqM9voFnRerjHBORm', 1, NOW(), NOW()),
+(9, '550e8400-e29b-41d4-a716-446655440009', 'StealthAgent', 'player6@esportify.com', '$2b$12$aUAt0pNFmcHANGiE/ujAuu9X69frtSvcn37/gqM9voFnRerjHBORm', 1, NOW(), NOW()),
+(10, '550e8400-e29b-41d4-a716-446655440010', 'RocketGamer', 'player7@esportify.com', '$2b$12$aUAt0pNFmcHANGiE/ujAuu9X69frtSvcn37/gqM9voFnRerjHBORm', 1, NOW(), NOW());
+
 
 
 INSERT INTO event (id, uuid, title, description, max_players, status, start_date_time, end_date_time, user_id, created_at, updated_at) VALUES

@@ -22,6 +22,8 @@ import {MessageUtils} from "../utils/message-utils.js";
 // });
 
 
+
+
 class LoginForm extends Form {
     email;
     password;
@@ -41,9 +43,12 @@ class LoginForm extends Form {
         };
         console.log(loginData);
 
-        const response = await FetchUtils.fetch("http://localhost:8080/api/auth/login", "POST", loginData);
+        const response = await FetchUtils.fetch(`${FetchUtils.API_AUTH_URL}/login`, "POST", loginData);
         console.log(response);
-        if(response.ok) {}
+        if(response.ok && response.userDTO) {
+            localStorage.setItem(FetchUtils.USER_KEY, JSON.stringify(response.userDTO));
+            window.location.href = "/";
+        }
         else {
             const messages = Array.from(response.messages);
             messages.forEach(message => {
@@ -157,7 +162,7 @@ class RegisterForm extends Form {
         };
         console.log(registerData);
 
-        const response = await FetchUtils.fetch("http://localhost:8080/api/auth/register", "POST", registerData);
+        const response = await FetchUtils.fetch(`${FetchUtils.API_AUTH_URL}/register`, "POST", registerData);
         console.log(response);
         if(response.ok) {}
         else {
@@ -169,7 +174,10 @@ class RegisterForm extends Form {
     }
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = new LoginForm();
+    const registerForm = new RegisterForm();
+});
 
 
-const loginForm = new LoginForm();
-const registerForm = new RegisterForm();
+

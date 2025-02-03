@@ -21,7 +21,7 @@ import javax.lang.model.element.ModuleElement;
 @RequestMapping("/api/auth")
 public class AuthRestController {
     private static final Logger LOG = LoggerFactory.getLogger(AuthRestController.class);
-    private final AuthenticationService authenticationService;
+    private AuthenticationService authenticationService;
 
     @Autowired
     public AuthRestController(AuthenticationService authenticationService) {

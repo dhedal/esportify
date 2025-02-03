@@ -1,5 +1,6 @@
 package com.esportify.service;
 
+import com.esportify.entity.User;
 import com.esportify.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         LOG.debug("## loadUserByUsername(String email)", email);
-        return this.userRepository.findByEmail(email)
+
+        User user = this.userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé: " + email));
+
+        org.springframework.security.core.userdetails.User.UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(user.getEmail());
+        builder.password(user.getPassword());
+        builder.roles(user.getStatus().name());
+
+        return builder.build();
     }
 }

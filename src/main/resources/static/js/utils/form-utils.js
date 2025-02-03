@@ -27,7 +27,7 @@ export class FormValidator {
         return /^[0-9]{5}(?:-[0-9]{4})?$/.test(zipcode);
     }
 
-    static validateStringContainsSpecialCharacters(string = "", pattern = /[!@#$%&*?:+-]/){
+    static validateStringContainsSpecialCharacters(string = "", pattern = /[!@#$%&*?:+-_]/){
         return pattern.test(string);
     }
 
