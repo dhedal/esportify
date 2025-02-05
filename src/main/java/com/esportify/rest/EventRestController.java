@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/events")
-public class EventRestController {
+public class EventRestController extends BaseRestController{
     private static final Logger LOG = LoggerFactory.getLogger(EventRestController.class);
 
     private EventService eventService;

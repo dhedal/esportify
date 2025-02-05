@@ -1,4 +1,20 @@
 import {FetchUtils} from "../utils/fetch-utils.js";
+import {MessageUtils} from "../utils/message-utils.js";
+
+const registerToEvent = async (eventId) => {
+    const response = await FetchUtils.fetch(`${FetchUtils.EVENT_PARTICIPANT_API_URL}/join`, "POST",
+        {uuid: eventId});
+    if(response.ok) {
+        MessageUtils.success("Votre demande d'inscription est en cour de validation !");
+    }
+    else {
+        const messages = Array.from(response.messages);
+        messages.forEach(message => {
+            MessageUtils.danger(message);
+        });
+    }
+}
+
 
 const loadEvents = async () => {
     const events = await FetchUtils.fetch(FetchUtils.EVENT_API_URL);
@@ -19,10 +35,21 @@ const loadEvents = async () => {
             <td>${event.organizer.pseudo}</td>
             <td>${event.maxPlayers}</td>
             <td>${event.status.label}</td>
-            <td><a href="/events/${event.id}" class="btn btn-info">Détails</a></td>
+            <td>
+                <button class="btn btn-success register-btn" data-event-id="${event.uuid}">S'inscrire</button>
+            </td>
         `;
         eventsTable.appendChild(row);
     });
+
+    document.querySelectorAll(".register-btn").forEach(button => {
+        button.addEventListener("click", async (event) => {
+            const eventId = event.target.getAttribute("data-event-id");
+            await registerToEvent(eventId);
+        });
+    });
+
+
 };
 
 document.addEventListener("DOMContentLoaded", loadEvents);

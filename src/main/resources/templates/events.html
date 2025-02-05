@@ -17,7 +17,7 @@
             <th>Organisateur</th>
             <th>Participants</th>
             <th>Status</th>
-            <th>Action</th>
+            <th th:if="${isAuthenticated}" >S'inscrire</th>
         </tr>
         </thead>
         <tbody id="eventsTable">

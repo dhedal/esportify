@@ -19,7 +19,7 @@ import javax.lang.model.element.ModuleElement;
 
 @RestController
 @RequestMapping("/api/auth")
-public class AuthRestController {
+public class AuthRestController extends BaseRestController{
     private static final Logger LOG = LoggerFactory.getLogger(AuthRestController.class);
     private AuthenticationService authenticationService;
 

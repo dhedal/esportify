@@ -6,6 +6,7 @@ export class FetchUtils {
     static API_URL = FetchUtils.SERVER_URL + "/api";
     static AUTH_API_URL = FetchUtils.API_URL + "/auth";
     static EVENT_API_URL = FetchUtils.API_URL + "/events";
+    static EVENT_PARTICIPANT_API_URL = FetchUtils.API_URL + "/event-participant";
     static async fetch(url, method = "GET", body = null) {
         const headers = { "Content-Type": "application/json" };
 
@@ -31,6 +32,6 @@ export class FetchUtils {
     static async logout() {
         await FetchUtils.fetch("/logout", "GET");
         localStorage.removeItem(FetchUtils.USER_KEY);
-        window.location.href = "/auth";
+        window.location.href = FetchUtils.AUTH_API_URL;
     }
 }

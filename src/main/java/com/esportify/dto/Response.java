@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Response {
+    private boolean authenticated = false;
     private boolean ok = false;
     private List<String> messages = new ArrayList<>();
 
@@ -30,5 +31,11 @@ public class Response {
         this.ok = ok;
     }
 
+    public boolean isAuthenticated() {
+        return authenticated;
+    }
 
+    public void setAuthenticated(boolean authenticated) {
+        this.authenticated = authenticated;
+    }
 }
