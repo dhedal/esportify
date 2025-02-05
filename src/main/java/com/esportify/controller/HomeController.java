@@ -21,7 +21,7 @@ public class HomeController extends BaseController{
         this.eventService = eventService;
     }
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public String home(Model model) {
         LOG.debug("## home(Model model)");
         this.addAuthAttribute(model);

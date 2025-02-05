@@ -43,7 +43,7 @@ class LoginForm extends Form {
         };
         console.log(loginData);
 
-        const response = await FetchUtils.fetch(`${FetchUtils.API_AUTH_URL}/login`, "POST", loginData);
+        const response = await FetchUtils.fetch(`${FetchUtils.AUTH_API_URL}/login`, "POST", loginData);
         console.log(response);
         if(response.ok && response.userDTO) {
             localStorage.setItem(FetchUtils.USER_KEY, JSON.stringify(response.userDTO));
@@ -162,7 +162,7 @@ class RegisterForm extends Form {
         };
         console.log(registerData);
 
-        const response = await FetchUtils.fetch(`${FetchUtils.API_AUTH_URL}/register`, "POST", registerData);
+        const response = await FetchUtils.fetch(`${FetchUtils.AUTH_API_URL}/register`, "POST", registerData);
         console.log(response);
         if(response.ok) {}
         else {

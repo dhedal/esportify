@@ -12,6 +12,10 @@
     <th:block th:if="${page == 'auth'}">
       <script type="module" src="/js/auth/auth.js"></script>
     </th:block>
+
+    <th:block th:if="${page == 'events'}">
+      <script type="module" th:src="@{/js/events/events.js}"></script>
+    </th:block>
   </th:block>
 </body>
 </html>

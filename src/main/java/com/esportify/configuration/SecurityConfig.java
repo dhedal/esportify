@@ -63,7 +63,8 @@ public class SecurityConfig {
                 "/api/auth/login",
                 "/api/auth/register",
                 "/css/**",
-                "/js/**"
+                "/js/**",
+                "/events"
         };
 
     }

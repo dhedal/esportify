@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Liste des événements</title>
 </head>
 <body>
+<section layout:fragment="content" class="container my-5">
+    <h2 class="text-center">Événements disponibles</h2>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Date</th>
+            <th>Organisateur</th>
+            <th>Participants</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="eventsTable">
+        <!-- Les événements seront insérés dynamiquement ici -->
+        </tbody>
+    </table>
+</section>
 
 </body>
 </html>

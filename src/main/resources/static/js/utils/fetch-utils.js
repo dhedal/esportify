@@ -4,7 +4,8 @@ export class FetchUtils {
     static USER_KEY = "user";
     static SERVER_URL = "http://localhost:8080"
     static API_URL = FetchUtils.SERVER_URL + "/api";
-    static API_AUTH_URL = FetchUtils.API_URL + "/auth";
+    static AUTH_API_URL = FetchUtils.API_URL + "/auth";
+    static EVENT_API_URL = FetchUtils.API_URL + "/events";
     static async fetch(url, method = "GET", body = null) {
         const headers = { "Content-Type": "application/json" };
 
