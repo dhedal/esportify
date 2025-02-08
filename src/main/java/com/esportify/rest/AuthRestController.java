@@ -1,9 +1,6 @@
 package com.esportify.rest;
 
-import com.esportify.dto.LoginRequest;
-import com.esportify.dto.LoginResponse;
-import com.esportify.dto.RegisterRequest;
-import com.esportify.dto.RegisterResponse;
+import com.esportify.dto.*;
 import com.esportify.entity.User;
 import com.esportify.mapper.UserMapper;
 import com.esportify.service.AuthenticationService;
@@ -68,6 +65,28 @@ public class AuthRestController extends BaseRestController{
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Collections.singletonMap("message", "Utilisateur non authentifié"));
+
+
+    }
+
+    @PutMapping(value = "/password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Response> changePassword(@RequestBody PasswordRequest request, @AuthenticationPrincipal User user) {
+        LOG.debug("## changePassword(@RequestBody RegisterRequest request, @AuthenticationPrincipal User user)");
+        Response response = new Response();
+        try {
+            if (user == null) {
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(response);
+            }
+            response = this.authenticationService.changePassword(request, response, user);
+            return ResponseEntity.ok(response);
+
+        }catch (Exception e) {
+            LOG.error(e.getMessage());
+            response.setOk(false);
+            response.addMessage("Désolé, une erreur interne est survenue.");
+            return ResponseEntity.badRequest().body(response);
+        }
 
 
     }

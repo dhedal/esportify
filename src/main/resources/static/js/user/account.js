@@ -1,9 +1,125 @@
 import { FetchUtils } from "../utils/fetch-utils.js";
 import { MessageUtils } from "../utils/message-utils.js";
+import {FormValidator, Form} from "../utils/form-utils.js";
+
+class PasswordForm extends Form {
+    passwordHold;
+    passwordNew
+    passwordNewConfirmation;
+
+    charLengthError;
+    charLowerUpperError;
+    charNumberError;
+    charSpecialError;
+
+    constructor(formElement = "password-form") {
+        super(formElement, "password-submit");
+
+        this.passwordHold = this._addInputs("password-hold", "keyup", FormValidator.validatePassword);
+        this.passwordNew = this._addInputs("password-new", "keyup", this.validatePassword.bind(this));
+        this.passwordNewConfirmation = this._addInputs("password-new-confirmation", "keyup",
+            this.validatePasswordConfirmation.bind(this));
+
+        this.charLengthError = document.getElementById("password-error-char-length");
+        this.charLowerUpperError = document.getElementById("password-error-char-lower-upper");
+        this.charNumberError = document.getElementById("password-error-char-number");
+        this.charSpecialError = document.getElementById("password-error-char-special");
+    }
+
+    validatePassword(inputKey, input) {
+        const value = input.value;
+
+        const checkLength = FormValidator.validateStringLength(value);
+        this.colorMessage(this.charLengthError, checkLength);
+
+        const checkLowerUpper = FormValidator.validateStringContainsUpperAndLowerCase(value);
+        this.colorMessage(this.charLowerUpperError, checkLowerUpper);
+
+        const checkNumber = FormValidator.validateStringContainsCharNumber(value);
+        this.colorMessage(this.charNumberError, checkNumber);
+
+        const checkSpecial = FormValidator.validateStringContainsSpecialCharacters(value);
+        this.colorMessage(this.charSpecialError, checkSpecial);
+
+        if(checkLength && checkLowerUpper && checkNumber && checkSpecial) {
+            input.classList.add("is-valid");
+            input.classList.remove("is-invalid");
+            return true;
+        }
+        input.classList.add("is-invalid");
+        input.classList.remove("is-valid");
+        return false;
+
+
+    }
+    validatePasswordConfirmation(inputKey, input) {
+        const [passwordKey, passwordInput] = this._getInput(this.passwordNew);
+
+        if(passwordInput.classList.contains("is-invalid") ||
+            passwordInput.value.length === 0 ||
+            !FormValidator.validateStringEquals(passwordInput.value, input.value))
+        {
+            input.classList.add("is-invalid");
+            input.classList.remove("is-valid");
+            return false;
+        }
+
+        input.classList.add("is-valid");
+        input.classList.remove("is-invalid");
+        return true;
+    }
+
+    colorMessage(message, ok) {
+        if(ok) {
+            message.classList.add("text-success");
+            message.classList.remove("text-danger")
+        }
+        else {
+            message.classList.remove("text-success");
+            message.classList.add("text-danger");
+        }
+    }
+
+    clearColorMessage( message) {
+        message.classList.remove("text-success", "text-danger");
+    }
+
+
+
+    clear() {
+        this._clear();
+        this.clearColorMessage(this.charLengthError);
+        this.clearColorMessage(this.charLowerUpperError);
+        this.clearColorMessage(this.charNumberError);
+        this.clearColorMessage(this.charSpecialError);
+    }
+
+    async send(data) {
+        if(!data) return;
+
+        const passordFormData = {
+            passwordHold: data.get(this.passwordHold),
+            passwordNew: data.get(this.passwordNew)
+        };
+
+        const response = await FetchUtils.fetch(`${FetchUtils.AUTH_API_URL}/password`, "PUT", passordFormData);
+        if(response.ok) {
+            MessageUtils.success("Le mot de passe a été changé, Veuillez vous reconnecter !");
+        }
+        else {
+            const messages = Array.from(response.messages);
+            messages.forEach(message => {
+                MessageUtils.danger(message);
+            });
+        }
+    }
+}
+
 
 // Fonction pour afficher une section et masquer les autres
 const showSection = (sectionId) => {
     document.getElementById("profile-section").style.display = "none";
+    document.getElementById("password-section").style.display = "none";
     document.getElementById("events-section").style.display = "none";
     document.getElementById("organizer-section").style.display = "none";
     document.getElementById(sectionId).style.display = "block";
@@ -12,41 +128,15 @@ const showSection = (sectionId) => {
 // Charger les données utilisateur au chargement de la page
 const loadUserProfile = async () => {
     const user = await FetchUtils.getCurrentUser();
-    console.log(user);
     if (!user || user.error) {
         MessageUtils.danger("Erreur de chargement du profil");
         return;
     }
 
-    document.getElementById("pseudo").value = user.pseudo;
-    document.getElementById("email").value = user.email;
+    document.getElementById("profile-pseudo").value = user.pseudo;
+    document.getElementById("profile-email").value = user.email;
 }
 
-// Soumission du formulaire de mise à jour du profil
-document.getElementById("profileForm").addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const pseudo = document.getElementById("pseudo").value;
-    const newPassword = document.getElementById("newPassword").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-
-    if (newPassword && newPassword !== confirmPassword) {
-        MessageUtils.danger("Les mots de passe ne correspondent pas");
-        return;
-    }
-
-    const response = await FetchUtils.fetch(FetchUtils.AUTH_API_URL + "/api/user/profile", "PUT", { pseudo, newPassword });
-
-    if (response.ok) {
-        MessageUtils.success("Profil mis à jour avec succès");
-        setTimeout(() => location.reload(), 1000);
-    } else {
-        const messages = Array.from(response.messages);
-        messages.forEach(message => {
-            MessageUtils.danger(message);
-        });
-    }
-});
 
 // Charger les événements de l'utilisateur
 const loadUserEvents = async (user) => {
@@ -95,12 +185,15 @@ const requestOrganizerStatus = async () => {
 }
 
 
-
 // Charger les données utilisateur et les événements
 document.addEventListener("DOMContentLoaded", () => {
     const profileSectionBtn = document.getElementById("profile-section-btn");
     if(profileSectionBtn) profileSectionBtn.addEventListener("click",
         () => showSection("profile-section"));
+
+    const passwordSectionBtn = document.getElementById("password-section-btn");
+    if(passwordSectionBtn) passwordSectionBtn.addEventListener("click",
+        () => showSection("password-section"));
 
     const eventsSectionBtn = document.getElementById("events-section-btn");
     if(eventsSectionBtn) eventsSectionBtn.addEventListener("click",
@@ -115,6 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
         () => requestOrganizerStatus());
 
 
+    const passwordForm = new PasswordForm();
 
     loadUserProfile().then();
     loadUserEvents().then();

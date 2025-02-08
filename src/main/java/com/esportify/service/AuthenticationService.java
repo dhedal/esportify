@@ -93,6 +93,12 @@ public class AuthenticationService {
         return response;
     }
 
+    /**
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     public LoginResponse authenticate(LoginRequest request, LoginResponse response) {
         LOG.debug("## authenticate(LoginRequest request, LoginResponse response)");
 
@@ -131,6 +137,55 @@ public class AuthenticationService {
         } catch (BadCredentialsException e) {
             LOG.error("Authentification échouée : identifiants invalides");
             response.addMessage("L'email ou le mot de passe est incorrect.");
+        } catch (Exception e) {
+            LOG.error("Erreur interne lors de l'authentification", e);
+            response.addMessage("Désolé, une erreur interne est survenue.");
+        }
+
+        return response;
+
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @param user
+     * @return response
+     */
+    public Response changePassword(PasswordRequest request, Response response, User user) {
+        LOG.debug("## changePassword(PasswordRequest request, Response response, User user)");
+
+        if(Objects.isNull(request)){
+            throw new IllegalArgumentException("PasswordRequest ne doit pas être null");
+        }
+        if(Objects.isNull(response)){
+            throw new IllegalArgumentException("Response ne doit pas être null");
+        }
+
+        if (Objects.isNull(user) || user.isNew()) {
+            throw new IllegalArgumentException("L'user est obligatoire");
+        }
+
+        Set<ConstraintViolation<PasswordRequest>> violations = this.validator.validate(request);
+        if(!violations.isEmpty()) {
+            for(ConstraintViolation<PasswordRequest> violation : violations) {
+                response.addMessage(violation.getMessage());
+            }
+            return response;
+        }
+
+        try {
+            Authentication authTest = this.authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), request.getPasswordHold()));
+
+            user.setPassword(this.passwordEncoder.encode(request.getPasswordNew()));
+            user = this.userService.save(user);
+            response.setOk(true);
+
+        } catch (BadCredentialsException e) {
+            LOG.error("Authentification échouée : identifiants invalides");
+            response.addMessage("l'ancien mot de passe est incorrect.");
         } catch (Exception e) {
             LOG.error("Erreur interne lors de l'authentification", e);
             response.addMessage("Désolé, une erreur interne est survenue.");

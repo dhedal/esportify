@@ -12,32 +12,56 @@
 
   <!-- Boutons de navigation -->
   <div class="btn-group d-flex justify-content-center mb-3">
-    <button class="btn btn-primary" id ="profile-section-btn">Modifier mon profil</button>
+    <button class="btn btn-primary" id ="profile-section-btn">Voir mon profil</button>
+    <button class="btn btn-warning" id ="password-section-btn">Modifier mon mot de passe</button>
     <button class="btn btn-success" id ="events-section-btn">Mes événements</button>
     <button th:if="${isPlayerStatus}" class="btn btn-warning" id ="organizer-section-btn">Devenir organisateur</button>
   </div>
 
   <!-- Modifier mon profil -->
   <div id="profile-section">
-    <h3>Modifier mon profil</h3>
-    <form id="profileForm">
+    <h3>Voir mon profil</h3>
+    <form id="profile-form">
       <div class="mb-3">
-        <label for="pseudo" class="form-label">Pseudo</label>
-        <input type="text" id="pseudo" class="form-control" required>
+        <label for="profile-pseudo" class="form-label">Pseudo</label>
+        <input type="text" id="profile-pseudo" class="form-control" readonly>
       </div>
       <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" id="email" class="form-control" readonly>
+        <label for="profile-email" class="form-label">Email</label>
+        <input type="email" id="profile-email" class="form-control" readonly>
+      </div>
+    </form>
+  </div>
+
+  <!-- Modifier mon mot de passe -->
+  <div id="password-section" style="display:none;">
+    <h3>Modifier mon mot de passe</h3>
+    <form id="password-form">
+      <div class="mb-3">
+        <label for="password-hold" class="form-label">Ancien Mot de passe</label>
+        <input id="password-hold" type="password" class="form-control" required>
+        <div class="invalid-feedback">Veuillez entrer votre ancien mot de passe.</div>
       </div>
       <div class="mb-3">
-        <label for="newPassword" class="form-label">Nouveau mot de passe</label>
-        <input type="password" id="newPassword" class="form-control">
+        <label for="password-new" class="form-label">Nouveau Mot de passe</label>
+        <input id="password-new" type="password" class="form-control" required>
+        <div class="invalid-feedback">Veuillez entrer votre nouveau mot de passe.</div>
       </div>
       <div class="mb-3">
-        <label for="confirmPassword" class="form-label">Confirmer le mot de passe</label>
-        <input type="password" id="confirmPassword" class="form-control">
+        <label for="password-new-confirmation" class="form-label">Confirmer le nouveau mot de passe</label>
+        <input id="password-new-confirmation" type="password" class="form-control" required>
+        <div class="invalid-feedback">Veuillez confirmer votre nouveau mot de passe.</div>
       </div>
-      <button type="submit" class="btn btn-primary">Mettre à jour</button>
+      <div>
+        <span class="fst-italic fs-6">Le mot de passe doit: </span>
+        <ul class="fst-italic fs-6">
+          <li ><span id="password-error-char-length">comporter au moins 8 caractères.</span></li>
+          <li ><span id="password-error-char-lower-upper">contenir au moins une lettre majuscule et minuscule (A-Za-z).</span></li>
+          <li ><span id="password-error-char-number">contenir au moins un chiffre (0-9).</span></li>
+          <li ><span id="password-error-char-special">contenir au moins un caractère spécial (par ex. !@#$%&*?:+-).</span></li>
+        </ul>
+      </div>
+      <button id="password-submit" type="submit" class="btn btn-success w-100">Changer le mot de passe</button>
     </form>
   </div>
 
