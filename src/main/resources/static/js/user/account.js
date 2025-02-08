@@ -50,23 +50,23 @@ document.getElementById("profileForm").addEventListener("submit", async (event) 
 
 // Charger les événements de l'utilisateur
 const loadUserEvents = async (user) => {
-    const events = await FetchUtils.fetch( FetchUtils.USER_API_URL + "/my-events");
-    console.log(events);
+    const eventParticipants = await FetchUtils.fetch( FetchUtils.USER_API_URL + "/my-events");
 
     const eventsTable = document.getElementById("eventsTable");
     eventsTable.innerHTML = "";
 
-    if (!events || events.error || events.length === 0) {
+    if (!eventParticipants || eventParticipants.error || eventParticipants.length === 0) {
         eventsTable.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Aucun événement trouvé</td></tr>`;
         return;
     }
 
-    events.forEach(event => {
+    eventParticipants.forEach(eventParticipant => {
+        const event = eventParticipant.event;
         const row = document.createElement("tr");
         row.innerHTML = `
             <td>${event.title}</td>
-            <td>${new Date(event.date).toLocaleDateString()}</td>
-            <td>${event.status}</td>
+            <td>${new Date(event.startDateTime).toLocaleDateString()}</td>
+            <td>${eventParticipant.status.label}</td>
         `;
         eventsTable.appendChild(row);
     });
