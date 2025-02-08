@@ -55,8 +55,8 @@ public class AskService {
             return response;
         }
 
-
-        if(request.getType() == AskType.ASK_ORGANIZER && author.getStatus() == UserStatus.ORGANIZER) {
+        if(request.getType() == AskType.ASK_ORGANIZER &&
+                (author.getStatus() == UserStatus.ORGANIZER || author.getStatus() == UserStatus.ADMIN)) {
             response.addMessage("Vous avez déjà les droits d'organisateur");
             response.setOk(true);
             return response;
@@ -86,7 +86,7 @@ public class AskService {
     public Response acceptOrganizerRequest(ProcessAskRequest request, Response response) {
         LOG.debug("## acceptOrganizerRequest(ProcessAskRequest request, Response response)");
 
-        if (!validateRequest(request, response)) {
+        if (!this.validateRequest(request, response)) {
             return response;
         }
 

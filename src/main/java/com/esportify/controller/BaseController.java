@@ -12,4 +12,5 @@ public abstract class BaseController {
                 && !(authentication.getPrincipal() instanceof String); // Vérifie que ce n'est pas "anonymousUser"
         model.addAttribute("isAuthenticated", isAuthenticated);
     }
+
 }

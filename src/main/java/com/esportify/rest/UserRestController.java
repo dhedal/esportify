@@ -1,6 +1,11 @@
 package com.esportify.rest;
 
+import com.esportify.dto.AskRequest;
+import com.esportify.dto.Response;
+import com.esportify.entity.Ask;
 import com.esportify.entity.User;
+import com.esportify.enumerations.AskType;
+import com.esportify.service.AskService;
 import com.esportify.service.EventParticipantService;
 import com.esportify.service.UserService;
 import org.slf4j.Logger;
@@ -22,14 +27,17 @@ public class UserRestController extends BaseRestController{
     private static final Logger LOG = LoggerFactory.getLogger(UserRestController.class);
 
     private UserService userService;
+    private AskService askService;
     private EventParticipantService eventParticipantService;
 
     @Autowired
     public UserRestController(
             UserService userService,
-            EventParticipantService eventParticipantService) {
+            EventParticipantService eventParticipantService,
+            AskService askService) {
         this.userService = userService;
         this.eventParticipantService = eventParticipantService;
+        this.askService = askService;
     }
 
     @GetMapping("/my-events")
@@ -45,4 +53,24 @@ public class UserRestController extends BaseRestController{
         }
         return ResponseEntity.ok(Collections.EMPTY_LIST);
     }
+
+    @GetMapping("/request-organizer")
+    public ResponseEntity<?> requestOrganizerStatus(@AuthenticationPrincipal User user) {
+        LOG.debug("## requestOrganizerStatus(@AuthenticationPrincipal User user)");
+        Response response = new Response();
+        try {
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
+            AskRequest askRequest = new AskRequest();
+            askRequest.setType(AskType.ASK_ORGANIZER);
+            response = this.askService.requestOrganizerStatus(askRequest, new Response(), user);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+
+    }
+
 }

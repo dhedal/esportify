@@ -14,7 +14,7 @@
   <div class="btn-group d-flex justify-content-center mb-3">
     <button class="btn btn-primary" id ="profile-section-btn">Modifier mon profil</button>
     <button class="btn btn-success" id ="events-section-btn">Mes événements</button>
-    <button class="btn btn-warning" id ="organizer-section-btn">Devenir organisateur</button>
+    <button th:if="${isPlayerStatus}" class="btn btn-warning" id ="organizer-section-btn">Devenir organisateur</button>
   </div>
 
   <!-- Modifier mon profil -->
@@ -62,7 +62,7 @@
   <div id="organizer-section" style="display:none;">
     <h3>Devenir organisateur</h3>
     <p>Vous souhaitez organiser des événements ? Envoyez une demande :</p>
-    <button id="requestOrganizer" class="btn btn-warning">Faire une demande</button>
+    <button id="request-organizer-btn" class="btn btn-warning">Faire une demande</button>
   </div>
 
 </section>

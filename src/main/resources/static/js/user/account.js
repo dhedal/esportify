@@ -72,19 +72,29 @@ const loadUserEvents = async (user) => {
     });
 }
 
-// Demande de passage en organisateur
-document.getElementById("requestOrganizer").addEventListener("click", async () => {
-    const response = await FetchUtils.fetch("/api/user/request-organizer", "POST");
+// demande d'obtention du status organizer
+const requestOrganizerStatus = async () => {
+    const response = await FetchUtils.fetch(FetchUtils.USER_API_URL + "/request-organizer");
 
+    const messages = Array.from(response.messages);
     if (response.ok) {
-        MessageUtils.success("Votre demande a été envoyée");
+        if(messages.length > 0) {
+            messages.forEach(message => {
+                MessageUtils.success(message);
+            });
+        }
+        else {
+            MessageUtils.success("Votre demande a été envoyée");
+        }
+
     } else {
-        const messages = Array.from(response.messages);
         messages.forEach(message => {
             MessageUtils.danger(message);
         });
     }
-});
+}
+
+
 
 // Charger les données utilisateur et les événements
 document.addEventListener("DOMContentLoaded", () => {
@@ -99,6 +109,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const organizerSectionBtn = document.getElementById("organizer-section-btn");
     if(organizerSectionBtn) organizerSectionBtn.addEventListener("click",
         () => showSection("organizer-section"));
+
+    const requestOrganizerBtn = document.getElementById("request-organizer-btn");
+    if(requestOrganizerBtn) requestOrganizerBtn.addEventListener("click",
+        () => requestOrganizerStatus());
+
 
 
     loadUserProfile().then();
