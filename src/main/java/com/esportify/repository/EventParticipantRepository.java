@@ -17,4 +17,7 @@ public interface EventParticipantRepository extends JpaRepository<EventParticipa
     @EntityGraph(attributePaths = {"event", "participant"})
     EventParticipant findByEventAndParticipant(Event event, User participant);
 
+    @EntityGraph(attributePaths = {"event", "participant"})
+    List<EventParticipant> findByParticipant(User participant);
+
 }

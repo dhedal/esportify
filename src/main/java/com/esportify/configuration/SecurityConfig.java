@@ -64,6 +64,7 @@ public class SecurityConfig {
                 "/css/**",
                 "/js/**",
                 "/events"
+
         };
 
     }
@@ -71,6 +72,7 @@ public class SecurityConfig {
     private String[] requestMatchersAuthenticated() {
         return new String[]{
                 "/api/**",
+                "/account"
         };
     }
 

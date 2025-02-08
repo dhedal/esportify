@@ -1,5 +1,6 @@
 package com.esportify.service;
 
+import com.esportify.dto.EventParticipantDTO;
 import com.esportify.dto.UUIDRequest;
 import com.esportify.dto.Response;
 import com.esportify.entity.Event;
@@ -7,6 +8,7 @@ import com.esportify.entity.EventParticipant;
 import com.esportify.entity.User;
 import com.esportify.enumerations.EventParticipantStatus;
 import com.esportify.enumerations.EventStatus;
+import com.esportify.mapper.EventParticipantMapper;
 import com.esportify.repository.EventParticipantRepository;
 
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -118,6 +121,14 @@ public class EventParticipantService {
 
         return response;
     }
+
+    public List<EventParticipantDTO> getEventsByParticipant(User participant) {
+        LOG.debug("## getEventsByParticipant(User participant)");
+        if(participant == null) return Collections.EMPTY_LIST;
+        List<EventParticipant> eventParticipants = this.eventParticipantRepository.findByParticipant(participant);
+        return EventParticipantMapper.toDTOList(eventParticipants);
+    }
+
 
 
 }

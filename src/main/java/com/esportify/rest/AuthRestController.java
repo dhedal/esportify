@@ -4,18 +4,21 @@ import com.esportify.dto.LoginRequest;
 import com.esportify.dto.LoginResponse;
 import com.esportify.dto.RegisterRequest;
 import com.esportify.dto.RegisterResponse;
+import com.esportify.entity.User;
+import com.esportify.mapper.UserMapper;
 import com.esportify.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import javax.lang.model.element.ModuleElement;
+import java.util.Collections;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -53,6 +56,20 @@ public class AuthRestController extends BaseRestController{
             response.addMessage("Un problème est survenu, veuillez réessayer ultérieurement");
         }
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getUserProfile(@AuthenticationPrincipal User user) {
+        LOG.debug("## getUserProfile(@AuthenticationPrincipal User user)");
+        try {
+            if (user != null) return ResponseEntity.ok(UserMapper.toDTO(user));
+        }catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Collections.singletonMap("message", "Utilisateur non authentifié"));
+
+
     }
 
 }
