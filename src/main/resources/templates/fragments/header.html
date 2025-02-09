@@ -14,6 +14,9 @@
                     <li class="nav-item"><a class="nav-link" href="/" th:href="@{/}">Accueil</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" th:href="@{/events}">Événements</a></li>
                     <li class="nav-item"><a class="nav-link" href="#" th:href="@{/contact}">Contact</a></li>
+                    <li th:if="${isOrganizer}" class="nav-item"><a class="nav-link" href="#" th:href="@{/organizer}">Organisateur</a></li>
+                    <li th:if="${isAdmin}" class="nav-item"><a class="nav-link" href="#" th:href="@{/admin}">Admin</a></li>
+                    <li th:if="${isAuthenticated}" class="nav-item"><a class="nav-link" href="#" th:href="@{/account}">Mon Compte</a></li>
                     <li th:if="${!isAuthenticated}" class="nav-item"><a class="nav-link" href="#" th:href="@{/auth}">Connexion</a></li>
                     <li th:if="${isAuthenticated}" class="nav-item"><a class="nav-link" href="#" id="logout">Déconnexion</a></li>
                 </ul>

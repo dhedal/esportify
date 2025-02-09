@@ -18,11 +18,8 @@ public class AccountController extends BaseController{
     @GetMapping("/account")
     public String accountPage(Model model, @AuthenticationPrincipal User user) {
         LOG.debug("## accountPage(Model model)");
-        this.addAuthAttribute(model);
+        this.addAttributes(model, user);
         model.addAttribute("page", "account");
-
-        boolean isPlayerStatus = user != null && Objects.equals(user.getStatus(), UserStatus.PLAYER);
-        model.addAttribute("isPlayerStatus", isPlayerStatus);
 
         return "account";
     }

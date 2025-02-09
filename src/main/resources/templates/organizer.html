@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>Espace Organisateur</title>
+</head>
+<body>
+<section layout:fragment="content" class="container my-5">
+  <h2 class="text-center">Espace Organisateur</h2>
+
+  <!-- Liste des événements -->
+  <h3>Mes événements</h3>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>Titre</th>
+      <th>Date</th>
+      <th>Statut</th>
+      <th>Participants</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="eventsTable">
+    <!-- Les événements seront chargés via JavaScript -->
+    </tbody>
+  </table>
+
+  <!-- Modal pour voir et gérer les participants -->
+  <div class="modal fade" id="participantsModal" tabindex="-1" aria-labelledby="participantsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="participantsModalLabel">Gérer les participants</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Pseudo</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="participantsTable">
+            <!-- Participants chargés via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- Charger le script pour la gestion des événements -->
+<script type="module" th:src="@{/js/organizer/organizer.js}"></script>
+</body>
+</html>

@@ -13,6 +13,8 @@ import java.util.Optional;
 @Repository
 public interface EventParticipantRepository extends JpaRepository<EventParticipant, Long> {
     public EventParticipant findByUuid(String uuid);
+
+    @EntityGraph(attributePaths = {"event", "participant"})
     public List<EventParticipant> findAllByEvent(Event event);
     @EntityGraph(attributePaths = {"event", "participant"})
     EventParticipant findByEventAndParticipant(Event event, User participant);

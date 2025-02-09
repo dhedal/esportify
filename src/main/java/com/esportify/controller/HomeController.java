@@ -1,10 +1,12 @@
 package com.esportify.controller;
 
 import com.esportify.dto.EventDTO;
+import com.esportify.entity.User;
 import com.esportify.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +24,9 @@ public class HomeController extends BaseController{
     }
 
     @GetMapping("/home")
-    public String home(Model model) {
+    public String home(Model model, @AuthenticationPrincipal User user) {
         LOG.debug("## home(Model model)");
-        this.addAuthAttribute(model);
+        this.addAttributes(model, user);
         List<EventDTO> events = this.eventService.getUpcomingAndOngoingEvents();
         model.addAttribute("events", events);
         model.addAttribute("title", "Accueil");

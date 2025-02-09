@@ -2,10 +2,12 @@ package com.esportify.service;
 
 import com.esportify.dto.*;
 import com.esportify.entity.Event;
+import com.esportify.entity.EventParticipant;
 import com.esportify.entity.User;
 import com.esportify.enumerations.EventStatus;
 import com.esportify.enumerations.UserStatus;
 import com.esportify.mapper.EventMapper;
+import com.esportify.mapper.EventParticipantMapper;
 import com.esportify.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +48,25 @@ public class EventService {
         return EventMapper.toDTOList(events);
     }
 
+    /**
+     *
+     * @param uuid
+     * @return
+     */
     public Event getWithParticipantsByUuid(String uuid) {
         return StringUtils.hasText(uuid) ?
                 this.eventRepository.findWithParticipantsByUuid(uuid) :
+                null;
+    }
+
+    /**
+     *
+     * @param uuid
+     * @return
+     */
+    public Event getEventByUuid(String uuid) {
+        return StringUtils.hasText(uuid) ?
+                this.eventRepository.findByUuid(uuid) :
                 null;
     }
 
@@ -138,4 +156,52 @@ public class EventService {
                 List.of(EventStatus.VALIDATED, EventStatus.ON_GOING, EventStatus.FULL));
         return EventMapper.toDTOList(events);
     }
+
+    /**
+     *
+     * @param organizer
+     * @return
+     */
+    public List<EventDTO> getEventsByOrganizer(User organizer) {
+        LOG.debug("## getEventsByOrganizer(User organizer)");
+        if(organizer == null) return Collections.EMPTY_LIST;
+        List<Event> events = this.eventRepository.findByOrganizer(organizer);
+        return EventMapper.toDTOList(events);
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    public Response startEvent(UUIDRequest request, Response response) {
+        LOG.debug("## createEvent(EventRequest request, Response response)");
+
+        if (Objects.isNull(request)) {
+            throw new IllegalArgumentException("UUIDRequest ne doit pas être null");
+        }
+        if (Objects.isNull(response)) {
+            throw new IllegalArgumentException("Response ne doit pas être null");
+        }
+
+        Set<ConstraintViolation<UUIDRequest>> violations = this.validator.validate(request);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<UUIDRequest> violation : violations) {
+                response.addMessage(violation.getMessage());
+            }
+            return response;
+        }
+
+        Event event = this.eventRepository.findByUuid(request.getUuid());
+        if(event == null) {
+            response.addMessage("C'événement est introuvable !");
+            return response;
+        }
+
+        response.setOk(this.changeEventStatus(event, EventStatus.ON_GOING));
+        return response;
+    }
+
+
 }

@@ -1,12 +1,18 @@
 package com.esportify.rest;
 
 import com.esportify.dto.EventDTO;
+import com.esportify.dto.Response;
+import com.esportify.dto.UUIDRequest;
+import com.esportify.entity.User;
 import com.esportify.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,5 +40,38 @@ public class EventRestController extends BaseRestController{
             LOG.error(e.getMessage());
         }
         return ResponseEntity.ok(Collections.EMPTY_LIST);
+    }
+
+    @GetMapping("/my-events")
+    public ResponseEntity<?> getMyEvents(@AuthenticationPrincipal(errorOnInvalidType=true) User user) {
+        LOG.debug("## getMyEvents(@AuthenticationPrincipal(errorOnInvalidType=true) User user)");
+        Response response = new Response();
+        if(user == null) {
+            response.addMessage("Veuiller vous reconnecter !");
+            response.setAuthenticated(false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        try {
+            List<EventDTO> events = this.eventService.getEventsByOrganizer(user);
+            return ResponseEntity.ok(events);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            response.addMessage("Une erreur est survenue!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/start-event")
+    public ResponseEntity<?> startEvent(@RequestBody UUIDRequest request) {
+        LOG.debug("## startEvent(@RequestBody UUIDRequest eventUuid)");
+        Response response = new Response();
+        try {
+            response = this.eventService.startEvent(request, response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            response.addMessage("Une erreur est survenue!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 }

@@ -14,7 +14,8 @@ public enum EventStatus {
     VALIDATED(2, "Inscriptions ouvertes"),
     ON_GOING(3, "En cours"),
     FULL(4, "Complet - Plus d'inscription"),
-    CANCELLED(5, "Annulé");
+    CANCELLED(5, "Annulé"),
+    CLOSED(6, "Terminé");
 
     private Integer key;
     private String label;

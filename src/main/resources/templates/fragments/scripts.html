@@ -21,6 +21,10 @@
       <script type="module" th:src="@{/js/user/account.js}"></script>
     </th:block>
 
+    <th:block th:if="${page == 'organizer'}">
+      <script type="module" th:src="@{/js/organizer/organizer.js}"></script>
+    </th:block>
+
   </th:block>
 </body>
 </html>

@@ -1,5 +1,7 @@
 package com.esportify.rest;
 
+import com.esportify.dto.ParticipantRejectRequest;
+import com.esportify.dto.ParticipantsResponse;
 import com.esportify.dto.Response;
 import com.esportify.dto.UUIDRequest;
 import com.esportify.entity.User;
@@ -11,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/event-participant")
@@ -50,5 +49,32 @@ public class EventParticipantRestController extends BaseRestController{
 
     }
 
+    @PostMapping("/participants")
+    public ResponseEntity<ParticipantsResponse> getParticipantsByEvent(@RequestBody UUIDRequest request) {
+        LOG.debug("## getParticipantsByEvent(@RequestBody UUIDRequest request)");
+        ParticipantsResponse response = new ParticipantsResponse();
+        try {
+            response = this.eventParticipantService.getParticipants(request, response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            response.addMessage("Une erreur est survenue!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PostMapping("/reject")
+    public ResponseEntity<?> rejectParticipant(@RequestBody ParticipantRejectRequest request) {
+        LOG.debug("## rejectParticipant(@RequestBody ParticipantRejectRequest request)");
+        Response response = new Response();
+        try {
+            response = this.eventParticipantService.rejectParticipant(request, response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            response.addMessage("Une erreur est survenue!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
 }
