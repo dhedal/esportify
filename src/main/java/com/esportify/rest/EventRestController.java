@@ -1,6 +1,7 @@
 package com.esportify.rest;
 
 import com.esportify.dto.EventDTO;
+import com.esportify.dto.EventRequest;
 import com.esportify.dto.Response;
 import com.esportify.dto.UUIDRequest;
 import com.esportify.entity.User;
@@ -9,15 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/events")
@@ -70,7 +70,29 @@ public class EventRestController extends BaseRestController{
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             LOG.error(e.getMessage());
-            response.addMessage("Une erreur est survenue!");
+            response.addMessage("Une erreur est survenue !");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PostMapping(value = "/event", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createEvent(@RequestBody EventRequest request, @AuthenticationPrincipal(errorOnInvalidType=true) User user) {
+        LOG.debug("## @RequestBody EventRequest request, @AuthenticationPrincipal(errorOnInvalidType=true) User user)");
+        Response response = new Response();
+        response.setAuthenticated(true);
+        if(user == null) {
+            response.addMessage("Veuiller vous reconnecter !");
+            response.setAuthenticated(false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        try {
+            response = this.eventService.createEvent(request, response, user);
+            return ResponseEntity.ok(response);
+
+        } catch(Exception e) {
+            LOG.error(e.getMessage());
+            response.addMessage("Une erreur est survenue !");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

@@ -11,7 +11,7 @@ export class MessageUtils {
         MessageUtils.message(MessageUtils.MESSAGE_TYPE_SUCCESS, message, title, toastContainer);
     }
 
-    static message( type = MessageUtils.MESSAGE_TYPE_PRIMARY,message="not message", title="not title", toastContainer= "toastContainer") {
+    static message( type = MessageUtils.MESSAGE_TYPE_PRIMARY,message="not message", title="message", toastContainer= "toastContainer") {
         if(message == null) return;
         const parent = document.getElementById(toastContainer);
 

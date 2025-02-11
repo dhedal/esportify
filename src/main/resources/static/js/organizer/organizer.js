@@ -2,6 +2,48 @@ import { FetchUtils } from "../utils/fetch-utils.js";
 import { MessageUtils } from "../utils/message-utils.js";
 import {FormValidator, Form} from "../utils/form-utils.js";
 
+class EventForm extends Form{
+
+    title;
+    description;
+    maxPlayers;
+    startDateTime;
+    endDateTime;
+    constructor(formElement = "event-form") {
+        super(formElement, "event-submit");
+
+        this.title = this._addInputs("title-event-form", "keyup", FormValidator.validateInputNotEmpty);
+        this.description = this._addInputs("description-event-form", "keyup", FormValidator.validateInputNotEmpty);
+        this.maxPlayers = this._addInputs("maxPlayers-event-form", "keyup", FormValidator.validateInputNotEmpty);
+        this.startDateTime = this._addInputs("startDateTime-event-form", "keyup", FormValidator.validateInputNotEmpty);
+        this.endDateTime = this._addInputs("endDateTime-event-form", "keyup", FormValidator.validateInputNotEmpty);
+    }
+
+    async send(data) {
+        const eventData = {
+            title: data.get(this.title),
+            description: data.get(this.description),
+            maxPlayers: data.get(this.maxPlayers),
+            startDateTime: data.get(this.startDateTime),
+            endDateTime: data.get(this.endDateTime),
+        };
+
+        const response = await FetchUtils.fetch(`${FetchUtils.EVENT_API_URL}/event`, "POST", eventData);
+        if(response && response.messages) {
+            const messages = Array.from(response.messages);
+            const messageType = response.ok ? MessageUtils.MESSAGE_TYPE_SUCCESS : MessageUtils.MESSAGE_TYPE_DANGER;
+            messages.forEach(message => {
+                MessageUtils.message(messageType, message);
+            });
+            new window.bootstrap.Modal(document.getElementById("createEventModal")).hide();
+        }
+        else {
+            MessageUtils.danger("Une erreur interne est survenue, réessayer ultérieurement !")
+        }
+    }
+
+}
+
 // Charger les événements de l'organisateur
 const loadOrganizerEvents = async () => {
     const events = await FetchUtils.fetch(FetchUtils.EVENT_API_URL + "/my-events");
@@ -127,5 +169,10 @@ const rejectParticipant = async (eventId, participantId) => {
     }
 };
 
+const ready = () => {
+    loadOrganizerEvents().then();
+    const eventForm = new EventForm();
+};
+
 // Charger les événements de l'organisateur au chargement de la page
-document.addEventListener("DOMContentLoaded", loadOrganizerEvents);
+document.addEventListener("DOMContentLoaded", ready);

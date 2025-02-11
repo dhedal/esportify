@@ -11,7 +11,7 @@ import java.util.UUID;
 public abstract class AbstractEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
     @Column(updatable = false, nullable = false, unique = true, length = 36)
     protected String uuid;

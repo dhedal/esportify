@@ -41,10 +41,8 @@ class LoginForm extends Form {
             email: data.get(this.email),
             password: data.get(this.password)
         };
-        console.log(loginData);
 
         const response = await FetchUtils.fetch(`${FetchUtils.AUTH_API_URL}/login`, "POST", loginData);
-        console.log(response);
         if(response.ok && response.userDTO) {
             localStorage.setItem(FetchUtils.USER_KEY, JSON.stringify(response.userDTO));
             window.location.href = "/";

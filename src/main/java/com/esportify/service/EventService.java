@@ -87,8 +87,16 @@ public class EventService {
             throw new IllegalArgumentException("Response ne doit pas être null");
         }
 
-        if (Objects.isNull(organizer) || Objects.isNull(organizer.getId())) {
+        if (Objects.isNull(organizer) || organizer.isNew()) {
             throw new IllegalArgumentException("L'organisateur de l'événement est obligatoire");
+        }
+
+        if(!(
+                Objects.equals(UserStatus.ORGANIZER, organizer.getStatus()) ||
+                !Objects.equals(UserStatus.ADMIN, organizer.getStatus())
+        )) {
+            response.addMessage("Vous ne possédez pas les droits pour créer un event !");
+            return response;
         }
 
         Set<ConstraintViolation<EventRequest>> violations = this.validator.validate(request);
@@ -121,9 +129,8 @@ public class EventService {
 
         try {
             event = this.eventRepository.save(event);
-            response.setOk(
-                    !(Objects.isNull(event) || Objects.isNull(event.getId()) || Objects.isNull(event.getUuid()))
-            );
+            response.addMessage("L'événement est en attente de validation !");
+            response.setOk(true);
         } catch (DataIntegrityViolationException e) {
             LOG.error("erreur lors de l'enregistrement d'un event", e);
             response.addMessage("Vos données son invalides, veuillez vérifier");

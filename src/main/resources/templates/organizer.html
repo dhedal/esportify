@@ -9,6 +9,11 @@
 <section layout:fragment="content" class="container my-5">
   <h2 class="text-center">Espace Organisateur</h2>
 
+  <!-- Bouton pour créer un événement -->
+  <div class="text-end mb-3">
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createEventModal">Créer un événement</button>
+  </div>
+
   <!-- Liste des événements -->
   <h3>Mes événements</h3>
   <table class="table">
@@ -47,6 +52,43 @@
             <!-- Participants chargés via JS -->
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal pour créer un événement -->
+  <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createEventModalLabel">Créer un événement</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <form id="event-form">
+            <div class="mb-3">
+              <label for="title-event-form" class="form-label">Titre</label>
+              <input type="text" id="title-event-form" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="description-event-form" class="form-label">Description</label>
+              <textarea id="description-event-form" class="form-control" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="maxPlayers-event-form" class="form-label">Nombre max. de joueurs</label>
+              <input type="number" id="maxPlayers-event-form" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="startDateTime-event-form" class="form-label">Date de début</label>
+              <input type="datetime-local" id="startDateTime-event-form" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="endDateTime-event-form" class="form-label">Date de fin</label>
+              <input type="datetime-local" id="endDateTime-event-form" class="form-control" required>
+            </div>
+            <button id="event-submit" type="submit" class="btn btn-success">Créer</button>
+          </form>
         </div>
       </div>
     </div>
