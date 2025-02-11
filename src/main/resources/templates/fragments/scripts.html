@@ -25,6 +25,12 @@
       <script type="module" th:src="@{/js/organizer/organizer.js}"></script>
     </th:block>
 
+    <th:block th:if="${page == 'admin'}">
+      <script type="module" th:src="@{/js/admin/admin.js}"></script>
+    </th:block>
+
+
+
   </th:block>
 </body>
 </html>

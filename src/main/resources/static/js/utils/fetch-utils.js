@@ -8,6 +8,7 @@ export class FetchUtils {
     static EVENT_API_URL = FetchUtils.API_URL + "/events";
     static EVENT_PARTICIPANT_API_URL = FetchUtils.API_URL + "/event-participant";
     static USER_API_URL = FetchUtils.API_URL + "/user";
+    static ADMIN_API_URL = FetchUtils.API_URL + "/admin";
     static async fetch(url, method = "GET", body = null) {
         const headers = { "Content-Type": "application/json" };
 

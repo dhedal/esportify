@@ -73,7 +73,8 @@ public class SecurityConfig {
         return new String[]{
                 "/api/**",
                 "/account",
-                "/organizer"
+                "/organizer",
+                "/admin"
         };
     }
 

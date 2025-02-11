@@ -1,10 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Administration</title>
 </head>
 <body>
+<section layout:fragment="content" class="container my-5">
+    <h2 class="text-center">Gestion des utilisateurs</h2>
+
+    <!-- Barre de recherche et filtre -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input type="text" id="searchUser" class="form-control" placeholder="Rechercher un utilisateur...">
+        </div>
+        <div class="col-md-6">
+            <select id="filterRole" class="form-control">
+                <option value="">Tous les rôles</option>
+                <option value="VISITOR">Visiteur</option>
+                <option value="PLAYER">Joueur</option>
+                <option value="ORGANIZER">Organisateur</option>
+                <option value="ADMIN">Administrateur</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Tableau des utilisateurs -->
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Date d'inscription</th>
+        </tr>
+        </thead>
+        <tbody id="usersTable">
+        <!-- Les utilisateurs seront chargés via JavaScript -->
+        </tbody>
+    </table>
+
+</section>
 
 </body>
 </html>
