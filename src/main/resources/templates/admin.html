@@ -7,39 +7,127 @@
     <title>Administration</title>
 </head>
 <body>
-<section layout:fragment="content" class="container my-5">
-    <h2 class="text-center">Gestion des utilisateurs</h2>
 
-    <!-- Barre de recherche et filtre -->
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <input type="text" id="searchUser" class="form-control" placeholder="Rechercher un utilisateur...">
-        </div>
-        <div class="col-md-6">
-            <select id="filterRole" class="form-control">
-                <option value="">Tous les rôles</option>
-                <option value="VISITOR">Visiteur</option>
-                <option value="PLAYER">Joueur</option>
-                <option value="ORGANIZER">Organisateur</option>
-                <option value="ADMIN">Administrateur</option>
-            </select>
+<section layout:fragment="content" class="container my-5" style="display: flex;">
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Menu latéral -->
+            <nav class="col-md-3 col-lg-2 admin-sidebar p-3">
+                <h4 class="text-center text-light">Admin</h4>
+                <a id="dashboard-section-btn" href="#">Tableau de bord</a>
+                <a id="event-section-btn" href="#">Gestion des événements</a>
+                <a id="user-section-btn" href="#">Gestion des utilisateurs</a>
+            </nav>
+
+            <!-- Contenu Admin -->
+            <main class="col-md-9 col-lg-10 p-4">
+                <!-- Tableau de bord -->
+                <div id="dashboard-section">
+                    <h2>📊 Tableau de bord</h2>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5>Événements en attente</h5>
+                                    <h3 id="pendingEventsCount">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5>Utilisateurs inscrits</h5>
+                                    <h3 id="usersCount">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5>Participants actifs</h5>
+                                    <h3 id="activeParticipantsCount">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestion des événements -->
+                <div id="event-section" style="display: none;">
+                    <h2>📅 Gestion des événements</h2>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Organisateur</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="eventsTable"></tbody>
+                    </table>
+                </div>
+
+                <!-- Gestion des utilisateurs -->
+                <div id="user-section" style="display: none;">
+                    <h2>👥 Gestion des utilisateurs</h2>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Rôle</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="usersTable"></tbody>
+                    </table>
+                </div>
+            </main>
         </div>
     </div>
 
-    <!-- Tableau des utilisateurs -->
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Rôle</th>
-            <th>Date d'inscription</th>
-        </tr>
-        </thead>
-        <tbody id="usersTable">
-        <!-- Les utilisateurs seront chargés via JavaScript -->
-        </tbody>
-    </table>
+
+
+
+
+
+
+
+
+
+    <!--    &lt;!&ndash; Barre de recherche et filtre &ndash;&gt;-->
+<!--    <div class="row mb-3">-->
+<!--        <div class="col-md-6">-->
+<!--            <input type="text" id="searchUser" class="form-control" placeholder="Rechercher un utilisateur...">-->
+<!--        </div>-->
+<!--        <div class="col-md-6">-->
+<!--            <select id="filterRole" class="form-control">-->
+<!--                <option value="">Tous les rôles</option>-->
+<!--                <option value="VISITOR">Visiteur</option>-->
+<!--                <option value="PLAYER">Joueur</option>-->
+<!--                <option value="ORGANIZER">Organisateur</option>-->
+<!--                <option value="ADMIN">Administrateur</option>-->
+<!--            </select>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; Tableau des utilisateurs &ndash;&gt;-->
+<!--    <table class="table">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th>Nom</th>-->
+<!--            <th>Email</th>-->
+<!--            <th>Rôle</th>-->
+<!--            <th>Date d'inscription</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody id="usersTable">-->
+<!--        &lt;!&ndash; Les utilisateurs seront chargés via JavaScript &ndash;&gt;-->
+<!--        </tbody>-->
+<!--    </table>-->
 
 </section>
 

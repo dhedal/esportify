@@ -10,3 +10,23 @@ footer {
     background-color: #222;
     padding: 10px 0;
 }
+
+.admin-sidebar {
+    background-color: #343a40;
+    min-height: 100vh;
+}
+.admin-sidebar a {
+    display: block;
+    color: white;
+    padding: 15px;
+    text-decoration: none;
+    font-weight: bold;
+}
+.admin-sidebar a:hover {
+    background-color: #495057;
+}
+@media (max-width: 768px) {
+    .admin-sidebar {
+        min-height: auto;
+    }
+}

@@ -211,4 +211,9 @@ public class EventService {
     }
 
 
+    public List<EventDTO> getAllEvents() {
+        LOG.debug("## getAllEvents()");
+        List<Event> events = this.eventRepository.findAll();
+        return EventMapper.toDTOList(events);
+    }
 }
