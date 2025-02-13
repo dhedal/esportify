@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -74,9 +75,27 @@ public class UserService {
      * @param pageSize
      * @return
      */
-    public UsersPageResponse getPageUsers(int page, int pageSize) {
-        LOG.debug("## UsersPageResponse getPageUsers(int page, int pageSize) ");
-        Page<User> userPage = this.userRepository.findAll(PageRequest.of(page - 1, pageSize));
+    public UsersPageResponse getPageUsers(int page, String search, UserStatus userStatus, int pageSize) {
+        LOG.debug("## UsersPageResponse getPageUsers(int page, String search, String userStatusStringKey, int pageSize) ");
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<User> userPage;
+        if(userStatus == null) userStatus = UserStatus.UNDEFINED;
+
+        if(StringUtils.hasText(search) && !Objects.equals(userStatus, UserStatus.UNDEFINED)) {
+            userPage = this.userRepository.findByPseudoContainingIgnoreCaseOrEmailContainingIgnoreCaseAndStatus(
+                    search, search, userStatus, pageable);
+        }
+        else if(StringUtils.hasText(search)) {
+            userPage = this.userRepository.findByPseudoContainingIgnoreCaseOrEmailContainingIgnoreCase(
+                    search, search, pageable);
+        }
+        else if(!Objects.equals(userStatus, UserStatus.UNDEFINED)) {
+            userPage = this.userRepository.findByStatus(userStatus, pageable);
+        }
+        else {
+            userPage = this.userRepository.findAll(pageable);
+        }
+
         UsersPageResponse response = new UsersPageResponse();
         response.setTotalPages(userPage.getTotalPages());
         response.setUsers(UserMapper.toDtoList(userPage.getContent()));

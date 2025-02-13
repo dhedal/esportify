@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -40,15 +41,28 @@ public class AdminRestController  extends BaseRestController{
     }
 
     @GetMapping("/users")
-    public ResponseEntity<UsersPageResponse> getUsers(@RequestParam(defaultValue = "1") int page, @AuthenticationPrincipal User admin) {
-        LOG.debug("## getAllUsers(@RequestParam(defaultValue = \"1\") int page, @AuthenticationPrincipal User admin)");
+    public ResponseEntity<UsersPageResponse> getUsers(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String status,
+            @AuthenticationPrincipal User admin) {
+        LOG.debug("## getAllUsers");
         if (admin == null || !admin.getStatus().equals(UserStatus.ADMIN)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new UsersPageResponse());
         }
 
         try {
-            UsersPageResponse response = this.userService.getPageUsers(page, 10);
+            UserStatus userStatus = null;
+            if(StringUtils.hasText(status)) {
+                try {
+                    int userStatusKey = Integer.parseInt(status);
+                    userStatus = UserStatus.getByKey(userStatusKey);
+                } catch (NumberFormatException e) {
+                    LOG.debug(e.getMessage());
+                }
+            }
+            UsersPageResponse response = this.userService.getPageUsers(page, search, userStatus,10);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {

@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @JsonDeserialize(using = UserStatusDeserializer.class)
 public enum UserStatus {
+    UNDEFINED(Integer.MIN_VALUE, "Indéfini"),
     VISITOR(0, "Visiteur"),
     PLAYER(1, "Joueur"),
     ORGANIZER(2, "Organisateur"),

@@ -76,6 +76,25 @@
 
                 <!-- Gestion des utilisateurs -->
                 <div id="user-section" style="display: none;">
+                    <!-- Recherche et filtre des utilisateurs -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <input type="text" id="searchUserInput" class="form-control" placeholder="Rechercher par nom ou email...">
+                        </div>
+                        <div class="col-md-4">
+                            <select id="filterStatus" class="form-select">
+                                <option value="">Tous les rôles</option>
+                                <option value="0">Visiteur</option>
+                                <option value="1">Joueur</option>
+                                <option value="2">Organisateur</option>
+                                <option value="3">Administrateur</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button id="search-user-btn" class="btn btn-primary w-100">Rechercher</button>
+                        </div>
+                    </div>
+
                     <h2>👥 Gestion des utilisateurs</h2>
                     <table class="table table-striped">
                         <thead>
