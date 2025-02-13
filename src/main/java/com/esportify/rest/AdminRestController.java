@@ -1,10 +1,12 @@
 package com.esportify.rest;
 
 import com.esportify.dto.EventDTO;
-import com.esportify.dto.UserDTO;
+import com.esportify.dto.Response;
+import com.esportify.dto.UserStatusRequest;
+import com.esportify.dto.UsersPageResponse;
 import com.esportify.entity.User;
 import com.esportify.enumerations.UserStatus;
-import com.esportify.service.AuthenticationService;
+import com.esportify.service.AdminService;
 import com.esportify.service.EventService;
 import com.esportify.service.UserService;
 import org.slf4j.Logger;
@@ -13,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,24 +26,38 @@ public class AdminRestController  extends BaseRestController{
     private static final Logger LOG = LoggerFactory.getLogger(AdminRestController.class);
 
     private UserService userService;
+    private AdminService adminService;
     private EventService eventService;
 
     @Autowired
     public AdminRestController(
             UserService userService,
+            AdminService adminService,
             EventService eventService) {
         this.userService = userService;
+        this.adminService = adminService;
         this.eventService = eventService;
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserDTO>> getAllUsers(@AuthenticationPrincipal User admin) {
-        LOG.debug("## getAllUsers(@AuthenticationPrincipal User admin)");
+    public ResponseEntity<UsersPageResponse> getUsers(@RequestParam(defaultValue = "1") int page, @AuthenticationPrincipal User admin) {
+        LOG.debug("## getAllUsers(@RequestParam(defaultValue = \"1\") int page, @AuthenticationPrincipal User admin)");
         if (admin == null || !admin.getStatus().equals(UserStatus.ADMIN)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Collections.emptyList());
+                    .body(new UsersPageResponse());
         }
-        return ResponseEntity.ok(this.userService.getAllUsers());
+
+        try {
+            UsersPageResponse response = this.userService.getPageUsers(page, 10);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            UsersPageResponse response = new UsersPageResponse();
+            response.addMessage("Une erreur est survenue !");
+            response.setOk(false);
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @GetMapping("/events")
@@ -56,6 +70,24 @@ public class AdminRestController  extends BaseRestController{
         return ResponseEntity.ok(this.eventService.getAllEvents());
     }
 
+    @PutMapping ("/user-status")
+    public ResponseEntity<Response> changeUserStatus(@RequestBody UserStatusRequest request, @AuthenticationPrincipal User admin) {
+        LOG.debug("## getAllEvents(@AuthenticationPrincipal User admin)");
+        Response response = new Response();
+        if (admin == null || !admin.getStatus().equals(UserStatus.ADMIN)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(response);
+        }
+
+        try {
+            response = this.adminService.changeUserStatus(request, response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            response.addMessage("Une erreur est survenue !");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
     @GetMapping("/stats")
     public ResponseEntity<?> getStats(@AuthenticationPrincipal User admin) {
         LOG.debug("## getStats(@AuthenticationPrincipal User admin)");

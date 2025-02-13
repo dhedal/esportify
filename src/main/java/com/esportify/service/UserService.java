@@ -1,12 +1,16 @@
 package com.esportify.service;
 
 import com.esportify.dto.UserDTO;
+import com.esportify.dto.UsersPageResponse;
 import com.esportify.entity.User;
+import com.esportify.enumerations.UserStatus;
 import com.esportify.mapper.UserMapper;
 import com.esportify.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -59,7 +63,40 @@ public class UserService {
     }
 
     public List<UserDTO> getAllUsers() {
+        LOG.debug("## getAllUsers()");
         List<User> users = this.userRepository.findAll();
         return UserMapper.toDtoList(users);
+    }
+
+    /**
+     *
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    public UsersPageResponse getPageUsers(int page, int pageSize) {
+        LOG.debug("## UsersPageResponse getPageUsers(int page, int pageSize) ");
+        Page<User> userPage = this.userRepository.findAll(PageRequest.of(page - 1, pageSize));
+        UsersPageResponse response = new UsersPageResponse();
+        response.setTotalPages(userPage.getTotalPages());
+        response.setUsers(UserMapper.toDtoList(userPage.getContent()));
+        response.setOk(true);
+        return response;
+    }
+
+    /**
+     *
+     * @param user
+     * @param userStatus
+     * @return
+     */
+    public boolean changeStatus(User user, UserStatus userStatus) {
+        LOG.debug("## boolean changeStatus(User user, UserStatus userStatus)");
+        if(user == null || user.isNew()) return false;
+        if(userStatus == null) return false;
+
+        user.setStatus(userStatus);
+        this.userRepository.save(user);
+        return true;
     }
 }

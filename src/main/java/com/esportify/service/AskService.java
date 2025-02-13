@@ -117,8 +117,8 @@ public class AskService {
                 response.addMessage("Cet utilisateur est déjà ORGANIZER.");
                 return response;
             }
-            author.setStatus(UserStatus.ORGANIZER);
-            this.userService.save(author);
+
+            this.userService.changeStatus(author, UserStatus.ORGANIZER);
         }
 
         ask.setStatus(request.getStatus());

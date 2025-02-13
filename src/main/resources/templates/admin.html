@@ -66,8 +66,12 @@
                             <th>Actions</th>
                         </tr>
                         </thead>
-                        <tbody id="eventsTable"></tbody>
+                        <tbody id="events-table"></tbody>
                     </table>
+                    <!-- Pagination -->
+                    <nav>
+                        <ul class="pagination justify-content-center" id="events-pagination"></ul>
+                    </nav>
                 </div>
 
                 <!-- Gestion des utilisateurs -->
@@ -78,12 +82,16 @@
                         <tr>
                             <th>Nom</th>
                             <th>Email</th>
-                            <th>Rôle</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
-                        <tbody id="usersTable"></tbody>
+                        <tbody id="users-table"></tbody>
                     </table>
+                    <!-- Pagination -->
+                    <nav>
+                        <ul class="pagination justify-content-center" id="users-pagination"></ul>
+                    </nav>
                 </div>
             </main>
         </div>
@@ -91,7 +99,24 @@
 
 
 
-
+    <!-- Modal de confirmation -->
+    <div class="modal fade" id="confirmStatusChangeModal" tabindex="-1" aria-labelledby="confirmStatusChangeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmStatusChangeModalLabel">Confirmation du changement de Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous vraiment changer le rôle de cet utilisateur en <strong id="newStatusText"></strong> ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="confirm-status-change-btn">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
