@@ -13,6 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -210,10 +213,48 @@ public class EventService {
         return response;
     }
 
-
+    /**
+     *
+     * @return
+     */
     public List<EventDTO> getAllEvents() {
         LOG.debug("## getAllEvents()");
         List<Event> events = this.eventRepository.findAll();
         return EventMapper.toDTOList(events);
+    }
+
+    /**
+     *
+     * @param page
+     * @param search
+     * @param eventStatus
+     * @param pageSize
+     * @return
+     */
+    public EventsPageResponse getPageEvents(int page, String search, EventStatus eventStatus, int pageSize) {
+        LOG.debug("## EventsPageResponse getPageEvents(int page, String search, String userStatusStringKey, int pageSize) ");
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<Event> eventPage;
+        if(eventStatus == null) eventStatus = EventStatus.UNDEFINED;
+
+        if(StringUtils.hasText(search) && !Objects.equals(eventStatus, EventStatus.UNDEFINED)) {
+            eventPage = this.eventRepository.findByTitleContainingIgnoreCaseAndStatus(
+                    search, eventStatus, pageable);
+        }
+        else if(StringUtils.hasText(search)) {
+            eventPage = this.eventRepository.findByTitleContainingIgnoreCase(search, pageable);
+        }
+        else if(!Objects.equals(eventStatus, EventStatus.UNDEFINED)) {
+            eventPage = this.eventRepository.findByStatus(eventStatus, pageable);
+        }
+        else {
+            eventPage = this.eventRepository.findAll(pageable);
+        }
+
+        EventsPageResponse response = new EventsPageResponse();
+        response.setTotalPages(eventPage.getTotalPages());
+        response.setEvents(EventMapper.toDTOList(eventPage.getContent()));
+        response.setOk(true);
+        return response;
     }
 }

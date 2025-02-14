@@ -55,6 +55,27 @@
 
                 <!-- Gestion des événements -->
                 <div id="event-section" style="display: none;">
+                    <!-- Recherche et filtre des events -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <input type="text" id="search-event-input" class="form-control" placeholder="Rechercher par titre...">
+                        </div>
+                        <div class="col-md-4">
+                            <select id="filter-event-status" class="form-select">
+                                <option value="">Tous les status</option>
+                                <option value="1">En attente de validation</option>
+                                <option value="2">Inscriptions ouvertes</option>
+                                <option value="3">En cours</option>
+                                <option value="4">Complet - Plus d'inscription</option>
+                                <option value="5">Annulé</option>
+                                <option value="6">Terminé</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button id="search-event-btn" class="btn btn-primary w-100">Rechercher</button>
+                        </div>
+                    </div>
+
                     <h2>📅 Gestion des événements</h2>
                     <table class="table table-striped">
                         <thead>
@@ -62,8 +83,7 @@
                             <th>Titre</th>
                             <th>Organisateur</th>
                             <th>Date</th>
-                            <th>Statut</th>
-                            <th>Actions</th>
+                            <th>Status</th>
                         </tr>
                         </thead>
                         <tbody id="events-table"></tbody>
@@ -102,7 +122,6 @@
                             <th>Nom</th>
                             <th>Email</th>
                             <th>Status</th>
-                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody id="users-table"></tbody>
@@ -118,60 +137,43 @@
 
 
 
-    <!-- Modal de confirmation -->
-    <div class="modal fade" id="confirmStatusChangeModal" tabindex="-1" aria-labelledby="confirmStatusChangeModalLabel" aria-hidden="true">
+    <!-- Modal de confirmation pour le changement de status de l'user -->
+    <div class="modal fade" id="confirmUserStatusChangeModal" tabindex="-1" aria-labelledby="confirmUserStatusChangeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmStatusChangeModalLabel">Confirmation du changement de Status</h5>
+                    <h5 class="modal-title" id="confirmUserStatusChangeModalLabel">Confirmation du changement de Status</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Voulez-vous vraiment changer le rôle de cet utilisateur en <strong id="newStatusText"></strong> ?</p>
+                    <p>Voulez-vous vraiment changer le status de cet utilisateur en <strong id="new-user-status-label"></strong> ?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-primary" id="confirm-status-change-btn">Confirmer</button>
+                    <button type="button" class="btn btn-primary" id="confirm-user-status-change-btn">Confirmer</button>
                 </div>
             </div>
         </div>
     </div>
 
-
-
-
-
-
-    <!--    &lt;!&ndash; Barre de recherche et filtre &ndash;&gt;-->
-<!--    <div class="row mb-3">-->
-<!--        <div class="col-md-6">-->
-<!--            <input type="text" id="searchUser" class="form-control" placeholder="Rechercher un utilisateur...">-->
-<!--        </div>-->
-<!--        <div class="col-md-6">-->
-<!--            <select id="filterRole" class="form-control">-->
-<!--                <option value="">Tous les rôles</option>-->
-<!--                <option value="VISITOR">Visiteur</option>-->
-<!--                <option value="PLAYER">Joueur</option>-->
-<!--                <option value="ORGANIZER">Organisateur</option>-->
-<!--                <option value="ADMIN">Administrateur</option>-->
-<!--            </select>-->
-<!--        </div>-->
-<!--    </div>-->
-
-<!--    &lt;!&ndash; Tableau des utilisateurs &ndash;&gt;-->
-<!--    <table class="table">-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th>Nom</th>-->
-<!--            <th>Email</th>-->
-<!--            <th>Rôle</th>-->
-<!--            <th>Date d'inscription</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody id="usersTable">-->
-<!--        &lt;!&ndash; Les utilisateurs seront chargés via JavaScript &ndash;&gt;-->
-<!--        </tbody>-->
-<!--    </table>-->
+    <!-- Modal de confirmation pour le changement de status de l'event-->
+    <div class="modal fade" id="confirmEventStatusChangeModal" tabindex="-1" aria-labelledby="confirmEventStatusChangeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmEventStatusChangeModalLabel">Confirmation du changement de Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous vraiment changer le status de cet événement en <strong id="new-event-status-label"></strong> ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="confirm-event-status-change-btn">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </section>
 

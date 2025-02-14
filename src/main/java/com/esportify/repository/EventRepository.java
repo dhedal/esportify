@@ -3,6 +3,8 @@ package com.esportify.repository;
 import com.esportify.entity.Event;
 import com.esportify.entity.User;
 import com.esportify.enumerations.EventStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,5 +26,30 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @EntityGraph(attributePaths = {"organizer"})
     List<Event> findByOrganizer(User organizer);
+
+    /**
+     * Recherche par titre et par status avec pagination
+     * @param title
+     * @param status
+     * @param pageable
+     * @return
+     */
+    public Page<Event> findByTitleContainingIgnoreCaseAndStatus(String title, EventStatus status, Pageable pageable);
+
+    /**
+     * Recherche par title avec pagination
+     * @param title
+     * @param pageable
+     * @return
+     */
+    public Page<Event> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+
+    /**
+     * Recherche par status avec pagination
+     * @param status
+     * @param pageable
+     * @return
+     */
+    public Page<Event> findByStatus(EventStatus status, Pageable pageable);
 
 }

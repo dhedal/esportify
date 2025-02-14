@@ -15,14 +15,32 @@ public interface UserRepository extends JpaRepository<User, Long> {
     public Optional<User> findByEmail(String email);
     public Optional<User> findByPseudo(String pseudo);
 
-    // Recherche par pseudo ou email avec pagination
+    /**
+     * Recherche par pseudo ou email avec pagination
+     * @param pseudo
+     * @param email
+     * @param pageable
+     * @return
+     */
     public Page<User> findByPseudoContainingIgnoreCaseOrEmailContainingIgnoreCase(
             String pseudo, String email, Pageable pageable);
 
-    // Recherche par rôle avec pagination
+    /**
+     * Recherche par rôle avec pagination
+     * @param status
+     * @param pageable
+     * @return
+     */
     public Page<User> findByStatus(UserStatus status, Pageable pageable);
 
-    // Recherche par pseudo ou email ET rôle avec pagination
+    /**
+     * Recherche par pseudo ou email ET rôle avec pagination
+     * @param pseudo
+     * @param email
+     * @param status
+     * @param pageable
+     * @return
+     */
     public Page<User> findByPseudoContainingIgnoreCaseOrEmailContainingIgnoreCaseAndStatus(
             String pseudo, String email, UserStatus status, Pageable pageable);
 
