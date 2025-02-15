@@ -11,6 +11,9 @@ import com.esportify.repository.AskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,6 +85,12 @@ public class AskService {
         return response;
     }
 
+    /**
+     *
+     * @param request
+     * @param response
+     * @return
+     */
     @Transactional
     public Response acceptOrganizerRequest(ProcessAskRequest request, Response response) {
         LOG.debug("## acceptOrganizerRequest(ProcessAskRequest request, Response response)");
@@ -131,6 +140,7 @@ public class AskService {
 
     /**
      *
+     * @param type
      * @return
      */
     public List<AskDTO> getPendingAsksByType(AskType type) {
@@ -140,6 +150,50 @@ public class AskService {
                 this.askRepository.findAllByTypeAndStatus(type, AskStatus.PENDING));
     }
 
+    /**
+     *
+     * @param page
+     * @param askType
+     * @param askStatus
+     * @param pageSize
+     * @return
+     */
+    public AsksPageResponse getPageAsks(int page, AskType askType, AskStatus askStatus, int pageSize) {
+        LOG.debug("## getPageAsks getPageAsks(int page, AskType askType, AskStatus askStatus, int pageSize) ");
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<Ask> askPage;
+
+        if(askType == null) askType = AskType.UNDEFINED;
+        if(askStatus == null) askStatus = AskStatus.UNDEFINED;
+
+        if(!Objects.equals(askType, AskType.UNDEFINED) && !Objects.equals(askStatus, AskStatus.UNDEFINED)) {
+            askPage = this.askRepository.findByTypeAndStatus(askType, askStatus, pageable);
+        }
+        else if(!Objects.equals(askType, AskType.UNDEFINED)) {
+            askPage = this.askRepository.findByType(askType, pageable);
+        }
+        else if(!Objects.equals(askStatus, AskStatus.UNDEFINED)) {
+            askPage = this.askRepository.findByStatus(askStatus, pageable);
+        }
+        else {
+            askPage = this.askRepository.findAll(pageable);
+        }
+
+        AsksPageResponse response = new AsksPageResponse();
+        response.setTotalPages(askPage.getTotalPages());
+        response.setAsks(AskMapper.toDTOList(askPage.getContent()));
+        response.setOk(true);
+        return response;
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @return
+     * @param <T>
+     * @throws RuntimeException
+     */
     private <T> boolean validateRequest(T request, Response response) throws RuntimeException{
         if (Objects.isNull(request)) {
             throw new IllegalArgumentException("Le paramètre request ne doit pas être null");
@@ -155,4 +209,19 @@ public class AskService {
         return true;
     }
 
+    /**
+     *
+     * @param uuid
+     * @return
+     */
+    public Ask findByUuid(String uuid) {
+        LOG.debug("## findByUuid(String uuid)");
+        return this.askRepository.findByUuid(uuid);
+    }
+
+    public Ask save(Ask ask) {
+        LOG.debug("## save(Ask ask)");
+        if(ask == null) throw new IllegalArgumentException("Ask ne doit pas être null !");
+        return this.askRepository.save(ask);
+    }
 }

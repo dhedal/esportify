@@ -18,6 +18,7 @@
                 <a id="dashboard-section-btn" href="#">Tableau de bord</a>
                 <a id="event-section-btn" href="#">Gestion des événements</a>
                 <a id="user-section-btn" href="#">Gestion des utilisateurs</a>
+                <a id="ask-section-btn" href="#">Gestion des demandes</a>
             </nav>
 
             <!-- Contenu Admin -->
@@ -131,6 +132,49 @@
                         <ul class="pagination justify-content-center" id="users-pagination"></ul>
                     </nav>
                 </div>
+
+                <!-- Gestion des demandes -->
+                <div id="ask-section" style="display: none;">
+                    <!-- Recherche et filtre des demandes -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <select id="filter-ask-type" class="form-select">
+                                <option value="">Toutes les demandes</option>
+                                <option value="0">Simple message</option>
+                                <option value="1">Devenir organisateur</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select id="filter-ask-status" class="form-select">
+                                <option value="">Tous les status</option>
+                                <option value="1">En attente de validation</option>
+                                <option value="2">Demande acceptée</option>
+                                <option value="3">Demande refusée</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button id="search-ask-btn" class="btn btn-primary w-100">Rechercher</button>
+                        </div>
+                    </div>
+
+
+                    <h2>Gestion des demandes</h2>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Auteur</th>
+                            <th>Type</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody id="asks-table"></tbody>
+                    </table>
+                    <!-- Pagination -->
+                    <nav>
+                        <ul class="pagination justify-content-center" id="asks-pagination"></ul>
+                    </nav>
+                </div>
             </main>
         </div>
     </div>
@@ -170,6 +214,25 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                     <button type="button" class="btn btn-primary" id="confirm-event-status-change-btn">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation pour le changement de status des demandes -->
+    <div class="modal fade" id="confirmAskStatusChangeModal" tabindex="-1" aria-labelledby="confirmAskStatusChangeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmAskStatusChangeModalLabel">Confirmation du changement de Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Voulez-vous vraiment changer le status de cette demande en <strong id="new-ask-status-label"></strong> ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="confirm-ask-status-change-btn">Confirmer</button>
                 </div>
             </div>
         </div>

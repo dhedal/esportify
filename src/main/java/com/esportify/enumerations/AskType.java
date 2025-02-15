@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @JsonDeserialize(using = AskTypeDeserializer.class)
 public enum AskType {
+    UNDEFINED(Integer.MIN_VALUE, "Indéfini"),
     SIMPLE(0, "Simple message"),
     ASK_ORGANIZER(1, "Demande à devenir organisateur");
 

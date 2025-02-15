@@ -19,6 +19,7 @@ public class AskMapper {
         dto.setAuthor(UserMapper.toDTO(ask.getAuthor()));
         dto.setStatus(ask.getStatus());
         dto.setAdminComment(ask.getAdminComment());
+        dto.setMessage(ask.getMessage());
         return dto;
     }
 

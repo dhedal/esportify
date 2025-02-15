@@ -2,9 +2,12 @@ package com.esportify.rest;
 
 import com.esportify.dto.*;
 import com.esportify.entity.User;
+import com.esportify.enumerations.AskStatus;
+import com.esportify.enumerations.AskType;
 import com.esportify.enumerations.EventStatus;
 import com.esportify.enumerations.UserStatus;
 import com.esportify.service.AdminService;
+import com.esportify.service.AskService;
 import com.esportify.service.EventService;
 import com.esportify.service.UserService;
 import org.slf4j.Logger;
@@ -27,15 +30,18 @@ public class AdminRestController  extends BaseRestController{
     private UserService userService;
     private AdminService adminService;
     private EventService eventService;
+    private AskService askService;
 
     @Autowired
     public AdminRestController(
             UserService userService,
             AdminService adminService,
-            EventService eventService) {
+            EventService eventService,
+            AskService askService) {
         this.userService = userService;
         this.adminService = adminService;
         this.eventService = eventService;
+        this.askService = askService;
     }
 
     /**
@@ -123,6 +129,48 @@ public class AdminRestController  extends BaseRestController{
         }
     }
 
+    @GetMapping("/asks")
+    public ResponseEntity<AsksPageResponse> getAsks(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String status,
+            @AuthenticationPrincipal User admin) {
+        LOG.debug("## getAsks");
+        if (admin == null || !admin.getStatus().equals(UserStatus.ADMIN)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AsksPageResponse());
+        }
+
+        try {
+            AskType askType = null;
+            if(StringUtils.hasText(type)) {
+                try {
+                    askType = AskType.getByKey(Integer.parseInt(type));
+                } catch (NumberFormatException e) {
+                    LOG.debug(e.getMessage());
+                }
+            }
+            AskStatus askStatus = null;
+            if(StringUtils.hasText(status)) {
+                try {
+                    askStatus = AskStatus.getByKey(Integer.parseInt(status));
+                } catch (NumberFormatException e) {
+                    LOG.debug(e.getMessage());
+                }
+            }
+            AsksPageResponse response = this.askService.getPageAsks(page, askType, askStatus, 10);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            AsksPageResponse response = new AsksPageResponse();
+            response.addMessage("Une erreur est survenue !");
+            response.setOk(false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(response);
+        }
+    }
+
     /**
      *
      * @param request
@@ -165,6 +213,30 @@ public class AdminRestController  extends BaseRestController{
 
         try {
             response = this.adminService.changeEventStatus(request, response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            response.addMessage("Une erreur est survenue !");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     *
+     * @param request
+     * @param admin
+     * @return
+     */
+    @PutMapping ("/ask-status")
+    public ResponseEntity<Response> changeAskStatus(@RequestBody ChangeAskStatusRequest request, @AuthenticationPrincipal User admin) {
+        LOG.debug("## changeAskStatus(@RequestBody ChangeAskStatusRequest request, @AuthenticationPrincipal User admin)");
+        Response response = new Response();
+        if (admin == null || !admin.getStatus().equals(UserStatus.ADMIN)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(response);
+        }
+        try {
+            response = this.adminService.changeAskStatus(request, response);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             LOG.error(e.getMessage());

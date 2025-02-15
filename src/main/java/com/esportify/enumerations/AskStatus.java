@@ -9,10 +9,10 @@ import java.util.stream.Stream;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @JsonDeserialize(using = AskStatusDeserializer.class)
 public enum AskStatus {
-    UNDEFINED(0, "indéfini"),
+    UNDEFINED(0, "Indéfini"),
     PENDING(1, "En attente de validation"),
     APPROVED(2, "Demande acceptée"),
-    REJECTED(3, "Demande rrefusée");
+    REJECTED(3, "Demande refusée");
 
     private Integer key;
     private String label;

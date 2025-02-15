@@ -3,6 +3,8 @@ package com.esportify.repository;
 import com.esportify.entity.Ask;
 import com.esportify.enumerations.AskStatus;
 import com.esportify.enumerations.AskType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -16,4 +18,29 @@ public interface AskRepository extends JpaRepository<Ask, Long> {
 
     @EntityGraph(attributePaths = {"author"})
     public Ask findByUuid(String uuid);
+
+    /**
+     * Recherche ask par type et status avec paginantion
+     * @param type
+     * @param status
+     * @param pageable
+     * @return
+     */
+    public Page<Ask> findByTypeAndStatus(AskType type, AskStatus status, Pageable pageable);
+
+    /**
+     * Recherche ask par type avec paginantion
+     * @param type
+     * @param pageable
+     * @return
+     */
+    public Page<Ask> findByType(AskType type, Pageable pageable);
+
+    /**
+     * Recherche ask par status avec paginantion
+     * @param status
+     * @param pageable
+     * @return
+     */
+    public Page<Ask> findByStatus(AskStatus status, Pageable pageable);
 }

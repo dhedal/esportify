@@ -9,6 +9,7 @@ public class AskDTO {
     private UserDTO author;
     private String adminComment;
     private AskStatus status;
+    private String message;
 
     public String getUuid() {
         return uuid;
@@ -48,5 +49,13 @@ public class AskDTO {
 
     public void setStatus(AskStatus status) {
         this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
