@@ -6,16 +6,21 @@
     <!--  toutes les pages  -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script type="module" th:src="@{/js/script.js}"></script>
-    <script type="module" src="/js/utils/fetch-utils.js"></script>
-    <script type="module" src="/js/utils/message-utils.js"></script>
+    <script type="module" th:src="@{/js/utils/fetch-utils.js}"></script>
+    <script type="module" th:src="@{/js/utils/message-utils.js}"></script>
 
     <th:block th:if="${page == 'auth'}">
-      <script type="module" src="/js/auth/auth.js"></script>
+      <script type="module" th:src="@{/js/auth/auth.js}"></script>
     </th:block>
 
     <th:block th:if="${page == 'events'}">
       <script type="module" th:src="@{/js/events/events.js}"></script>
     </th:block>
+
+    <th:block th:if="${page == 'events-detail'}">
+      <script type="module" th:src="@{/js/events/event-detail.js}"></script>
+    </th:block>
+
 
     <th:block th:if="${page == 'account'}">
       <script type="module" th:src="@{/js/user/account.js}"></script>

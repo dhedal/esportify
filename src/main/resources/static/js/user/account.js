@@ -2,6 +2,31 @@ import { FetchUtils } from "../utils/fetch-utils.js";
 import { MessageUtils } from "../utils/message-utils.js";
 import {FormValidator, Form} from "../utils/form-utils.js";
 
+/**
+ *
+ */
+export class EventStatus {
+    static UNDEFINED = {key:0, label: "Statut inconnu"};
+    static PENDING = {key:1, label: "En attente de validation"};
+    static VALIDATED = {key:2, label: "Inscriptions ouvertes"};
+    static ON_GOING = {key:3, label: "En cours"};
+    static FULL = {key:4, label: "Complet - Plus d'inscription"};
+    static CANCELLED = {key:5, label: "Annulé"};
+    static CLOSED = {key:6, label: "Terminé"};
+
+    static getByKey(key) {
+        switch(key) {
+            case 1 : return EventStatus.PENDING;
+            case 2 : return EventStatus.VALIDATED;
+            case 3 : return EventStatus.ON_GOING;
+            case 4 : return EventStatus.FULL;
+            case 5 : return EventStatus.CANCELLED;
+            case 6 : return EventStatus.CLOSED;
+            default: return EventStatus.UNDEFINED;
+        }
+    }
+}
+
 class PasswordForm extends Form {
     passwordHold;
     passwordNew

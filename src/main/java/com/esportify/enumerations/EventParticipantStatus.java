@@ -12,7 +12,9 @@ public enum EventParticipantStatus {
     UNDEFINED(0, "indéfini"),
     PENDING(1, "en attente"),
     APPROVED(2, "approuvé"),
-    REJECTED(3, "rejeté");
+    REJECTED(3, "rejeté"),
+    WITHDRAWN(4, "Désinscrit"),
+    BANNED(5, "Banni");
 
     private Integer key;
     private String label;

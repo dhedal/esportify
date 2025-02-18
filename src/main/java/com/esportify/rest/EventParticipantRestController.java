@@ -49,6 +49,27 @@ public class EventParticipantRestController extends BaseRestController{
 
     }
 
+    @PostMapping("/leave")
+    public ResponseEntity<Response> leaveEvent(@RequestBody UUIDRequest request,
+                                              @AuthenticationPrincipal(errorOnInvalidType=true) User user) {
+        LOG.debug("## leaveEvent(@RequestBody UUIDRequest request, @AuthenticationPrincipal User user)");
+        Response response = new Response();
+        if(user == null) {
+            response.addMessage("Veuiller vous reconnecter !");
+            response.setAuthenticated(false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        try {
+            response = this.eventParticipantService.leaveEvent(request, response, user);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            response.addMessage("Une erreur est survenue!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+
+    }
+
     @PostMapping("/participants")
     public ResponseEntity<ParticipantsResponse> getParticipantsByEvent(@RequestBody UUIDRequest request) {
         LOG.debug("## getParticipantsByEvent(@RequestBody UUIDRequest request)");

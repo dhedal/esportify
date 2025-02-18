@@ -4,10 +4,10 @@ import com.esportify.dto.*;
 import com.esportify.entity.Event;
 import com.esportify.entity.EventParticipant;
 import com.esportify.entity.User;
+import com.esportify.enumerations.EventParticipantStatus;
 import com.esportify.enumerations.EventStatus;
 import com.esportify.enumerations.UserStatus;
 import com.esportify.mapper.EventMapper;
-import com.esportify.mapper.EventParticipantMapper;
 import com.esportify.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,12 +53,13 @@ public class EventService {
 
     /**
      *
-     * @param uuid
+     * @param eventUuid
      * @return
      */
-    public Event getWithParticipantsByUuid(String uuid) {
-        return StringUtils.hasText(uuid) ?
-                this.eventRepository.findWithParticipantsByUuid(uuid) :
+    public Event getWithParticipantsByUuid(String eventUuid) {
+        LOG.debug("## getWithParticipantsByUuid(String eventUuid)");
+        return StringUtils.hasText(eventUuid) ?
+                this.eventRepository.findWithParticipantsByUuid(eventUuid) :
                 null;
     }
 
@@ -256,5 +257,31 @@ public class EventService {
         response.setEvents(EventMapper.toDTOList(eventPage.getContent()));
         response.setOk(true);
         return response;
+    }
+
+    public EventDetail getEventDetail(String eventUuid, User participant) {
+        LOG.debug("## getEventDetail(String eventUuid)");
+        Event event = this.getWithParticipantsByUuid(eventUuid);
+        if(event == null) return null;
+
+        EventDetail eventDetail = new EventDetail();
+        eventDetail.setEvent(EventMapper.toDTO(event));
+
+        for(EventParticipant ep : event.getParticipants()) {
+            User user = ep.getParticipant();
+            if(Objects.equals(user.getId(), participant.getId())){
+                eventDetail.setRegistered(
+                        Objects.equals(EventParticipantStatus.APPROVED, ep.getStatus()));
+                break;
+            }
+        }
+
+        int nbParticipant = (int) event.getParticipants()
+                .stream()
+                .filter(ep -> Objects.equals(EventParticipantStatus.APPROVED, ep.getStatus()))
+                .count();
+        eventDetail.setNbParticipants(nbParticipant);
+
+        return eventDetail;
     }
 }

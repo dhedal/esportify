@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <meta charset="UTF-8">
+  <title>Détail de l'Événement</title>
+</head>
+<body>
+
+<section layout:fragment="content" class="container my-5">
+  <input type="hidden" id="eventUuid" th:value="${eventDetail.event.uuid}">
+  <!-- Titre -->
+  <div class="text-center mb-4">
+    <h2 th:text="${eventDetail.event.title}" class="fw-bold"></h2>
+    <span class="badge bg-primary fs-6" th:text="${eventDetail.event.status.label}"></span>
+  </div>
+
+  <!-- Carte d'information -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <!-- Description -->
+      <h5 class="text-muted">Description</h5>
+      <p class="fs-5" th:text="${eventDetail.event.description}"></p>
+
+      <!-- Informations détaillées -->
+      <div class="row">
+        <div class="col-md-6">
+          <ul class="list-group">
+            <li class="list-group-item"><strong>Date de début :</strong>
+              <span th:text="${#temporals.format(eventDetail.event.startDateTime, 'dd/MM/yyyy à HH:mm')}"></span>
+            </li>
+            <li class="list-group-item"><strong>Date de fin :</strong>
+              <span th:text="${#temporals.format(eventDetail.event.endDateTime, 'dd/MM/yyyy à HH:mm')}"></span>
+            </li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <ul class="list-group">
+            <th:block th:if="${eventDetail.nbParticipants > 0}">
+              <li class="list-group-item"><strong>Nombre de joueurs inscrits :</strong>
+                <span th:text="${eventDetail.nbParticipants}"></span>
+                <span>sur</span>
+                <span th:text="${eventDetail.event.maxPlayers}"></span>
+              </li>
+            </th:block>
+            <th:block th:if="${eventDetail.nbParticipants == 0}">
+              <li class="list-group-item"><strong>Nombre de joueur maximum :</strong>
+                <span th:text="${eventDetail.event.maxPlayers}"></span>
+              </li>
+            </th:block>
+            <li class="list-group-item"><strong>Organisateur :</strong>
+              <span th:text="${eventDetail.event.organizer.pseudo}"></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <th:block th:if="${isAuthenticated}">
+        <!-- Boutons d'action -->
+        <div class="text-center mt-4">
+          <button id="join-event-btn" class="btn btn-success btn-lg" th:if="${!eventDetail.registered}">
+            S'inscrire
+          </button>
+          <button id="leave-event-btn" class="btn btn-danger btn-lg" th:if="${eventDetail.registered}">
+            Se désinscrire
+          </button>
+        </div>
+      </th:block>
+
+    </div>
+  </div>
+
+</section>
+
+</body>
+</html>
