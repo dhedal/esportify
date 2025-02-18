@@ -1,9 +1,6 @@
 package com.esportify.rest;
 
-import com.esportify.dto.EventDTO;
-import com.esportify.dto.EventRequest;
-import com.esportify.dto.Response;
-import com.esportify.dto.UUIDRequest;
+import com.esportify.dto.*;
 import com.esportify.entity.User;
 import com.esportify.service.EventService;
 import org.slf4j.Logger;
@@ -31,15 +28,37 @@ public class EventRestController extends BaseRestController{
         this.eventService = eventService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<EventDTO>> getAllEvents() {
-        LOG.debug("## getAllEvents()");
+    @GetMapping("/organizers")
+    public ResponseEntity<List<UserDTO>> getOrganizers() {
+        List<UserDTO> organizers = this.eventService.getAllOrganizers();
+        return ResponseEntity.ok(organizers);
+    }
+
+    /**
+     *
+     * @param page
+     * @param search
+     * @param players
+     * @param date
+     * @param organizer
+     * @return
+     */
+    @GetMapping("/filter")
+    public ResponseEntity<EventsPageResponse> getEvents(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String players,
+            @RequestParam(required = false) String date,
+            @RequestParam(required = false) String organizer
+    ) {
+        LOG.debug("## getEvents");
         try {
-            return ResponseEntity.ok(this.eventService.getUpcomingAndOngoingEvents());
+            EventsPageResponse response = this.eventService.getFilteredEvents(page, search, players, date, organizer, 10);
+            return ResponseEntity.ok(response);
         }catch(Exception e) {
             LOG.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(new EventsPageResponse());
         }
-        return ResponseEntity.ok(Collections.EMPTY_LIST);
     }
 
     @GetMapping("/my-events")

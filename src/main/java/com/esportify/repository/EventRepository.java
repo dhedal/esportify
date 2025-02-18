@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -51,5 +52,23 @@ public interface EventRepository extends JpaRepository<Event, Long> {
      * @return
      */
     public Page<Event> findByStatus(EventStatus status, Pageable pageable);
+
+    @Query("SELECT e FROM Event e WHERE "
+            + "e.status IN (:validStatuses) " // Filtre sur les statuts acceptés
+            + "AND (:search IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', :search, '%'))) "
+            + "AND (:players IS NULL OR e.maxPlayers <= :players) "
+            + "AND (:date IS NULL OR FUNCTION('DATE', e.startDateTime) = :date) " // Conversion de LocalDateTime en DATE
+            + "AND (:organizer IS NULL OR LOWER(e.organizer.pseudo) LIKE LOWER(CONCAT('%', :organizer, '%')))")
+    public Page<Event> findFilteredEvents(
+            @Param("validStatuses") List<EventStatus> validStatuses,
+            @Param("search") String search,
+            @Param("players") Integer players,
+            @Param("date") LocalDate date,
+            @Param("organizer") String organizer,
+            Pageable pageable
+    );
+
+    @Query("SELECT DISTINCT e.organizer FROM Event e WHERE e.status IN (:validStatuses)")
+    public List<User> findDistinctOrganizers(@Param("validStatuses") List<EventStatus> validStatuses);
 
 }

@@ -8,6 +8,7 @@ import com.esportify.enumerations.EventParticipantStatus;
 import com.esportify.enumerations.EventStatus;
 import com.esportify.enumerations.UserStatus;
 import com.esportify.mapper.EventMapper;
+import com.esportify.mapper.UserMapper;
 import com.esportify.repository.EventRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +17,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -170,6 +174,36 @@ public class EventService {
 
     /**
      *
+     * @param page
+     * @param search
+     * @param players
+     * @param date
+     * @param organizer
+     * @param pageSize
+     * @return
+     */
+    public EventsPageResponse getFilteredEvents(int page, String search, String players, String date, String organizer, int pageSize) {
+        LOG.debug("## getUpcomingAndOngoingEvents");
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("startDateTime").ascending());
+        List<EventStatus> validStatuses = List.of(EventStatus.VALIDATED, EventStatus.ON_GOING, EventStatus.FULL);
+
+        Integer playersFilter = (players != null && !players.isEmpty()) ? parsePlayers(players) : null;
+        LocalDate dateFilter = (date != null && !date.isEmpty()) ? LocalDate.parse(date) : null;
+        String organizerFilter = (StringUtils.hasText(organizer)) ? organizer.trim() : null;
+        String searchFilter = (StringUtils.hasText(search)) ? search.trim() : null;
+
+        Page<Event> eventPage = this.eventRepository.findFilteredEvents(
+                validStatuses, searchFilter, playersFilter, dateFilter, organizerFilter, pageable);
+
+        EventsPageResponse response = new EventsPageResponse();
+        response.setEvents(EventMapper.toDTOList(eventPage.getContent()));
+        response.setTotalPages(eventPage.getTotalPages());
+        response.setOk(true);
+        return response;
+    }
+
+    /**
+     *
      * @param organizer
      * @return
      */
@@ -284,4 +318,29 @@ public class EventService {
 
         return eventDetail;
     }
+
+    /**
+     * Convertir le filtre sur le nombre de joueurs en valeur numérique
+     */
+    private Integer parsePlayers(String players) {
+        return switch (players) {
+            case "10" -> 10;
+            case "50" -> 50;
+            case "100" -> 100;
+            case "100+" -> 101; // Pour représenter "100 et plus"
+            default -> null;
+        };
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<UserDTO> getAllOrganizers() {
+        LOG.debug("## getAllOrganizers");
+        List<EventStatus> validStatuses = List.of(EventStatus.VALIDATED, EventStatus.ON_GOING, EventStatus.FULL);
+        List<User> organizers = eventRepository.findDistinctOrganizers(validStatuses);
+        return UserMapper.toDtoList(organizers);
+    }
 }
+
