@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = {uuid: eventUuid ? eventUuid.value : ""};
             const response = await FetchUtils.fetch(
                 `${FetchUtils.EVENT_PARTICIPANT_API_URL}/leave`, "POST", data);
-            
+
             if (response.ok) {
                 MessageUtils.success("Désinscription réussie !");
                 setTimeout(() => location.reload(), 1000); // Recharge la page pour mettre à jour l'état des boutons

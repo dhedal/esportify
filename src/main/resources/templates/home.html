@@ -41,12 +41,9 @@
                 <div class="card m-2">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${event.title}"></h5>
-                        <p class="card-text" th:text="${event.description}"></p>
                         <p class="text-muted">Début : <span th:text="${#temporals.format(event.startDateTime, 'dd/MM/yyyy à HH:mm')}"></span></p>
                         <p class="text-muted">Fin : <span th:text="${#temporals.format(event.endDateTime, 'dd/MM/yyyy HH:mm')}"></span></p>
                         <p class="text-muted">Max joueurs : <span th:text="${event.maxPlayers}"></span></p>
-                        <p class="text-muted">Organisateur : <span th:text="${event.organizer.pseudo}"></span></p>
-                        <p class="text-muted">Statut : <span th:text="${event.status.label}"></span></p>
                     </div>
                     <div class="card-footer bg-transparent border-top-0 text-center">
                         <a th:href="@{/events/detail/{uuid}(uuid=${event.uuid})}" class="btn btn-primary">Voir l'événement</a>
