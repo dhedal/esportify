@@ -1,6 +1,6 @@
 import { FetchUtils } from "../utils/fetch-utils.js";
 import { MessageUtils} from "../utils/message-utils.js";
-import { EventStatus} from "../user/account.js";
+import { EventStatus, UserStatus, AskStatus} from "../utils/data-utils.js";
 import { Pagination} from "../utils/pagination-utils.js";
 
 
@@ -62,44 +62,7 @@ const showAskStatusChangeConfirmation = (askUuid, statusKey) => {
     if(confirmAskModal) confirmAskModal.show();
 }
 
-/**
- *
- */
-class UserStatus {
-    static VISITOR = {key: 0, label: "Visiteur"};
-    static PLAYER = {key: 1, label: "Joueur"};
-    static ORGANIZER = {key: 2, label: "Organisateur"};
-    static ADMIN = {key: 3, label: "Administrateur"};
 
-    static getByKey(key) {
-        switch(key) {
-            case 1 : return UserStatus.PLAYER;
-            case 2 : return UserStatus.ORGANIZER;
-            case 3 : return UserStatus.ADMIN;
-            default: return UserStatus.VISITOR;
-        }
-    }
-
-}
-
-/**
- *
- */
-class AskStatus {
-    static UNDEFINED = {key:0, label: "Indéfini"};
-    static PENDING = {key:1, label: "En attente de validation"};
-    static APPROVED = {key:2, label: "Demande acceptée"};
-    static REJECTED = {key:3, label: "Demande refusée"};
-
-    static getByKey(key) {
-        switch(key) {
-            case 1 : return AskStatus.PENDING;
-            case 2 : return AskStatus.APPROVED;
-            case 3 : return AskStatus.REJECTED;
-            default: return AskStatus.UNDEFINED;
-        }
-    }
-}
 
 
 /**

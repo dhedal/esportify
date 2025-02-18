@@ -3,70 +3,81 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
+  <meta charset="UTF-8">
   <title>Espace Organisateur</title>
 </head>
 <body>
+
 <section layout:fragment="content" class="container my-5">
-  <h2 class="text-center">Espace Organisateur</h2>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Menu latéral -->
+      <nav class="col-md-3 col-lg-2 admin-sidebar p-3">
+        <h4 class="text-center text-light">Organisateur</h4>
+        <a id="dashboard-section-btn" href="#">Tableau de bord</a>
+        <a id="event-section-btn" href="#">Gestion des événements</a>
+      </nav>
 
-  <!-- Bouton pour créer un événement -->
-  <div class="text-end mb-3">
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createEventModal">Créer un événement</button>
-  </div>
-
-  <!-- Liste des événements -->
-  <h3>Mes événements</h3>
-  <table class="table">
-    <thead>
-    <tr>
-      <th>Titre</th>
-      <th>Date</th>
-      <th>Statut</th>
-      <th>Participants</th>
-      <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody id="eventsTable">
-    <!-- Les événements seront chargés via JavaScript -->
-    </tbody>
-  </table>
-
-  <!-- Modal pour voir et gérer les participants -->
-  <div class="modal fade" id="participantsModal" tabindex="-1" aria-labelledby="participantsModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="participantsModalLabel">Gérer les participants</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      <!-- Contenu Organisateur -->
+      <main class="col-md-9 col-lg-10 p-4">
+        <!-- Tableau de bord -->
+        <div id="dashboard-section">
+          <h2>📊 Tableau de bord</h2>
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="card text-center">
+                <div class="card-body">
+                  <h5>Événements créés</h5>
+                  <h3 id="createdEventsCount">0</h3>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card text-center">
+                <div class="card-body">
+                  <h5>Participants inscrits</h5>
+                  <h3 id="participantsCount">0</h3>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="modal-body">
-          <table class="table">
+
+        <!-- Gestion des événements -->
+        <div id="event-section" style="display: none;">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>📅 Gestion des événements</h2>
+            <button class="btn btn-primary" id="create-event-btn">Créer un événement</button>
+          </div>
+          <table class="table table-striped">
             <thead>
             <tr>
-              <th>Pseudo</th>
+              <th>Titre</th>
+              <th>Date</th>
               <th>Statut</th>
+              <th>Participants</th>
               <th>Actions</th>
             </tr>
             </thead>
-            <tbody id="participantsTable">
-            <!-- Participants chargés via JS -->
-            </tbody>
+            <tbody id="eventsTable"></tbody>
           </table>
         </div>
-      </div>
+      </main>
     </div>
   </div>
 
-  <!-- Modal pour créer un événement -->
-  <div class="modal fade" id="createEventModal" tabindex="-1" aria-labelledby="createEventModalLabel" aria-hidden="true">
+  <!-- Modal pour créer/modifier un événement -->
+  <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="createEventModalLabel">Créer un événement</h5>
+          <h5 class="modal-title" id="eventModalLabel">Créer un événement</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
         </div>
         <div class="modal-body">
           <form id="event-form">
+            <input type="hidden" id="event-id"> <!-- Stocke l'ID pour la modification -->
+
             <div class="mb-3">
               <label for="title-event-form" class="form-label">Titre</label>
               <input type="text" id="title-event-form" class="form-control" required>
@@ -96,7 +107,5 @@
 
 </section>
 
-<!-- Charger le script pour la gestion des événements -->
-<script type="module" th:src="@{/js/organizer/organizer.js}"></script>
 </body>
 </html>

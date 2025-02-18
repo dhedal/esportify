@@ -98,9 +98,10 @@ export class Form {
     }
 
     _setInputValue(inputId, value) {
-        const input = document.getElementById(inputId);
-        if(input) input.value = value;
+        const inputArr = this._inputArray.find(input => input[0] === inputId);
+        if (inputArr) inputArr[1].value = value;
     }
+
 
     _addInputs(inputId, eventType, fnValidate) {
         const input = document.getElementById(inputId);
@@ -146,7 +147,7 @@ export class Form {
     _clear() {
         this._inputArray.forEach(([elementKey, element]) => {
             this._clearValidOrInvalidCSS(element);
-            if(element.tagName === "INPUT") element.value = "";
+            if(element.tagName === "INPUT" || element.tagName === "TEXTAREA") element.value = "";
             else element.textContent = "";
         });
     }

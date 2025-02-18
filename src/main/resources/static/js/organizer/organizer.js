@@ -1,17 +1,90 @@
 import { FetchUtils } from "../utils/fetch-utils.js";
 import { MessageUtils } from "../utils/message-utils.js";
 import {FormValidator, Form} from "../utils/form-utils.js";
+import {Pagination} from "../utils/pagination-utils.js";
+import {EventStatus} from "../utils/data-utils.js"
 
-class EventForm extends Form{
+let eventsPagination;
+let eventForm;
+let eventModal;
 
+const TIME_MODIFY_LIMIT = 30 * 60 * 1000;
+/**
+ *
+ */
+class OrganizerMenu {
+    dashboardSectionBtn;
+    eventSectionBtn;
+
+    sections;
+
+    isDashboardLoaded;
+    isEventsLoaded;
+
+    constructor(containerId = "organizer-sidebar") {
+        this.sections = {
+            dashboard: document.getElementById("dashboard-section"),
+            event: document.getElementById("event-section")
+        };
+
+        this.dashboardSectionBtn = document.getElementById("dashboard-section-btn");
+        this.eventSectionBtn = document.getElementById("event-section-btn");
+
+        this.dashboardSectionBtn.addEventListener("click", () => this.showDashboardSection());
+        this.eventSectionBtn.addEventListener("click", () => this.showEventSection());
+
+        this.isDashboardLoaded = false;
+        this.isEventsLoaded = false;
+    }
+
+    /**
+     *
+     * @param name
+     */
+    showSection(name) {
+        if(!name) return;
+        Object.values(this.sections).forEach(section => section.style.display = "none");
+        this.sections[name].style.display = "block";
+    }
+
+    /**
+     *
+     */
+    showDashboardSection() {
+        this.showSection("dashboard");
+
+        if(this.isDashboardLoaded) return;
+        this.isDashboardLoaded = true;
+    }
+
+    /**
+     *
+     */
+    showEventSection() {
+        this.showSection("event");
+
+        if(this.isEventsLoaded) return;
+
+        if(!eventsPagination) eventsPagination = new Pagination("events-pagination", loadOrganizerEvents);
+        loadOrganizerEvents().then(() => {
+            this.isEventsLoaded = true;
+        });
+    }
+
+}
+
+/**
+ *
+ */
+class EventForm extends Form {
     title;
     description;
     maxPlayers;
     startDateTime;
     endDateTime;
+
     constructor(formElement = "event-form") {
         super(formElement, "event-submit");
-
         this.title = this._addInputs("title-event-form", "keyup", FormValidator.validateInputNotEmpty);
         this.description = this._addInputs("description-event-form", "keyup", FormValidator.validateInputNotEmpty);
         this.maxPlayers = this._addInputs("maxPlayers-event-form", "keyup", FormValidator.validateInputNotEmpty);
@@ -20,6 +93,16 @@ class EventForm extends Form{
     }
 
     async send(data) {
+        const now = new Date();
+        const startDate = new Date(data.get(this.startDateTime));
+        const endDate = new Date(data.get(this.endDateTime));
+        const minCreateDate = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+
+        if (startDate < minCreateDate) {
+            MessageUtils.danger("L'événement doit être créé au moins 3 jours avant son début.");
+            return;
+        }
+
         const eventData = {
             title: data.get(this.title),
             description: data.get(this.description),
@@ -28,27 +111,51 @@ class EventForm extends Form{
             endDateTime: data.get(this.endDateTime),
         };
 
-        const response = await FetchUtils.fetch(`${FetchUtils.EVENT_API_URL}/event`, "POST", eventData);
-        if(response && response.messages) {
+        let method = "POST";
+        if(this.event) {
+            eventData.uuid = this.event.uuid;
+            method = "PUT";
+        }
+
+        const response = await FetchUtils.fetch(`${FetchUtils.EVENT_API_URL}/event`, method, eventData);
+        if (response.messages) {
             const messages = Array.from(response.messages);
             const messageType = response.ok ? MessageUtils.MESSAGE_TYPE_SUCCESS : MessageUtils.MESSAGE_TYPE_DANGER;
             messages.forEach(message => {
                 MessageUtils.message(messageType, message);
             });
-            new window.bootstrap.Modal(document.getElementById("createEventModal")).hide();
+            eventModal.hide();
         }
-        else {
-            MessageUtils.danger("Une erreur interne est survenue, réessayer ultérieurement !")
+
+        if(response.ok) {
+            this.clear();
+            loadOrganizerEvents().then();
         }
     }
 
+    setEvent(event) {
+        if(!event) return;
+        this._setInputValue(this.title, event.title);
+        this._setInputValue(this.description, event.description);
+        this._setInputValue(this.maxPlayers, event.maxPlayers);
+        this._setInputValue(this.startDateTime, event.startDateTime);
+        this._setInputValue(this.endDateTime, event.endDateTime);
+        this.event = event;
+
+    }
+
+    clear() {
+        super.clear();
+        if(this.event) this.event = null;
+    }
 }
 
-// Charger les événements de l'organisateur
+/**
+ *
+ * @returns {Promise<void>}
+ */
 const loadOrganizerEvents = async () => {
     const events = await FetchUtils.fetch(FetchUtils.EVENT_API_URL + "/my-events");
-    console.log(events);
-
     const eventsTable = document.getElementById("eventsTable");
     eventsTable.innerHTML = "";
 
@@ -59,6 +166,11 @@ const loadOrganizerEvents = async () => {
 
     events.forEach(event => {
         const row = document.createElement("tr");
+        const startDate = new Date(event.startDateTime);
+        const now = new Date();
+        const canModify = startDate - now > TIME_MODIFY_LIMIT;
+        const canStart = (startDate - now <= TIME_MODIFY_LIMIT) &&
+            (event.status.key === EventStatus.VALIDATED.key || event.status.key === EventStatus.FULL.key);
 
         row.innerHTML = `
             <td>${event.title}</td>
@@ -68,54 +180,62 @@ const loadOrganizerEvents = async () => {
             <td>
                 <div class="btn-group">
                     <button class="btn btn-outline-info btn-sm btn-manage" data-event-id="${event.uuid}">Gérer</button>
-                    ${canStartEvent(event.startDateTime) ? `<button class="btn btn-success btn-sm btn-start" data-event-id="${event.uuid}">Démarrer</button>` : ""}
+                    ${canModify ? `<button class="btn btn-warning btn-sm btn-edit" data-event-id="${event.uuid}">Modifier</button>` : ""}
+                    ${canStart ? `<button class="btn btn-success btn-sm btn-start" data-event-id="${event.uuid}">Démarrer</button>` : ""}
                 </div>
             </td>
         `;
 
         eventsTable.appendChild(row);
-    });
 
-    // Ajouter les événements "Gérer"
-    document.querySelectorAll(".btn-manage").forEach(button => {
-        button.addEventListener("click", (event) => {
-            const eventId = event.target.getAttribute("data-event-id");
-            openParticipantsModal(eventId);
+        // Ajouter les événements "Modifier"
+        document.querySelectorAll(".btn-edit").forEach(button => {
+            button.addEventListener("click", (event) => {
+                const eventId = event.target.getAttribute("data-event-id");
+                openEventModal (eventId);
+            });
         });
+
     });
+};
 
-    // Ajouter les événements "Démarrer"
-    document.querySelectorAll(".btn-start").forEach(button => {
-        button.addEventListener("click", (event) => {
-            const eventId = event.target.getAttribute("data-event-id");
-            startEvent(eventId);
-        });
-    });
-}
+/**
+ *
+ * @param eventId
+ * @returns {Promise<void>}
+ */
+const openEventModal = async (eventId = null) => {
+    const modalTitle = document.getElementById("eventModalLabel");
+    const submitButton = document.getElementById("event-submit");
 
-// Vérifie si l'événement peut être démarré (30 min avant le début)
-const canStartEvent = (startDateTime) => {
-    const startTime = new Date(startDateTime);
-    const now = new Date();
-    return (startTime - now) <= 30 * 60 * 1000 && now < startTime;
-}
+    if (eventId) {
+        // Mode modification
+        modalTitle.innerText = "Modifier l'événement";
+        submitButton.innerText = "Enregistrer les modifications";
 
-// Démarrer un événement
-const startEvent = async (eventId) => {
-    const response = await FetchUtils.fetch(`${FetchUtils.EVENT_API_URL}/start-event`, "POST", {uuid: eventId});
+        const response = await FetchUtils.fetch(`${FetchUtils.EVENT_API_URL}/${eventId}`);
 
-    if (response.ok) {
-        MessageUtils.success("Événement démarré !");
-        loadOrganizerEvents();
+        if (!response || response.error) {
+            MessageUtils.danger("Impossible de charger l'événement.");
+            return;
+        }
+
+        eventForm.setEvent(response);
     } else {
-        MessageUtils.danger("Erreur lors du démarrage.");
+        // Mode création
+        modalTitle.innerText = "Créer un événement";
+        submitButton.innerText = "Créer";
+        eventForm.clear();
     }
-}
 
-// Ouvrir le modal des participants
+    eventModal.show();
+};
+
+
+
+
 const openParticipantsModal = async (eventId) => {
-    const response = await FetchUtils.fetch(`${FetchUtils.EVENT_PARTICIPANT_API_URL}/participants`, "POST", {uuid:eventId});
-    console.log(response);
+    const response = await FetchUtils.fetch(`${FetchUtils.EVENT_PARTICIPANT_API_URL}/participants`, "POST", { uuid: eventId });
 
     const participantsTable = document.getElementById("participantsTable");
     participantsTable.innerHTML = "";
@@ -138,41 +258,26 @@ const openParticipantsModal = async (eventId) => {
         participantsTable.appendChild(row);
     });
 
-    // Ajouter les événements "Rejeter"
-    document.querySelectorAll(".btn-reject").forEach(button => {
-        button.addEventListener("click", (event) => {
-            const eventId = event.target.getAttribute("data-event-id");
-            const participantId = event.target.getAttribute("data-participant-id");
-            rejectParticipant(eventId, participantId);
-        });
-    });
+    eventModal.show();
+};
 
-    new window.bootstrap.Modal(document.getElementById("participantsModal")).show();
-}
 
-/// Rejeter un participant
-const rejectParticipant = async (eventId, participantId) => {
-    console.log("Rejet du participant ID :", participantId, " de l'événement ID :", eventId);
-    const data = {
-        eventUuid: eventId,
-        participantUuid: participantId
-    };
-    const response = await FetchUtils.fetch(`${FetchUtils.EVENT_PARTICIPANT_API_URL}/reject`, "POST", data);
+/**
+ *
+ */
+const ready = () => {
+    const organizerMenu = new OrganizerMenu();
+    eventForm = new EventForm();
+    eventModal = new window.bootstrap.Modal(document.getElementById("eventModal"));
 
-    if (response.ok) {
-        MessageUtils.success("Participant rejeté.");
-    } else {
-        const messages = Array.from(response.messages);
-        messages.forEach(message => {
-            MessageUtils.danger(message);
+    const createEventBtn = document.getElementById("create-event-btn");
+    if(createEventBtn) {
+        createEventBtn.addEventListener("click", () => {
+            openEventModal().then();
         });
     }
-};
 
-const ready = () => {
     loadOrganizerEvents().then();
-    const eventForm = new EventForm();
 };
 
-// Charger les événements de l'organisateur au chargement de la page
 document.addEventListener("DOMContentLoaded", ready);

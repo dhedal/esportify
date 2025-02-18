@@ -85,6 +85,65 @@ public class EventService {
      * @param organizer
      * @return
      */
+    public Response updateEvent(UpdateEventRequest request, Response response, User organizer) {
+        LOG.debug("## updateEvent(UpdateEventRequest request, Response response, User user)");
+        if (Objects.isNull(request)) {
+            throw new IllegalArgumentException("UpdateEventRequest ne doit pas être null");
+        }
+        if (Objects.isNull(response)) {
+            throw new IllegalArgumentException("Response ne doit pas être null");
+        }
+
+        if (Objects.isNull(organizer) || organizer.isNew()) {
+            throw new IllegalArgumentException("L'organisateur de l'événement est obligatoire");
+        }
+
+        Set<ConstraintViolation<UpdateEventRequest>> violations = this.validator.validate(request);
+        if (!violations.isEmpty()) {
+            for (ConstraintViolation<UpdateEventRequest> violation : violations) {
+                response.addMessage(violation.getMessage());
+            }
+            return response;
+        }
+
+        Event event = this.eventRepository.findByUuid(request.getUuid());
+        if(event == null) {
+            response.addMessage("Cet événement est introuvable");
+            return response;
+        }
+
+        if(!Objects.equals(event.getTitle(), request.getTitle())) {
+            List<Event> checkList = this.eventRepository.findByTitle(request.getTitle());
+            if(checkList != null && !checkList.isEmpty()) {
+                for(Event checkEvent : checkList) {
+                    if(Objects.equals(checkEvent.getStartDateTime(), request.getStartDateTime())) {
+                        response.addMessage("Ce titre est déja enregistré par un autre événement pour même date/heure que le votre");
+                        response.setOk(false);
+                        return response;
+                    }
+                }
+            }
+
+        }
+        event.setTitle(request.getTitle());
+        event.setMaxPlayers(request.getMaxPlayers());
+        event.setStartDateTime(request.getStartDateTime());
+        event.setEndDateTime(request.getEndDateTime());
+        event.setDescription(request.getDescription());
+        this.eventRepository.save(event);
+
+        response.setOk(true);
+        response.addMessage("Mis à jour réussie !");
+        return response;
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @param organizer
+     * @return
+     */
     public Response createEvent(EventRequest request, Response response, User organizer) {
         LOG.debug("## createEvent(EventRequest request, Response response, User organizer)");
 
@@ -101,7 +160,7 @@ public class EventService {
 
         if(!(
                 Objects.equals(UserStatus.ORGANIZER, organizer.getStatus()) ||
-                !Objects.equals(UserStatus.ADMIN, organizer.getStatus())
+                Objects.equals(UserStatus.ADMIN, organizer.getStatus())
         )) {
             response.addMessage("Vous ne possédez pas les droits pour créer un event !");
             return response;
@@ -342,5 +401,7 @@ public class EventService {
         List<User> organizers = eventRepository.findDistinctOrganizers(validStatuses);
         return UserMapper.toDtoList(organizers);
     }
+
+
 }
 

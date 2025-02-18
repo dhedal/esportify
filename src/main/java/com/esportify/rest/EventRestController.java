@@ -2,6 +2,7 @@ package com.esportify.rest;
 
 import com.esportify.dto.*;
 import com.esportify.entity.User;
+import com.esportify.mapper.EventMapper;
 import com.esportify.service.EventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,5 +115,33 @@ public class EventRestController extends BaseRestController{
             response.addMessage("Une erreur est survenue !");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+
+    @PutMapping (value = "/event", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateEvent(@RequestBody UpdateEventRequest request, @AuthenticationPrincipal(errorOnInvalidType=true) User user) {
+        LOG.debug("## @RequestBody UpdateEventRequest request, @AuthenticationPrincipal(errorOnInvalidType=true) User user)");
+        Response response = new Response();
+        if(user == null) {
+            response.addMessage("Veuiller vous reconnecter !");
+            response.setAuthenticated(false);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
+        try {
+            response = this.eventService.updateEvent(request, response, user);
+            return ResponseEntity.ok(response);
+
+        } catch(Exception e) {
+            LOG.error(e.getMessage());
+            response.addMessage("Une erreur est survenue !");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/{uuid}")
+    public ResponseEntity<?> getEventByUuid(@PathVariable String uuid) {
+        LOG.debug("## getEventByUuid(@PathVariable String uuid)");
+        EventDTO eventDTO = EventMapper.toDTO(this.eventService.getEventByUuid(uuid));
+        return ResponseEntity.ok(eventDTO);
     }
 }
