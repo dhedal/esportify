@@ -182,6 +182,9 @@ const loadUserEvents = async (user) => {
             <td>${event.title}</td>
             <td>${new Date(event.startDateTime).toLocaleDateString()}</td>
             <td>${eventParticipant.status.label}</td>
+            <td>
+                <a href="/events/detail/${event.uuid}" class="btn btn-link">Consulter</a>
+            </td>
         `;
         eventsTable.appendChild(row);
     });
