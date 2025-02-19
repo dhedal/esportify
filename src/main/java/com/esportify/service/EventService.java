@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -279,7 +280,7 @@ public class EventService {
      * @return
      */
     public Response startEvent(UUIDRequest request, Response response) {
-        LOG.debug("## createEvent(EventRequest request, Response response)");
+        LOG.debug("## startEvent(UUIDRequest request, Response response)");
 
         if (Objects.isNull(request)) {
             throw new IllegalArgumentException("UUIDRequest ne doit pas être null");
@@ -297,12 +298,56 @@ public class EventService {
         }
 
         Event event = this.eventRepository.findByUuid(request.getUuid());
-        if(event == null) {
-            response.addMessage("C'événement est introuvable !");
+        if (event == null) {
+            response.addMessage("Cet événement est introuvable !");
             return response;
         }
 
-        response.setOk(this.changeEventStatus(event, EventStatus.ON_GOING));
+        if(Objects.equals(EventStatus.PENDING, event.getStatus())) {
+            response.addMessage("L'évenement ne peut pas démarrer car il est en attente de validation");
+            return response;
+        }
+
+        if(Objects.equals(EventStatus.ON_GOING, event.getStatus())) {
+            response.addMessage("L'évenement est déjà cours");
+            return response;
+        }
+
+        if(Objects.equals(EventStatus.CANCELLED, event.getStatus())) {
+            response.addMessage("L'évenement ne peut pas démarrer car il a été annulé");
+            return response;
+        }
+
+        if(Objects.equals(EventStatus.CLOSED, event.getStatus())) {
+            response.addMessage("L'évenement ne peut pas démarrer car il a été cloturé");
+            return response;
+        }
+
+        // Vérification : l'événement ne peut être démarré que 30 minutes avant son début
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startTime = event.getStartDateTime();
+
+        if (now.isBefore(startTime.minusMinutes(30))) {
+            response.addMessage("L'événement ne peut être démarré que 30 minutes avant son début.");
+            response.setOk(false);
+            return response;
+        }
+
+        if (now.isAfter(startTime)) {
+            response.addMessage("L'événement est déjà censé avoir commencé.");
+            response.setOk(false);
+            return response;
+        }
+
+        boolean statusChanged = this.changeEventStatus(event, EventStatus.ON_GOING);
+        response.setOk(statusChanged);
+
+        if (statusChanged) {
+            response.addMessage("L'événement a bien été démarré.");
+        } else {
+            response.addMessage("Impossible de démarrer l'événement.");
+        }
+
         return response;
     }
 

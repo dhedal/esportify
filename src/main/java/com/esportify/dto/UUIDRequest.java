@@ -10,6 +10,12 @@ public class UUIDRequest {
     @ValidUUID(message = "L'uuid doit être valide")
     private String uuid;
 
+    public UUIDRequest() {}
+
+    public UUIDRequest(String uuid) {
+        this.uuid = uuid;
+    }
+
     public String getUuid() {
         return uuid;
     }
