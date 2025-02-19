@@ -2,7 +2,6 @@ package com.esportify.service;
 
 import com.esportify.dto.AskDTO;
 import com.esportify.dto.AskRequest;
-import com.esportify.dto.ProcessAskRequest;
 import com.esportify.dto.Response;
 import com.esportify.entity.Ask;
 import com.esportify.entity.User;
@@ -23,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -122,126 +120,6 @@ public class AskServiceIntegrationTest {
 
     ////////////////////////////////////////////////////////////////////////////
 
-    @Test
-    public void test_acceptOrganizerRequest_NullRequestParameter_ShouldThrowIllegalArgumentException() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            this.askService.acceptOrganizerRequest(null, new Response());
-        });
-        assertEquals("Le paramètre request ne doit pas être null", exception.getMessage());
-    }
-
-    @Test
-    public void test_acceptOrganizerRequest_NullResponseParameter_ShouldThrowIllegalArgumentException() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            this.askService.acceptOrganizerRequest(new ProcessAskRequest(), null);
-        });
-        assertEquals("Le paramètre response ne doit pas être null", exception.getMessage());
-    }
-
-    @Test
-    public void test_acceptOrganizerRequest_AskNotExist() {
-        List<String> tests = new ArrayList<>();
-        ProcessAskRequest request = new ProcessAskRequest();
-        request.setUuid(UUID.randomUUID().toString());
-        request.setStatus(AskStatus.APPROVED);
-        tests.add("La demande n'existe pas");
-        Response reponse = this.checkResponse(this.askService.acceptOrganizerRequest(request, new Response()), tests);
-        assertFalse(reponse.isOk());
-    }
-
-    @Test
-    public void test_acceptOrganizerRequest_FailsForWrongAskType() {
-        Ask ask = new Ask();
-        ask.setType(AskType.SIMPLE);
-        ask.setAuthor(this.author);
-        ask.setMessage("Je veux devenir ORGANIZER.");
-        ask.setStatus(AskStatus.PENDING);
-        ask = this.askRepository.saveAndFlush(ask);
-
-        List<String> tests = new ArrayList<>();
-        ProcessAskRequest request = new ProcessAskRequest();
-        request.setUuid(ask.getUuid());
-        request.setStatus(AskStatus.APPROVED);
-        tests.add("Cette demande ne concerne pas un passage au statut ORGANIZER.");
-        Response reponse = this.checkResponse(this.askService.acceptOrganizerRequest(request, new Response()), tests);
-        assertFalse(reponse.isOk());
-    }
-
-    @Test
-    public void test_acceptOrganizerRequest_FailsForNonPendingStatus() {
-        Ask ask = new Ask();
-        ask.setType(AskType.ASK_ORGANIZER);
-        ask.setAuthor(this.author);
-        ask.setMessage("Je veux devenir ORGANIZER.");
-        ask.setStatus(AskStatus.APPROVED);
-        ask = this.askRepository.saveAndFlush(ask);
-
-        List<String> tests = new ArrayList<>();
-        ProcessAskRequest request = new ProcessAskRequest();
-        request.setUuid(ask.getUuid());
-        request.setStatus(AskStatus.APPROVED);
-        tests.add("Cette demande a déjà été traitée.");
-        Response reponse = this.checkResponse(this.askService.acceptOrganizerRequest(request, new Response()), tests);
-        assertFalse(reponse.isOk());
-    }
-
-
-    @Test
-    public void test_acceptOrganizerRequest_Success() {
-        Ask ask = new Ask();
-        ask.setType(AskType.ASK_ORGANIZER);
-        ask.setAuthor(author);
-        ask.setMessage("Je veux devenir ORGANIZER.");
-        ask.setStatus(AskStatus.PENDING);
-        ask = askRepository.saveAndFlush(ask);
-
-        ProcessAskRequest processRequest = new ProcessAskRequest();
-        processRequest.setUuid(ask.getUuid());
-        processRequest.setStatus(AskStatus.APPROVED);
-        processRequest.setAdminComment("Accepté par l'admin.");
-
-        Response response = askService.acceptOrganizerRequest(processRequest, new Response());
-
-        assertTrue(response.isOk());
-        Ask updatedAsk = askRepository.findById(ask.getId()).orElse(null);
-        assertNotNull(updatedAsk);
-        assertEquals(AskStatus.APPROVED, updatedAsk.getStatus());
-        assertEquals("Accepté par l'admin.", updatedAsk.getAdminComment());
-
-        User updatedUser = userRepository.findById(author.getId()).orElse(null);
-        assertNotNull(updatedUser);
-        assertEquals(UserStatus.ORGANIZER, updatedUser.getStatus());
-    }
-
-    @Test
-    public void test_acceptOrganizerRequest_RejectOrganizerRequest() {
-        Ask ask = new Ask();
-        ask.setType(AskType.ASK_ORGANIZER);
-        ask.setAuthor(author);
-        ask.setMessage("Je veux devenir ORGANIZER.");
-        ask.setStatus(AskStatus.PENDING);
-        ask = askRepository.saveAndFlush(ask);
-
-
-        ProcessAskRequest processRequest = new ProcessAskRequest();
-        processRequest.setUuid(ask.getUuid());
-        processRequest.setStatus(AskStatus.REJECTED);
-        processRequest.setAdminComment("Refusé pour des raisons X.");
-
-        Response response = askService.acceptOrganizerRequest(processRequest, new Response());
-
-
-        assertTrue(response.isOk());
-        Ask updatedAsk = askRepository.findById(ask.getId()).orElse(null);
-        assertNotNull(updatedAsk);
-        assertEquals(AskStatus.REJECTED, updatedAsk.getStatus());
-        assertEquals("Refusé pour des raisons X.", updatedAsk.getAdminComment());
-
-
-        User updatedUser = userRepository.findById(author.getId()).orElse(null);
-        assertNotNull(updatedUser);
-        assertEquals(UserStatus.PLAYER, updatedUser.getStatus());
-    }
 
     @Test
     public void test_getPendingAsksByType() {

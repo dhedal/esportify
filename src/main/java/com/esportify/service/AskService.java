@@ -85,58 +85,6 @@ public class AskService {
         return response;
     }
 
-    /**
-     *
-     * @param request
-     * @param response
-     * @return
-     */
-    @Transactional
-    public Response acceptOrganizerRequest(ProcessAskRequest request, Response response) {
-        LOG.debug("## acceptOrganizerRequest(ProcessAskRequest request, Response response)");
-
-        if (!this.validateRequest(request, response)) {
-            return response;
-        }
-
-        Ask ask = this.askRepository.findByUuid(request.getUuid());
-        if(ask == null) {
-            response.addMessage("La demande n'existe pas");
-            return response;
-        }
-
-        if (ask.getType() != AskType.ASK_ORGANIZER) {
-            response.addMessage("Cette demande ne concerne pas un passage au statut ORGANIZER.");
-            return response;
-        }
-
-        if (ask.getStatus() != AskStatus.PENDING) {
-            response.addMessage("Cette demande a déjà été traitée.");
-            return response;
-        }
-
-        User author = ask.getAuthor();
-        if(author == null) {
-            response.addMessage("L'auteur de cette demande n'existe pas");
-            return response;
-        }
-
-        if (request.getStatus() == AskStatus.APPROVED) {
-            if (author.getStatus() == UserStatus.ORGANIZER) {
-                response.addMessage("Cet utilisateur est déjà ORGANIZER.");
-                return response;
-            }
-
-            this.userService.changeStatus(author, UserStatus.ORGANIZER);
-        }
-
-        ask.setStatus(request.getStatus());
-        ask.setAdminComment(request.getAdminComment());
-        this.askRepository.save(ask);
-
-        response.setOk(true);
-        return response;
-    }
 
     /**
      *
