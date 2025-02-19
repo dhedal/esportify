@@ -28,6 +28,20 @@ public class AuthRestController extends BaseRestController{
         this.authenticationService = authenticationService;
     }
 
+    @PostMapping(value="/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginRequest request) {
+        LOG.debug("## authenticate(@RequestBody LoginRequest request)");
+        final LoginResponse response = new LoginResponse();
+        try {
+            this.authenticationService.authenticate(request, response);
+        } catch (Exception ex) {
+            LOG.error(ex.toString());
+            response.addMessage("Un problème est survenu, veuillez réessayer ultérieurement");
+            response.setOk(false);
+        }
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
         LOG.debug("## register(SignupRequest request)");

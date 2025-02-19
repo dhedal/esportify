@@ -70,6 +70,7 @@ public class SecurityConfig {
                 "/home",
                 "/auth",
                 "/api/auth/register",
+                "/api/auth/login",
                 "/css/**",
                 "/js/**",
                 "/events",
