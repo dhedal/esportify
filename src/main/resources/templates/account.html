@@ -7,88 +7,93 @@
 </head>
 <body>
 <section layout:fragment="content" class="container my-5">
-  <h2 class="text-center">Mon compte</h2>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Menu latéral -->
+      <nav class="col-md-3 col-lg-2 admin-sidebar p-3">
+        <h4 class="text-center text-light">Mon Compte</h4>
+        <a id="profile-section-btn" href="#">👤 Mon Profil</a>
+        <a id="password-section-btn" href="#">🔑 Modifier Mot de Passe</a>
+        <a id="events-section-btn" href="#">📅 Mes Événements</a>
+        <a th:if="${isPlayerStatus}" id="organizer-section-btn" href="#">🎯 Devenir Organisateur</a>
+      </nav>
 
-  <!-- Boutons de navigation -->
-  <div class="btn-group d-flex justify-content-center mb-3">
-    <button class="btn btn-primary" id ="profile-section-btn">Voir mon profil</button>
-    <button class="btn btn-warning" id ="password-section-btn">Modifier mon mot de passe</button>
-    <button class="btn btn-success" id ="events-section-btn">Mes événements</button>
-    <button th:if="${isPlayerStatus}" class="btn btn-warning" id ="organizer-section-btn">Devenir organisateur</button>
+      <!-- Contenu principal -->
+      <main class="col-md-9 col-lg-10 p-4">
+        <!-- Mon profil -->
+        <div id="profile-section">
+          <h2>👤 Mon Profil</h2>
+          <form id="profile-form">
+            <div class="mb-3">
+              <label for="profile-pseudo" class="form-label">Pseudo</label>
+              <input type="text" id="profile-pseudo" class="form-control" readonly>
+            </div>
+            <div class="mb-3">
+              <label for="profile-email" class="form-label">Email</label>
+              <input type="email" id="profile-email" class="form-control" readonly>
+            </div>
+          </form>
+        </div>
+
+        <!-- Modifier mot de passe -->
+        <div id="password-section" style="display:none;">
+          <h2>🔑 Modifier Mon Mot de Passe</h2>
+          <form id="password-form">
+            <div class="mb-3">
+              <label for="password-hold" class="form-label">Ancien Mot de Passe</label>
+              <input id="password-hold" type="password" class="form-control" required>
+              <div class="invalid-feedback">Veuillez entrer votre ancien mot de passe.</div>
+            </div>
+            <div class="mb-3">
+              <label for="password-new" class="form-label">Nouveau Mot de Passe</label>
+              <input id="password-new" type="password" class="form-control" required>
+              <div class="invalid-feedback">Veuillez entrer votre nouveau mot de passe.</div>
+            </div>
+            <div class="mb-3">
+              <label for="password-new-confirmation" class="form-label">Confirmer le Nouveau Mot de Passe</label>
+              <input id="password-new-confirmation" type="password" class="form-control" required>
+              <div class="invalid-feedback">Veuillez confirmer votre nouveau mot de passe.</div>
+            </div>
+            <div>
+              <span class="fst-italic fs-6">Le mot de passe doit :</span>
+              <ul class="fst-italic fs-6">
+                <li><span id="password-error-char-length">comporter au moins 8 caractères.</span></li>
+                <li><span id="password-error-char-lower-upper">contenir une majuscule et une minuscule (A-Za-z).</span></li>
+                <li><span id="password-error-char-number">contenir un chiffre (0-9).</span></li>
+                <li><span id="password-error-char-special">contenir un caractère spécial (ex: !@#$%&*?:+-).</span></li>
+              </ul>
+            </div>
+            <button id="password-submit" type="submit" class="btn btn-success w-100">Changer</button>
+          </form>
+        </div>
+
+        <!-- Mes événements -->
+        <div id="events-section" style="display:none;">
+          <h2>📅 Mes Événements</h2>
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>Événement</th>
+              <th>Date</th>
+              <th>Statut</th>
+              <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="eventsTable">
+            <!-- Les événements seront chargés via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Demande organisateur -->
+        <div id="organizer-section" style="display:none;">
+          <h2>🎯 Devenir Organisateur</h2>
+          <p>Vous souhaitez organiser des événements ? Envoyez une demande :</p>
+          <button id="request-organizer-btn" class="btn btn-warning">Faire une Demande</button>
+        </div>
+      </main>
+    </div>
   </div>
-
-  <!-- Modifier mon profil -->
-  <div id="profile-section">
-    <h3>Voir mon profil</h3>
-    <form id="profile-form">
-      <div class="mb-3">
-        <label for="profile-pseudo" class="form-label">Pseudo</label>
-        <input type="text" id="profile-pseudo" class="form-control" readonly>
-      </div>
-      <div class="mb-3">
-        <label for="profile-email" class="form-label">Email</label>
-        <input type="email" id="profile-email" class="form-control" readonly>
-      </div>
-    </form>
-  </div>
-
-  <!-- Modifier mon mot de passe -->
-  <div id="password-section" style="display:none;">
-    <h3>Modifier mon mot de passe</h3>
-    <form id="password-form">
-      <div class="mb-3">
-        <label for="password-hold" class="form-label">Ancien Mot de passe</label>
-        <input id="password-hold" type="password" class="form-control" required>
-        <div class="invalid-feedback">Veuillez entrer votre ancien mot de passe.</div>
-      </div>
-      <div class="mb-3">
-        <label for="password-new" class="form-label">Nouveau Mot de passe</label>
-        <input id="password-new" type="password" class="form-control" required>
-        <div class="invalid-feedback">Veuillez entrer votre nouveau mot de passe.</div>
-      </div>
-      <div class="mb-3">
-        <label for="password-new-confirmation" class="form-label">Confirmer le nouveau mot de passe</label>
-        <input id="password-new-confirmation" type="password" class="form-control" required>
-        <div class="invalid-feedback">Veuillez confirmer votre nouveau mot de passe.</div>
-      </div>
-      <div>
-        <span class="fst-italic fs-6">Le mot de passe doit: </span>
-        <ul class="fst-italic fs-6">
-          <li ><span id="password-error-char-length">comporter au moins 8 caractères.</span></li>
-          <li ><span id="password-error-char-lower-upper">contenir au moins une lettre majuscule et minuscule (A-Za-z).</span></li>
-          <li ><span id="password-error-char-number">contenir au moins un chiffre (0-9).</span></li>
-          <li ><span id="password-error-char-special">contenir au moins un caractère spécial (par ex. !@#$%&*?:+-).</span></li>
-        </ul>
-      </div>
-      <button id="password-submit" type="submit" class="btn btn-success w-100">Changer le mot de passe</button>
-    </form>
-  </div>
-
-  <!-- Mes événements -->
-  <div id="events-section" style="display:none;">
-    <h3>Mes événements</h3>
-    <table class="table">
-      <thead>
-      <tr>
-        <th>Événement</th>
-        <th>Date</th>
-        <th>Mon inscription</th>
-        <th>Voir plus</th>
-      </tr>
-      </thead>
-      <tbody id="eventsTable">
-      <!-- Les événements seront chargés via JavaScript -->
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Demande organisateur -->
-  <div id="organizer-section" style="display:none;">
-    <h3>Devenir organisateur</h3>
-    <p>Vous souhaitez organiser des événements ? Envoyez une demande :</p>
-    <button id="request-organizer-btn" class="btn btn-warning">Faire une demande</button>
-  </div>
-
 </section>
 
 <!-- Charger le script pour gérer l'affichage dynamique -->
