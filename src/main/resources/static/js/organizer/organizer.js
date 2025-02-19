@@ -7,6 +7,7 @@ import {EventStatus} from "../utils/data-utils.js"
 let eventsPagination;
 let eventForm;
 let eventModal;
+let participantsModal;
 
 const TIME_MODIFY_LIMIT = 30 * 60 * 1000;
 /**
@@ -179,7 +180,7 @@ const loadOrganizerEvents = async () => {
             <td>${event.maxPlayers}</td>
             <td>
                 <div class="btn-group">
-                    <button class="btn btn-outline-info btn-sm btn-manage" data-event-id="${event.uuid}">Gérer</button>
+                    <button class="btn btn-outline-info btn-sm btn-participants" data-event-id="${event.uuid}">Voir les participants</button>
                     ${canModify ? `<button class="btn btn-warning btn-sm btn-edit" data-event-id="${event.uuid}">Modifier</button>` : ""}
                     ${canStart ? `<button class="btn btn-success btn-sm btn-start" data-event-id="${event.uuid}">Démarrer</button>` : ""}
                 </div>
@@ -232,8 +233,11 @@ const openEventModal = async (eventId = null) => {
 };
 
 
-
-
+/**
+ *
+ * @param eventId
+ * @returns {Promise<void>}
+ */
 const openParticipantsModal = async (eventId) => {
     const response = await FetchUtils.fetch(`${FetchUtils.EVENT_PARTICIPANT_API_URL}/participants`, "POST", { uuid: eventId });
 
@@ -244,6 +248,8 @@ const openParticipantsModal = async (eventId) => {
         participantsTable.innerHTML = `<tr><td colspan="3" class="text-center text-danger">Aucun participant</td></tr>`;
         return;
     }
+
+    document.getElementById("participantsModalLabel").innerText = `Participants - ${response.event.title}`;
 
     const participants = response.participants;
     participants.forEach(participant => {
@@ -258,8 +264,44 @@ const openParticipantsModal = async (eventId) => {
         participantsTable.appendChild(row);
     });
 
-    eventModal.show();
+    // Ajouter les événements "Rejeter"
+    document.querySelectorAll(".btn-reject").forEach(button => {
+        button.addEventListener("click", (event) => {
+            const eventId = event.target.getAttribute("data-event-id");
+            const participantId = event.target.getAttribute("data-participant-id");
+            rejectParticipant(eventId, participantId);
+        });
+    });
+
+    participantsModal.show();
 };
+
+/**
+ * Rejeter un participant
+ * @param eventId
+ * @param participantId
+ */
+const rejectParticipant = async (eventId, participantId) => {
+
+    if(!confirm("Voulez-vous vraiment rejeter ce participant ? Cette action est irréversible.")) {
+        return;
+    }
+    const data = {
+        eventUuid: eventId,
+        participantUuid: participantId
+    };
+    const response = await FetchUtils.fetch(`${FetchUtils.EVENT_PARTICIPANT_API_URL}/reject`, "POST", data);
+
+    if (response.ok) {
+        MessageUtils.success("Participant rejeté.");
+    } else {
+        const messages = Array.from(response.messages);
+        messages.forEach(message => {
+            MessageUtils.danger(message);
+        });
+    }
+};
+
 
 
 /**
@@ -269,6 +311,7 @@ const ready = () => {
     const organizerMenu = new OrganizerMenu();
     eventForm = new EventForm();
     eventModal = new window.bootstrap.Modal(document.getElementById("eventModal"));
+    participantsModal = new window.bootstrap.Modal(document.getElementById("participantsModal"));
 
     const createEventBtn = document.getElementById("create-event-btn");
     if(createEventBtn) {
@@ -276,6 +319,13 @@ const ready = () => {
             openEventModal().then();
         });
     }
+
+    document.addEventListener("click", (event) => {
+        if (event.target.classList.contains("btn-participants")) {
+            const eventId = event.target.getAttribute("data-event-id");
+            openParticipantsModal(eventId).then();
+        }
+    });
 
     loadOrganizerEvents().then();
 };

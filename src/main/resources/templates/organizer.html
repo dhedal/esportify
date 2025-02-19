@@ -105,6 +105,30 @@
     </div>
   </div>
 
+  <!-- Modal pour voir et gérer les participants -->
+  <div class="modal fade" id="participantsModal" tabindex="-1" aria-labelledby="participantsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="participantsModalLabel">Gérer les participants</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>Pseudo</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="participantsTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </section>
 
 </body>

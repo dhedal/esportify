@@ -6,6 +6,7 @@ import com.esportify.entity.EventParticipant;
 import com.esportify.entity.User;
 import com.esportify.enumerations.EventParticipantStatus;
 import com.esportify.enumerations.EventStatus;
+import com.esportify.mapper.EventMapper;
 import com.esportify.mapper.EventParticipantMapper;
 import com.esportify.mapper.ParticipantMapper;
 import com.esportify.repository.EventParticipantRepository;
@@ -181,6 +182,7 @@ public class EventParticipantService {
 
         List<EventParticipant> eventParticipants = this.eventParticipantRepository.findAllByEvent(event);
         response.setParticipants(ParticipantMapper.toDTOList(eventParticipants));
+        response.setEvent(EventMapper.toDTO(event));
         response.setOk(true);
         return response;
     }
