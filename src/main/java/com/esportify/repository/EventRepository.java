@@ -53,6 +53,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
      */
     public Page<Event> findByStatus(EventStatus status, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"participants"})
     @Query("SELECT e FROM Event e WHERE "
             + "e.status IN (:validStatuses) " // Filtre sur les statuts acceptés
             + "AND (:search IS NULL OR LOWER(e.title) LIKE LOWER(CONCAT('%', :search, '%'))) "

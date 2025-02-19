@@ -22,6 +22,7 @@ public class EventMapper {
         dto.setStartDateTime(event.getStartDateTime());
         dto.setEndDateTime(event.getEndDateTime());
         dto.setOrganizer(UserMapper.toDTO(event.getOrganizer()));
+        dto.setParticipantCount(event.getParticipantCount());
         return dto;
     }
 

@@ -40,14 +40,13 @@ const loadEvents = async (page = 1, request = null) => {
     }
 
     events.forEach(event => {
-        const isRegistered = event.isRegistered !== undefined && event.isRegistered;
-
         const row = document.createElement("tr");
+        const nbParticipant = event.participantCount === 0 ? "-" : event.participantCount;
         row.innerHTML = `
             <td>${event.title}</td>
             <td>${new Date(event.startDateTime).toLocaleDateString()}</td>
             <td>${event.organizer.pseudo}</td>
-            <td>${event.maxPlayers}</td>
+            <td>${nbParticipant} / ${event.maxPlayers}</td>
             <td>${event.status.label}</td>
             <td>
                 <a href="/events/detail/${event.uuid}" class="btn btn-link">Consulter</a>

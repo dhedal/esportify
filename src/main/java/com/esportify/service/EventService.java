@@ -360,20 +360,7 @@ public class EventService {
         EventDetail eventDetail = new EventDetail();
         eventDetail.setEvent(EventMapper.toDTO(event));
 
-        for(EventParticipant ep : event.getParticipants()) {
-            User user = ep.getParticipant();
-            if(Objects.equals(user.getId(), participant.getId())){
-                eventDetail.setRegistered(
-                        Objects.equals(EventParticipantStatus.APPROVED, ep.getStatus()));
-                break;
-            }
-        }
-
-        int nbParticipant = (int) event.getParticipants()
-                .stream()
-                .filter(ep -> Objects.equals(EventParticipantStatus.APPROVED, ep.getStatus()))
-                .count();
-        eventDetail.setNbParticipants(nbParticipant);
+        eventDetail.setNbParticipants(event.getParticipantCount());
 
         return eventDetail;
     }

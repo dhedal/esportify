@@ -177,7 +177,7 @@ const loadOrganizerEvents = async () => {
             <td>${event.title}</td>
             <td>${new Date(event.startDateTime).toLocaleString()}</td>
             <td>${event.status.label}</td>
-            <td>${event.maxPlayers}</td>
+            <td>${event.participantCount} / ${event.maxPlayers}</td>
             <td>
                 <div class="btn-group">
                     <button class="btn btn-outline-info btn-sm btn-participants" data-event-id="${event.uuid}">Voir les participants</button>
@@ -294,6 +294,9 @@ const rejectParticipant = async (eventId, participantId) => {
 
     if (response.ok) {
         MessageUtils.success("Participant rejeté.");
+        loadOrganizerEvents().then();
+        participantsModal.hide();
+
     } else {
         const messages = Array.from(response.messages);
         messages.forEach(message => {

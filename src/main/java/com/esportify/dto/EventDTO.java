@@ -13,6 +13,7 @@ public class EventDTO {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private UserDTO organizer;
+    private int participantCount;
 
     public String getUuid() {
         return uuid;
@@ -76,5 +77,13 @@ public class EventDTO {
 
     public void setOrganizer(UserDTO organizer) {
         this.organizer = organizer;
+    }
+
+    public int getParticipantCount() {
+        return participantCount;
+    }
+
+    public void setParticipantCount(int participantCount) {
+        this.participantCount = participantCount;
     }
 }

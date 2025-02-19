@@ -38,14 +38,14 @@
         </div>
         <div class="col-md-6">
           <ul class="list-group">
-            <th:block th:if="${eventDetail.nbParticipants > 0}">
+            <th:block th:if="${eventDetail.event.participantCount > 0}">
               <li class="list-group-item"><strong>Nombre de joueurs inscrits :</strong>
-                <span th:text="${eventDetail.nbParticipants}"></span>
+                <span th:text="${eventDetail.event.participantCount}"></span>
                 <span>sur</span>
                 <span th:text="${eventDetail.event.maxPlayers}"></span>
               </li>
             </th:block>
-            <th:block th:if="${eventDetail.nbParticipants == 0}">
+            <th:block th:if="${eventDetail.event.participantCount == 0}">
               <li class="list-group-item"><strong>Nombre de joueur maximum :</strong>
                 <span th:text="${eventDetail.event.maxPlayers}"></span>
               </li>

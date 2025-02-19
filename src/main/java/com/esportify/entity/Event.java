@@ -1,5 +1,6 @@
 package com.esportify.entity;
 
+import com.esportify.enumerations.EventParticipantStatus;
 import com.esportify.enumerations.EventStatus;
 import jakarta.persistence.*;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Table(name = "event", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"title", "start_date_time"})
@@ -31,6 +33,14 @@ public class Event extends AbstractEntity implements Serializable {
     private User organizer;
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<EventParticipant> participants = new ArrayList<>();
+
+    @Transient
+    public int getParticipantCount() {
+        if(this.participants.isEmpty()) return 0;
+        return (int) this.participants.stream()
+                .filter(participants -> Objects.equals(EventParticipantStatus.APPROVED, participants.getStatus()))
+                .count();
+    }
 
     public String getTitle() {
         return title;

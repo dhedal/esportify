@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class HomeController extends BaseController{
@@ -40,7 +41,7 @@ public class HomeController extends BaseController{
         LOG.debug("## home(Model model)");
         this.addAttributes(model, user);
         List<EventDTO> events = this.eventService.getUpcomingAndOngoingEvents();
-        model.addAttribute("events", events);
+        model.addAttribute("events", events.stream().limit(6).collect(Collectors.toList()));
         model.addAttribute("title", "Accueil");
         return "home";
     }
