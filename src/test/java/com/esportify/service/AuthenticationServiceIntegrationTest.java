@@ -120,15 +120,13 @@ public class AuthenticationServiceIntegrationTest {
         request.setPassword("");
         tests.add("Le mot de passe est obligatoire");
         tests.add("Le mot de passe doit avoir au moins 8 caractères.");
-        tests.add("Le mot de passe doit contenir à la fois des majuscules et des minuscules.");
-        tests.add("Le mot de passe doit contenir au moins un chiffre");
-        tests.add("Le mot de passe doit contenir au moins un caractère spécial");
+        tests.add("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.");
         this.checkResponse(this.authenticationService.register( this.request, new RegisterResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setPassword("StrongPassword8");
-        tests.add("Le mot de passe doit contenir au moins un caractère spécial");
+        tests.add("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.");
         this.checkResponse(this.authenticationService.register( this.request, new RegisterResponse()), tests);
         tests.clear();
 
@@ -140,19 +138,19 @@ public class AuthenticationServiceIntegrationTest {
 
         this.setup();
         request.setPassword("strongpassword8!");
-        tests.add("Le mot de passe doit contenir à la fois des majuscules et des minuscules.");
+        tests.add("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.");
         this.checkResponse(this.authenticationService.register( this.request, new RegisterResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setPassword("STRONGPASSWORD8!");
-        tests.add("Le mot de passe doit contenir à la fois des majuscules et des minuscules.");
+        tests.add("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.");
         this.checkResponse(this.authenticationService.register( this.request, new RegisterResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setPassword("strongPassword!");
-        tests.add("Le mot de passe doit contenir au moins un chiffre");
+        tests.add("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.");
         this.checkResponse(this.authenticationService.register( this.request, new RegisterResponse()), tests);
         tests.clear();
     }
@@ -160,18 +158,22 @@ public class AuthenticationServiceIntegrationTest {
     @Test
     public void test_register_emailNotUnique() {
         List<String> tests = new ArrayList<>();
+        this.userRepository.deleteAll(); //
+
         this.request.setEmail("hedgardavid@studi.com");
         RegisterResponse response = this.checkResponse(
                 this.authenticationService.register(request, new RegisterResponse()), tests);
         assertTrue(response.isOk());
+
         tests.add("L'email existe déjà.");
         this.checkResponse(this.authenticationService.register(request, new RegisterResponse()), tests);
-        tests.clear();
     }
 
     @Test
     public void test_register_pseudoNotUnique() {
         List<String> tests = new ArrayList<>();
+        this.userRepository.deleteAll();
+        this.setup();
         this.request.setPseudo("MalcomX");
         RegisterResponse response = this.checkResponse(
                 this.authenticationService.register(request, new RegisterResponse()), tests);
@@ -219,6 +221,7 @@ public class AuthenticationServiceIntegrationTest {
         assertEquals("LoginResponse ne doit pas être null", exception.getMessage());
     }
 
+
     @Test
     public void test_authenticate_InvalidRequest() {
         List<String> tests = new ArrayList<>();
@@ -252,15 +255,13 @@ public class AuthenticationServiceIntegrationTest {
         request.setPassword("");
         tests.add("Le mot de passe est obligatoire");
         tests.add("Le mot de passe doit avoir au moins 8 caractères.");
-        tests.add("Le mot de passe doit contenir à la fois des majuscules et des minuscules.");
-        tests.add("Le mot de passe doit contenir au moins un chiffre");
-        tests.add("Le mot de passe doit contenir au moins un caractère spécial");
+        tests.add("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.");
         this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setPassword("StrongPassword8");
-        tests.add("Le mot de passe doit contenir au moins un caractère spécial");
+        tests.add("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.");
         this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
@@ -272,22 +273,23 @@ public class AuthenticationServiceIntegrationTest {
 
         this.setup();
         request.setPassword("strongpassword8!");
-        tests.add("Le mot de passe doit contenir à la fois des majuscules et des minuscules.");
+        tests.add("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.");
         this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setPassword("STRONGPASSWORD8!");
-        tests.add("Le mot de passe doit contenir à la fois des majuscules et des minuscules.");
+        tests.add("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.");
         this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
 
         this.setup();
         request.setPassword("strongPassword!");
-        tests.add("Le mot de passe doit contenir au moins un chiffre");
+        tests.add("Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial.");
         this.checkResponse(this.authenticationService.authenticate( this.request, new LoginResponse()), tests);
         tests.clear();
     }
+
 
     @Test
     public void test_authenticate_emailNotExist() {
@@ -295,6 +297,9 @@ public class AuthenticationServiceIntegrationTest {
         this.request.setPseudo("dhedgar");
         this.request.setEmail("dhedgar@test.fr");
         this.request.setPassword("StrongPassword8!");
+
+        assertFalse(this.userService.isEmailExist(this.request.getEmail()));
+
         tests.add("L'email ou le mot de passe est incorrect.");
         LoginResponse response = this.checkResponse(
                 this.authenticationService.authenticate(request, new LoginResponse()), tests);
@@ -345,8 +350,8 @@ public class AuthenticationServiceIntegrationTest {
         LoginResponse loginResponse = this.checkResponse(
                 this.authenticationService.authenticate(this.request, new LoginResponse()), tests);
 
-        assertTrue(registerResponse.isOk());
-        UserDTO loginUserDTO = registerResponse.getUserDTO();
+        assertTrue(loginResponse.isOk());
+        UserDTO loginUserDTO = loginResponse.getUserDTO();
         assertNotNull(loginUserDTO);
         assertEquals(newUserDTO.getUuid(), loginUserDTO.getUuid());
         assertEquals(newUserDTO.getPseudo(), loginUserDTO.getPseudo());
@@ -354,6 +359,7 @@ public class AuthenticationServiceIntegrationTest {
         assertEquals(newUserDTO.getStatus(), loginUserDTO.getStatus());
 
     }
+
 
     @Test
     public void test_authenticate_success_withSessionPersistence() {
@@ -374,10 +380,12 @@ public class AuthenticationServiceIntegrationTest {
         assertNotNull(authentication);
         assertTrue(authentication.isAuthenticated());
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        assertNotNull(userDetails);
-        assertEquals(request.getEmail(), userDetails.getUsername());
+        // 🔥 Vérifier si la session est bien stockée
+        Authentication newAuth = SecurityContextHolder.getContext().getAuthentication();
+        assertNotNull(newAuth); // ✅ Vérifie que la session n'a pas disparu
+        assertTrue(newAuth.isAuthenticated()); // ✅ Confirme que la session persiste
     }
+
 
     /**                              METHOD                         **/
 

@@ -1,9 +1,8 @@
 package com.esportify.validation.constraint;
 
 import com.esportify.validation.ValidStartDate;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 

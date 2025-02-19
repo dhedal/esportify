@@ -1,9 +1,10 @@
 package com.esportify.validation;
 
 import com.esportify.validation.constraint.UUIDValidator;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+
 import java.lang.annotation.*;
 
 

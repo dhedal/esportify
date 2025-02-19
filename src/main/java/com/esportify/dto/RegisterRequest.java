@@ -1,7 +1,8 @@
 package com.esportify.dto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class RegisterRequest extends LoginRequest{
     @NotBlank(message = "Le nom d'utilisateur est obligatoire")

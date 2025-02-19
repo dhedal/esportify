@@ -1,11 +1,10 @@
 package com.esportify.service;
 
-import com.esportify.dto.EventsPageResponse;
+
 import com.esportify.dto.UserDTO;
 import com.esportify.dto.UsersPageResponse;
-import com.esportify.entity.Event;
+
 import com.esportify.entity.User;
-import com.esportify.enumerations.EventStatus;
 import com.esportify.enumerations.UserStatus;
 import com.esportify.mapper.UserMapper;
 import com.esportify.repository.UserRepository;

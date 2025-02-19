@@ -1,8 +1,8 @@
 package com.esportify.dto;
 
 import com.esportify.validation.ValidUUID;
+import jakarta.validation.constraints.NotBlank;
 
-import javax.validation.constraints.NotBlank;
 
 public class UpdateEventRequest extends EventRequest{
     @NotBlank(message = "L'uuid est obligatoire")

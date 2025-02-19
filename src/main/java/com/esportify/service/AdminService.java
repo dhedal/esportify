@@ -8,13 +8,13 @@ import com.esportify.enumerations.AskStatus;
 import com.esportify.enumerations.AskType;
 import com.esportify.enumerations.EventStatus;
 import com.esportify.enumerations.UserStatus;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import java.util.Objects;
 import java.util.Set;
 

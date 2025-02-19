@@ -1,24 +1,25 @@
 package com.esportify.configuration;
 
-import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+
 
 @Configuration
 public class ApplicationConfiguration {
 
-    @Bean
-    public Validator validator() {
-        ValidatorFactory factory = Validation.byDefaultProvider()
-                .configure()
-                .messageInterpolator(new ParameterMessageInterpolator())
-                .buildValidatorFactory();
-        return factory.getValidator();
-    }
+//    @Bean
+//    public Validator validator() {
+//        ValidatorFactory factory = Validation.byProvider(HibernateValidator.class)
+//                .configure()
+//                .messageInterpolator(new ResourceBundleMessageInterpolator()) // ✅ Utilise le bon interpolateur
+//                .buildValidatorFactory();
+//        return factory.getValidator();
+//    }
 
 }

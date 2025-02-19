@@ -4,6 +4,8 @@ import com.esportify.dto.*;
 import com.esportify.entity.User;
 import com.esportify.enumerations.UserStatus;
 import com.esportify.mapper.UserMapper;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import java.util.Objects;
 import java.util.Set;
 

@@ -1,6 +1,5 @@
 package com.esportify.service;
 
-import com.esportify.entity.User;
 import com.esportify.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

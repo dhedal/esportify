@@ -2,9 +2,9 @@ package com.esportify.validation.constraint;
 
 import com.esportify.dto.EventRequest;
 import com.esportify.validation.ValidEventDuration;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.time.Duration;
 
 public class ValidEventDurationValidator implements ConstraintValidator<ValidEventDuration, EventRequest> {

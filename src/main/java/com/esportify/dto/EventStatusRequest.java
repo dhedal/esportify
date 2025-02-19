@@ -2,9 +2,9 @@ package com.esportify.dto;
 
 import com.esportify.enumerations.EventStatus;
 import com.esportify.validation.ValidUUID;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 public class EventStatusRequest {
 

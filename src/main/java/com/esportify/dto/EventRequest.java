@@ -2,8 +2,9 @@ package com.esportify.dto;
 
 import com.esportify.validation.ValidEventDuration;
 import com.esportify.validation.ValidStartDate;
+import jakarta.validation.constraints.*;
 
-import javax.validation.constraints.*;
+
 import java.time.LocalDateTime;
 
 @ValidEventDuration(message = "La durée de l'événement doit être au minimum de 30 mininutes")

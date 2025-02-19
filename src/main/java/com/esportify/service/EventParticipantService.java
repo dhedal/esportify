@@ -11,14 +11,14 @@ import com.esportify.mapper.EventParticipantMapper;
 import com.esportify.mapper.ParticipantMapper;
 import com.esportify.repository.EventParticipantRepository;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validator;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;

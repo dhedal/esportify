@@ -1,9 +1,9 @@
 package com.esportify.validation.constraint;
 
 import com.esportify.validation.ValidUUID;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.util.UUID;
 
 public class UUIDValidator implements ConstraintValidator<ValidUUID, String> {
