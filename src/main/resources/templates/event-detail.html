@@ -58,16 +58,36 @@
       </div>
 
       <th:block th:if="${isAuthenticated}">
-        <!-- Boutons d'action -->
         <div class="text-center mt-4">
-          <button id="join-event-btn" class="btn btn-success btn-lg" th:if="${!eventDetail.registered}">
-            S'inscrire
-          </button>
-          <button id="leave-event-btn" class="btn btn-danger btn-lg" th:if="${eventDetail.registered}">
-            Se désinscrire
-          </button>
+          <!-- Affichage des messages -->
+          <th:block th:if="${eventDetail.eventParticipantStatus == T(com.esportify.enumerations.EventParticipantStatus).APPROVED}">
+            <p class="text-success fw-bold">✅ Vous êtes inscrit à cet événement</p>
+          </th:block>
+
+          <th:block th:if="${eventDetail.eventParticipantStatus == T(com.esportify.enumerations.EventParticipantStatus).REJECTED}">
+            <p class="text-warning fw-bold">⚠️ Votre demande a été rejetée</p>
+          </th:block>
+
+          <th:block th:if="${eventDetail.eventParticipantStatus == T(com.esportify.enumerations.EventParticipantStatus).BANNED}">
+            <p class="text-danger fw-bold">🚫 Vous avez été banni de cet événement</p>
+          </th:block>
+
+          <th:block th:if="${eventDetail.event.status == T(com.esportify.enumerations.EventStatus).FULL}">
+            <p class="text-danger text-center fw-bold">Cet événement est complet et n'accepte plus d'inscriptions.</p>
+          </th:block>
+
+          <!-- Boutons d'inscription/désinscription -->
+          <th:block th:if="${eventDetail.canRegister}">
+            <button id="join-event-btn" class="btn btn-success btn-lg">S'inscrire</button>
+          </th:block>
+
+          <th:block th:if="${eventDetail.canUnregister}">
+            <button id="leave-event-btn" class="btn btn-danger btn-lg">Se désinscrire</button>
+          </th:block>
         </div>
       </th:block>
+
+
 
     </div>
   </div>

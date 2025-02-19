@@ -352,16 +352,45 @@ public class EventService {
         return response;
     }
 
+    /**
+     *
+     * @param eventUuid
+     * @param participant
+     * @return
+     */
     public EventDetail getEventDetail(String eventUuid, User participant) {
         LOG.debug("## getEventDetail(String eventUuid)");
         Event event = this.getWithParticipantsByUuid(eventUuid);
         if(event == null) return null;
 
+
         EventDetail eventDetail = new EventDetail();
         eventDetail.setEvent(EventMapper.toDTO(event));
-
         eventDetail.setNbParticipants(event.getParticipantCount());
+        if(participant == null) return eventDetail;
 
+        EventParticipant eventParticipant = event.getParticipants()
+                .stream()
+                .filter(ep -> Objects.equals(ep.getParticipant().getId(), participant.getId()))
+                .findFirst()
+                .orElse(null);
+
+        EventParticipantStatus eventParticipantStatus =  eventParticipant != null ?
+                eventParticipant.getStatus() : EventParticipantStatus.UNDEFINED;
+
+        eventDetail.setEventParticipantStatus(eventParticipantStatus );
+
+        // Détermination de canRegister
+        boolean canRegister = (eventParticipantStatus == EventParticipantStatus.WITHDRAWN || eventParticipantStatus == EventParticipantStatus.UNDEFINED)
+                && event.getStatus() != EventStatus.FULL
+                && eventParticipantStatus != EventParticipantStatus.BANNED;
+
+        // Détermination de canUnregister
+        boolean canUnregister = (eventParticipantStatus == EventParticipantStatus.PENDING || eventParticipantStatus == EventParticipantStatus.APPROVED)
+                && event.getStatus() != EventStatus.ON_GOING;
+
+        eventDetail.setCanRegister(canRegister);
+        eventDetail.setCanUnregister(canUnregister);
         return eventDetail;
     }
 
