@@ -53,6 +53,12 @@ public class SecurityConfig {
                         .requestMatchers(this.requestMatchersAuthenticated()).authenticated()
                         .anyRequest().authenticated()
                 )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")  // Assure que Spring Security utilise bien ton `/logout`
+                        .logoutSuccessUrl("/auth?logout") // Redirige proprement après déconnexion
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                )
                 .addFilterAfter(new SecurityContextPersistenceFilter(), SecurityContextPersistenceFilter.class);
 
         return http.build();
@@ -63,7 +69,6 @@ public class SecurityConfig {
                 "/",
                 "/home",
                 "/auth",
-                "/api/auth/login",
                 "/api/auth/register",
                 "/css/**",
                 "/js/**",

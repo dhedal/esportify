@@ -31,11 +31,6 @@ export class FetchUtils {
         }
     }
 
-    static async logout() {
-        await FetchUtils.fetch("/logout", "GET");
-        localStorage.removeItem(FetchUtils.USER_KEY);
-        window.location.href = FetchUtils.AUTH_API_URL;
-    }
 
     static async getCurrentUser(){
         return await FetchUtils.fetch(FetchUtils.AUTH_API_URL + "/me");

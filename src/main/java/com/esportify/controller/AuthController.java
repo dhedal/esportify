@@ -29,14 +29,18 @@ public class AuthController extends BaseController{
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-        LOG.debug("## logout(HttpServletRequest request)");
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        LOG.debug("## logout(HttpServletRequest request, HttpServletResponse response)");
+
         HttpSession session = request.getSession(false);
-        if(session != null) {
+        if (session != null) {
             session.invalidate();
         }
+
         SecurityContextHolder.clearContext();
-        return ResponseEntity.ok(Collections.singletonMap("message", "Déconnexion réussie"));
+
+        return "redirect:/auth?logout"; // Redirige vers la page d'authentification avec un message
     }
+
 
 }

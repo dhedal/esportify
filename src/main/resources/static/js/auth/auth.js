@@ -2,28 +2,9 @@ import {FetchUtils} from "../utils/fetch-utils.js";
 import {FormValidator, Form} from "../utils/form-utils.js";
 import {MessageUtils} from "../utils/message-utils.js";
 
-// document.getElementById("loginForm").addEventListener("submit", async (event) => {
-//     event.preventDefault();
-//
-//     const email = document.getElementById("email-login").value;
-//     const password = document.getElementById("password-login").value;
-//
-//     const data = {email: email, password:password};
-//     console.log(data);
-//
-//     const response = await fetchData("http://localhost:8080/api/auth/login", "POST", data);
-//     console.log(response)
-//
-//     if (response.ok) {
-//         // window.location.href = "/"; // Redirige après connexion
-//     } else {
-//         document.getElementById("loginMessage").innerText = response.message;
-//     }
-// });
-
-
-
-
+/**
+ *
+ */
 class LoginForm extends Form {
     email;
     password;
@@ -56,6 +37,9 @@ class LoginForm extends Form {
     }
 }
 
+/**
+ *
+ */
 class RegisterForm extends Form {
     pseudo;
     email;
@@ -172,6 +156,9 @@ class RegisterForm extends Form {
     }
 }
 
+/**
+ *
+ */
 document.addEventListener("DOMContentLoaded", () => {
     const loginForm = new LoginForm();
     const registerForm = new RegisterForm();
