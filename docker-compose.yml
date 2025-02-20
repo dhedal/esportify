@@ -27,6 +27,7 @@ services:
       - db
     ports:
       - "8080:8080"
+    command: mvn clean package -DskipTests && java -jar /app.jar
 
 volumes:
   db_data:
