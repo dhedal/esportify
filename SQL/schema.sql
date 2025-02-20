@@ -38,8 +38,17 @@ CREATE TABLE `ask` (
   UNIQUE KEY `UKcuuv3q0wc5fndb71bcoy2xdxa` (`uuid`),
   KEY `FK87wm3bdx015d5boc97r03j45u` (`user_id`),
   CONSTRAINT `FK87wm3bdx015d5boc97r03j45u` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ask`
+--
+
+LOCK TABLES `ask` WRITE;
+/*!40000 ALTER TABLE `ask` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ask` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `event`
@@ -65,8 +74,17 @@ CREATE TABLE `event` (
   UNIQUE KEY `UKi0eo1d5d5i9q5gyawl5e9q44c` (`uuid`),
   KEY `FKi8bsvlthqr8lngsyshiqsodak` (`user_id`),
   CONSTRAINT `FKi8bsvlthqr8lngsyshiqsodak` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `event`
+--
+
+LOCK TABLES `event` WRITE;
+/*!40000 ALTER TABLE `event` DISABLE KEYS */;
+/*!40000 ALTER TABLE `event` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `event_image`
@@ -91,6 +109,15 @@ CREATE TABLE `event_image` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `event_image`
+--
+
+LOCK TABLES `event_image` WRITE;
+/*!40000 ALTER TABLE `event_image` DISABLE KEYS */;
+/*!40000 ALTER TABLE `event_image` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `event_participant`
 --
 
@@ -112,8 +139,17 @@ CREATE TABLE `event_participant` (
   KEY `FKhwcglexuoexhrbe9728pn6jqb` (`user_id`),
   CONSTRAINT `FK5hxneasi6gucfdlc8690c1ngc` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`),
   CONSTRAINT `FKhwcglexuoexhrbe9728pn6jqb` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `event_participant`
+--
+
+LOCK TABLES `event_participant` WRITE;
+/*!40000 ALTER TABLE `event_participant` DISABLE KEYS */;
+/*!40000 ALTER TABLE `event_participant` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `user`
@@ -135,8 +171,17 @@ CREATE TABLE `user` (
   UNIQUE KEY `UK1xc1iry6gqjrvh5cpajiq7l2f` (`uuid`),
   UNIQUE KEY `UKob8kqyqqgmefl0aco34akdtpe` (`email`),
   UNIQUE KEY `UKit5d8tethuijmhllwd27doaqv` (`pseudo`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -147,4 +192,4 @@ CREATE TABLE `user` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-20 10:56:01
+-- Dump completed on 2025-02-20 21:09:40

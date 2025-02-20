@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   db:
     image: mysql:8.0
@@ -13,21 +14,29 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./SQL/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./SQL/insert_data.sql:/docker-entrypoint-initdb.d/2-data.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
 
   app:
     build: .
     container_name: esportify_app
     restart: always
+    env_file:
+      - .env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/esportify?useSSL=false&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: esportify_user
-      SPRING_DATASOURCE_PASSWORD: esportify_pass
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+        DB_URL: jdbc:mysql://db:3306/esportify
+        DB_USER: ${DB_USER}
+        DB_PASSWORD: ${DB_PASSWORD}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "8080:8080"
-    command: mvn clean package -DskipTests && java -jar /app.jar
 
 volumes:
   db_data:
