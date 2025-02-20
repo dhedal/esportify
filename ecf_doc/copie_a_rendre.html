@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Copie à Rendre - TP Développeur Web et Web Mobile</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2, h3 {
+      color: #2C3E50;
+    }
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border-bottom: 2px solid #ccc;
+    }
+    blockquote {
+      font-style: italic;
+      background: #f1f1f1;
+      padding: 10px;
+      border-left: 4px solid #007bff;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1 class="text-center">Copie à Rendre - TP Développeur Web et Web Mobile</h1>
+
+  <div class="section">
+    <h2>Informations de l'Apprenant</h2>
+    <p><strong>Nom et prénom :</strong> Hedgar david</p>
+    <p><strong>Date de naissance :</strong> 24/07/1978</p>
+    <p><strong>Lien GitHub du projet :</strong> https://github.com/dhedal/esportify</p>
+    <p><strong>Lien de l’outil de gestion de projet :</strong> https://trello.com/b/mtxEkusw/esportify</p>
+    <p><strong>Lien de l’application déployée :</strong> [À compléter]</p>
+  </div>
+
+  <div class="section">
+    <h2>1. Analyse des Besoins</h2>
+    <h3>1.1 Résumé du projet</h3>
+    <p>Esportify est une startup innovante spécialisée dans le e-sport, fondée en 2021 en France. Jusqu'à présent, la gestion des événements était réalisée manuellement à l'aide de fichiers Excel et d'un CMS WordPress, entraînant des limitations opérationnelles.</p>
+    <p>L'objectif du projet est de développer une plateforme web complète permettant :</p>
+    <ul>
+      <li>Aux joueurs de s’inscrire et participer aux compétitions.</li>
+      <li>Aux organisateurs de créer et gérer des événements.</li>
+      <li>Aux administrateurs de valider et modérer les événements et utilisateurs.</li>
+    </ul>
+    <p>Cette plateforme vise à automatiser la gestion des événements, améliorer l’expérience utilisateur et renforcer l’accessibilité pour Esportify.</p>
+
+    <h3>1.2 Cahier des charges / Expression du besoin</h3>
+    <ul>
+      <li><strong>Objectifs du projet :</strong> Digitaliser la gestion des événements e-sport afin de remplacer les outils manuels existants, offrir une interface intuitive et sécurisée, et garantir une gestion fluide des inscriptions, validations et scores.</li>
+      <li><strong>Fonctionnalités principales :</strong>
+        <ul>
+          <li>Page d’accueil avec présentation et événements à venir.</li>
+          <li>Système d’authentification (Joueur, Organisateur, Administrateur).</li>
+          <li>Gestion des événements : création, inscription, validation, historique.</li>
+          <li>Modération des utilisateurs et événements par les administrateurs.</li>
+          <li>Fil de discussion asynchrone (optionnel) pour la communication entre joueurs.</li>
+          <li>Tableau de bord organisateur et administrateur.</li>
+        </ul>
+      </li>
+      <li><strong>Contraintes techniques et fonctionnelles :</strong>
+        <ul>
+          <li>Développement avec Spring Boot pour le backend.</li>
+          <li>Développement avec Thymeleaf, Javascript et Bootstrap css pour le frontend.</li>
+          <li>Base de données MySQL avec gestion des relations entre utilisateurs et événements.</li>
+          <li>Sécurisation via Spring Security.</li>
+          <li>Interface responsive et accessible (Desktop & Mobile).</li>
+          <li>Filtrage dynamique des événements (requêtes asynchrones en AJAX).</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>2. Spécifications Techniques</h2>
+
+    <h3>2.1 Technologies utilisées et justification</h3>
+    <p>Le projet repose sur un socle technologique robuste et éprouvé :</p>
+    <ul>
+      <li><strong>Spring Boot :</strong> Choisi pour sa rapidité de développement et son intégration simplifiée avec d'autres outils du Spring Ecosystem.</li>
+      <li><strong>Spring Data JPA :</strong> Utilisé pour l'interaction avec la base de données MySQL, garantissant une gestion optimisée des transactions et évitant les injections SQL.</li>
+      <li><strong>Thymeleaf :</strong> Intégré en tant que moteur de templates pour le rendu côté serveur, permettant une séparation claire entre logique et présentation.</li>
+      <li><strong>MySQL :</strong> Base de données relationnelle choisie pour sa stabilité et son support robuste des transactions.</li>
+      <li><strong>JavaScript :</strong> Utilisé pour gérer les interactions dynamiques côté client et améliorer l'expérience utilisateur.</li>
+      <li><strong>Bootstrap CSS :</strong> Employé pour structurer et styliser l’interface utilisateur de manière responsive et ergonomique.</li>
+    </ul>
+
+    <h3>2.2 Mise en place de l’environnement de travail</h3>
+    <p>Le développement repose sur une architecture modulaire et des outils adaptés :</p>
+    <ul>
+      <li><strong>IntelliJ IDEA :</strong> Environnement de développement choisi pour sa compatibilité avec Spring Boot et ses fonctionnalités avancées.</li>
+      <li><strong>GitHub :</strong> Gestion de version avec Git Flow pour assurer un workflow structuré et collaboratif.</li>
+      <li><strong>MySQL Workbench :</strong> Outil utilisé pour la gestion et la visualisation des bases de données MySQL.</li>
+      <li><strong>Bootstrap CSS :</strong> Utilisé pour concevoir une interface utilisateur responsive et moderne.</li>
+      <li><strong>JavaScript (AJAX) :</strong> Implémentation de requêtes asynchrones pour améliorer l’interactivité et réduire les rechargements de page.</li>
+    </ul>
+
+    <h3>2.3 Mécanismes de sécurité</h3>
+    <ul>
+      <li><strong>Sécurité des formulaires :</strong> Validation des entrées utilisateur via JavaScript et Spring Boot Validation pour assurer la conformité des données avant et après soumission des données.</li>
+      <li><strong>Sécurité du back-end :</strong> Spring Security est utilisé pour gérer l'authentification et l'autorisation avec un <code>AuthenticationManager</code>. Les accès sont définis via <code>HttpSecurity</code> avec des règles spécifiques.</li>
+      <li><strong>Gestion des sessions :</strong> Configuration avec <code>SessionCreationPolicy.IF_REQUIRED</code> pour maintenir les sessions uniquement si nécessaire.</li>
+      <li><strong>Accès aux URLs :</strong> Les requêtes sont sécurisées avec Spring Security :
+        <ul>
+          <li>Les endpoints publics sont définis dans <code>requestMatchersPermitAll()</code> et accessibles sans authentification.</li>
+          <li>Les endpoints nécessitant une authentification sont définis dans <code>requestMatchersAuthenticated()</code>.</li>
+          <li>Tout autre endpoint est protégé par défaut.</li>
+        </ul>
+      </li>
+      <li><strong>Gestion des déconnexions :</strong> Implémentation d'un point de sortie sécurisé via <code>logout</code>, supprimant les cookies et invalidant la session après déconnexion.</li>
+      <li><strong>Sécurité du front-end :</strong> Protection contre les attaques XSS avec l’échappement des données et validation côté client avec JavaScript.</li>
+    </ul>
+
+    <h3>2.4 Veille technologique sur les vulnérabilités de sécurité</h3>
+    <ul>
+      <li><strong>Problème rencontré :</strong> Configuration des autorisations d'accès aux URLs dans Spring Security.</li>
+      <li><strong>Extrait d’une source en anglais :</strong> "Modern applications often serve both public and secured endpoints. Applying a custom Spring Security filter globally can lead to unnecessary processing for public endpoints. To address this, we can target the filter specifically to secured endpoints by using Spring Security’s SecurityFilterChain and RequestMatcher."</li>
+      <li><strong>Traduction en français :</strong>
+        <blockquote>
+          "Les applications modernes servent souvent à la fois des endpoints publics et sécurisés. Appliquer un filtre Spring Security personnalisé globalement peut entraîner un traitement inutile pour les endpoints publics. Pour résoudre ce problème, nous pouvons cibler le filtre spécifiquement sur les endpoints sécurisés en utilisant SecurityFilterChain et RequestMatcher de Spring Security."
+        </blockquote>
+      </li>
+      <li><strong>Source :</strong> <a href="https://www.baeldung.com/spring-security-custom-filter" target="_blank">Spring Security - Custom Filters (Baeldung)</a></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>3. Recherche</h2>
+
+    <h3>3.1 Situation de travail nécessitant une recherche en anglais</h3>
+    <p>Lors du développement de la plateforme, j'ai rencontré un problème lié à la validation des données dans les classes services. J'utilisais l’ancienne version <code>javax.validation</code> au lieu de <code>jakarta.validation</code>, ce qui empêchait les annotations de validation de fonctionner correctement. Après plusieurs tentatives, j'ai découvert que cette migration était nécessaire en raison des changements apportés dans Spring Boot 3. Cela a nécessité une mise à jour des dépendances et l’adaptation des annotations pour garantir le bon fonctionnement des validations.</p>
+
+    <h3>3.2 Source en anglais et traduction</h3>
+    <ul>
+      <li><strong>Extrait d’une source en anglais :</strong>
+        <blockquote>
+          "javax.validation has been replaced by jakarta.validation in Spring Boot 3. If validation annotations are not working in your service classes, check your dependencies and ensure you're using the correct Jakarta packages instead of Javax."
+        </blockquote>
+      </li>
+      <li><strong>Traduction en français :</strong>
+        <blockquote>
+          "javax.validation a été remplacé par jakarta.validation dans Spring Boot 3. Si les annotations de validation ne fonctionnent pas dans vos classes de service, vérifiez vos dépendances et assurez-vous d’utiliser les bons packages Jakarta au lieu de Javax."
+        </blockquote>
+      </li>
+      <li><strong>Source :</strong> <a href="https://stackoverflow.com/questions/74590990/javax-validation-has-be-replaced-by-jakarta-validation-then-validation-cant-wo" target="_blank">Stack Overflow - Migration javax.validation vers jakarta.validation</a></li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>4. Conclusion</h2>
+    <p>Ce projet a permis d'automatiser la gestion des événements e-sport en fournissant une solution web complète et intuitive. La transition depuis un système manuel (Excel, WordPress) vers une plateforme sécurisée et dynamique a été un véritable challenge technique et organisationnel.</p>
+    <p>Les principales difficultés rencontrées concernaient l’implémentation des rôles dynamiques et la sécurisation des accès. Grâce à l’utilisation de Spring Security et de bonnes pratiques de développement, ces problèmes ont été résolus efficacement.</p>
+    <p>Les perspectives d'amélioration incluent l'ajout d'un système de notifications en temps réel, une meilleure gestion des statistiques des joueurs, et l’intégration d’une API tierce pour enrichir l’expérience utilisateur.</p>
+  </div>
+</div>
+</div>
+</body>
+</html>

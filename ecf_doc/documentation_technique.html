@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation Technique - TP Développeur Web et Web Mobile</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2, h3 {
+      color: #2C3E50;
+    }
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border-bottom: 2px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1 class="text-center">Documentation Technique - TP Développeur Web et Web Mobile</h1>
+
+  <div class="section">
+    <h2>1. Introduction</h2>
+    <p>Cette documentation technique décrit la conception et l’architecture du projet, en détaillant les technologies utilisées et les choix de développement.</p>
+  </div>
+
+  <div class="section  mb-5">
+    <h2 class="mb-4">2. Architecture et technologies utilisées</h2>
+    <p class="mb-4">Le projet repose sur une architecture MVC en utilisant :</p>
+    <ul class="mb-4">
+      <li><strong>Spring Boot :</strong> Framework backend facilitant le développement et la gestion des API REST.</li>
+      <li><strong>Spring Security :</strong> Gestion de l’authentification et des autorisations des utilisateurs.</li>
+      <li><strong>Spring Data JPA :</strong> Interaction simplifiée avec la base de données MySQL.</li>
+      <li><strong>Thymeleaf :</strong> Moteur de template pour la gestion du rendu côté serveur.</li>
+      <li><strong>Bootstrap CSS :</strong> Framework utilisé pour la mise en page et la responsivité de l’interface utilisateur.</li>
+      <li><strong>JavaScript (AJAX) :</strong> Gestion des requêtes asynchrones pour améliorer l’expérience utilisateur.</li>
+    </ul>
+  </div>
+
+  <div class="section  mb-5">
+    <h2 class="mb-4">3. Configuration de l’environnement</h2>
+    <p class="mb-4">L’environnement de développement est configuré avec :</p>
+    <ul class="mb-4">
+      <li><strong>IDE :</strong> IntelliJ IDEA.</li>
+      <li><strong>Base de données :</strong> MySQL, gérée via MySQL Workbench.</li>
+      <li><strong>Gestion de version :</strong> GitHub, avec un workflow basé sur Git Flow.</li>
+      <li><strong>Serveur d’application :</strong> Spring Boot intégré avec Tomcat.</li>
+    </ul>
+  </div>
+
+  <div class="section  mb-5">
+    <h2 class="mb-4">4. Modèle Conceptuel de Données (MCD)</h2>
+    <p class="mb-4">Le Modèle Conceptuel de Données (MCD) ci-dessous illustre la structure des entités et leurs relations dans l’application Esportify.</p>
+
+    <div class="text-center">
+      <img src="mdc.png" alt="Modèle Conceptuel de Données - Esportify" class="img-fluid rounded shadow">
+    </div>
+
+    <h3 class="mt-4 mb-3">4.1 Description des entités</h3>
+    <ul class="mb-4">
+      <li><strong>user</strong> : Stocke les informations des utilisateurs (email, mot de passe, pseudo, statut).</li>
+      <li><strong>event</strong> : Contient les événements organisés (titre, description, dates, statut, organisateur).</li>
+      <li><strong>event_participant</strong> : Permet de gérer les utilisateurs inscrits aux événements.</li>
+      <li><strong>ask</strong> : Gère les demandes spécifiques des utilisateurs (ex. demande pour devenir organisateur).</li>
+      <li><strong>event_image</strong> : Stocke les images associées à chaque événement.</li>
+    </ul>
+
+    <h3 class="mt-4 mb-3">4.2 Relations entre les entités</h3>
+    <ul class="mb-4">
+      <li><strong>Un utilisateur (user)</strong> peut organiser plusieurs événements (<strong>event</strong>).</li>
+      <li><strong>Un utilisateur (user)</strong> peut s'inscrire à plusieurs événements via la table <strong>event_participant</strong>.</li>
+      <li><strong>Un événement (event)</strong> peut avoir plusieurs images via la table <strong>event_image</strong>.</li>
+      <li><strong>Un utilisateur (user)</strong> peut soumettre des demandes via la table <strong>ask</strong>.</li>
+    </ul>
+  </div>
+
+  <div class="section mb-5">
+    <h2 class="mb-4">5. Diagrammes d’utilisation</h2>
+    <p class="mb-4">Les diagrammes UML suivants décrivent les principaux cas d'utilisation :</p>
+    <ul class="mb-4">
+      <li>Diagramme de cas d’utilisation pour la gestion des événements.</li>
+      <li>Diagramme de séquence pour le processus d’inscription et d’authentification.</li>
+    </ul>
+
+    <h3 class="mt-4 mb-3">5.1 Diagramme de cas d’utilisation</h3>
+    <p class="mb-4">Le diagramme ci-dessous illustre les interactions entre les utilisateurs et les différentes fonctionnalités de la gestion des événements.</p>
+    <p class="mb-4"><strong>Relations entre les rôles :</strong></p>
+    <ul class="mb-4">
+      <li>Un <strong>joueur</strong> est un <em>visiteur connecté</em> qui peut s'inscrire aux événements.</li>
+      <li>Un <strong>organisateur</strong> est un <em>joueur</em> ayant des permissions supplémentaires pour créer et gérer des événements.</li>
+      <li>Un <strong>administrateur</strong> est un <em>organisateur</em> avec encore plus de privilèges, comme la modération et l'attribution des rôles.</li>
+    </ul>
+    <div class="text-center mb-4">
+      <img src="use-case.png" alt="Diagramme de cas d'utilisation - Gestion des événements" class="img-fluid rounded shadow">
+    </div>
+
+    <h3 class="mt-4 mb-3">5.2 Diagramme de séquence - Authentification</h3>
+    <p class="mb-4">Le diagramme suivant représente le processus complet d'authentification, depuis la saisie des identifiants par l'utilisateur jusqu'à la validation et la gestion de session.</p>
+    <div class="text-center">
+      <img src="auth-diag-sequence.png" alt="Diagramme de séquence - Authentification" class="img-fluid rounded shadow">
+    </div>
+  </div>
+
+  <div class="section mb-5">
+    <h2 class="mb-4">6. Déploiement de l’application</h2>
+    <p class="mb-4">L’application est déployée avec Docker en orchestrant les services Spring Boot et MySQL.</p>
+    <h3 class="mt-4 mb-3">6.1 Configuration des conteneurs</h3>
+    <p>Le déploiement repose sur deux services :</p>
+    <ul class="mb-4">
+      <li>Un conteneur <strong>MySQL</strong> pour gérer la base de données.</li>
+      <li>Un conteneur <strong>Spring Boot</strong> contenant l’application.</li>
+    </ul>
+
+    <h3 class="mt-4 mb-3">6.2 Étapes de déploiement</h3>
+    <p class="mb-4">Les étapes pour exécuter l'application avec Docker :</p>
+    <ul class="mb-4">
+      <li>Créer un fichier <code>Dockerfile</code> et y inclure l’image OpenJDK 21.</li>
+      <li>Créer un fichier <code>docker-compose.yml</code> pour orchestrer la base de données et l’application.</li>
+      <li>Construire et exécuter les conteneurs avec <code>docker-compose up --build -d</code>.</li>
+      <li>Vérifier que l’application fonctionne sur <code>http://localhost:8080</code>.</li>
+      <li>Utiliser <code>docker-compose logs -f app</code> pour consulter les logs.</li>
+    </ul>
+
+    <h3 class="mt-4 mb-3">6.3 Mise à jour et maintenance</h3>
+    <p>Pour déployer une nouvelle version de l’application :</p>
+    <ul class="mb-4">
+      <li>Construire une nouvelle version du projet avec <code>mvn clean package</code>.</li>
+      <li>Relancer le déploiement avec <code>docker-compose up --build -d</code>.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

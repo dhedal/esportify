@@ -1,6 +1,11 @@
 import {FetchUtils} from "./utils/fetch-utils.js";
 import {MessageUtils} from "./utils/message-utils.js";
 
+export const sanitize = (value) => {
+    return value.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+
 document.addEventListener("DOMContentLoaded", function() {
     console.log("Esportify - Page chargée");
 
