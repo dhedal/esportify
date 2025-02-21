@@ -75,7 +75,8 @@ public class SecurityConfig {
                 "/js/**",
                 "/events",
                 "/events/detail/**",
-                "/event-detail"
+                "/event-detail",
+                "/api/events/filter"
 
         };
 

@@ -2,7 +2,7 @@
 
 export class FetchUtils {
     static USER_KEY = "user";
-    static SERVER_URL = "http://localhost:8080"
+    static SERVER_URL = window._env_.SERVER_URL;
     static API_URL = FetchUtils.SERVER_URL + "/api";
     static AUTH_API_URL = FetchUtils.API_URL + "/auth";
     static EVENT_API_URL = FetchUtils.API_URL + "/events";

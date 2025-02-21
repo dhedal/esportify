@@ -2,19 +2,25 @@ package com.esportify.controller;
 
 import com.esportify.entity.User;
 import com.esportify.enumerations.UserStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Objects;
 
 public abstract class BaseController {
+
+    @Value("${app.server.url}")
+    protected String serverUrl;
 
     protected void addAttributes(Model model) {
         this.addAttributes(model, null);
     }
 
     protected void addAttributes(Model model, User user) {
+        model.addAttribute("serverUrl", this.serverUrl);
         this.addAuthAttribute(model);
         this.addIsPlayerStatusAttribute(model, user);
         this.addIsAdminAttribute(model, user);

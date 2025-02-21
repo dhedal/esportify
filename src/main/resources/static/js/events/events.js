@@ -75,22 +75,22 @@ const loadEvents = async (page = 1, request = null) => {
 };
 
 
-/**
- * Charger tous les organisateurs au chargement de la page
- */
-const loadOrganizerList = async () => {
-    const organizers = await FetchUtils.fetch(`${FetchUtils.EVENT_API_URL}/organizers`);
-    organizerDatalist.innerHTML = ""; // Nettoyer les anciennes suggestions
-    allOrganizers = organizers || [];
-
-    if (allOrganizers.length === 0) return;
-
-    allOrganizers.forEach(organizer => {
-        const option = document.createElement("option");
-        option.value = organizer.pseudo;
-        organizerDatalist.appendChild(option);
-    });
-};
+// /**
+//  * Charger tous les organisateurs au chargement de la page
+//  */
+// const loadOrganizerList = async () => {
+//     const organizers = await FetchUtils.fetch(`${FetchUtils.EVENT_API_URL}/organizers`);
+//     organizerDatalist.innerHTML = ""; // Nettoyer les anciennes suggestions
+//     allOrganizers = organizers || [];
+//
+//     if (allOrganizers.length === 0) return;
+//
+//     allOrganizers.forEach(organizer => {
+//         const option = document.createElement("option");
+//         option.value = organizer.pseudo;
+//         organizerDatalist.appendChild(option);
+//     });
+// };
 
 /**
  * Filtrer la liste des organisateurs en fonction de la saisie utilisateur
@@ -168,11 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
             loadEvents(eventsPagination.currentPage).then();
         });
     }
-
-    loadOrganizerList().then();
-
-
-
 
     loadEvents().then();
 });
